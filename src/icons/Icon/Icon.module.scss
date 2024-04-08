@@ -1,0 +1,16 @@
+.icon {
+  color: currentColor;
+  display: flex;
+  flex-shrink: 0;
+  &_color {
+    &_primary {
+      color: $text-primary;
+    }
+    &_secondary {
+      color: $text-secondary;
+    }
+    &_accent {
+      color: $text-accent;
+    }
+  }
+}

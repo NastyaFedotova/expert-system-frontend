@@ -1,0 +1,51 @@
+.pagestepper {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  height: 42px;
+  min-height: 42px;
+  margin-top: 40px;
+
+  &-icon {
+    margin: 5px 3px;
+    cursor: pointer;
+    &_right {
+      transform: rotate(0.5turn);
+    }
+
+    &_disabled {
+      cursor: default;
+      color: $text-secondary;
+      pointer-events: none;
+    }
+  }
+
+  &-page {
+    display: flex;
+    justify-content: center;
+    width: 38px;
+    padding: 10px;
+    border-radius: $border-radius;
+    cursor: pointer;
+
+    &:not(:where(.pagestepper-page_currentPage)) {
+      &:hover {
+        background-color: $pagestepper-bg-hover;
+        color: $pagestepper-text-hover;
+      }
+    }
+
+    &_currentPage {
+      background-color: $brand;
+      color: $pagestepper-text;
+    }
+  }
+
+  &-dots {
+    display: flex;
+    justify-content: center;
+    width: 38px;
+    padding: 10px;
+    cursor: default;
+  }
+}

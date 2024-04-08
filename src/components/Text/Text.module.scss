@@ -1,0 +1,40 @@
+.text {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  color: currentColor;
+  height: max-content;
+
+  &_color {
+    &_primary {
+      color: $text-primary;
+    }
+    &_secondary {
+      color: $text-secondary;
+    }
+    &_accent {
+      color: $text-accent;
+    }
+  }
+
+  &_view {
+    &_title {
+      @include title;
+    }
+    &_button {
+      @include button;
+    }
+    &_p-20 {
+      @include p-20;
+    }
+    &_p-18 {
+      @include p-18;
+    }
+    &_p-16 {
+      @include p-16;
+    }
+    &_p-14 {
+      @include p-14;
+    }
+  }
+}

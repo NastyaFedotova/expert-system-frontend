@@ -1,0 +1,33 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  max-width: 280px;
+  height: auto;
+  background-color: $card-bg;
+  border-radius: $border-radius;
+  overflow: hidden;
+  cursor: pointer;
+
+  &-image {
+    background-color: $card-image-bg;
+  }
+
+  &-info {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: $space-l;
+    margin: $space-xl $space-xs;
+  }
+
+  &-description {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: $space-xxs;
+  }
+
+  &:hover {
+    box-shadow: 0px 4px 10px 0px rgba($color: #000000, $alpha: 0.25);
+  }
+}

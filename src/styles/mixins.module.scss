@@ -1,0 +1,64 @@
+@mixin title {
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 48px;
+}
+@mixin button {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 18px;
+}
+@mixin p-20 {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 24px;
+}
+@mixin p-16 {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+}
+@mixin p-14 {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+}
+@mixin p-18 {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 22px;
+}
+@mixin p-24 {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 26px;
+}
+@mixin square($width) {
+  width: $width;
+  height: $width;
+}
+
+@mixin page-background($page-color) {
+  background-color: $page-color;
+  background: linear-gradient(90deg, $project-bg 0%, $page-color 10%, $page-color 90%, $project-bg 100%);
+}
+
+@mixin page-setup($page-color) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 40px 100px 20px;
+  padding-right: calc(100px - var(--scroll-width));
+  height: max-content;
+  @include page-background($page-color);
+  gap: $space-xl;
+  max-width: 1440px;
+  width: 100%;
+  min-height: calc(100dvh - 64px);
+
+  @media screen and (max-width: 1012px) {
+    padding: 20px 6% 16px;
+    padding-right: calc(6% - var(--scroll-width));
+  }
+}
