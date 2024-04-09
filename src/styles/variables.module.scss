@@ -3,6 +3,8 @@ $brand: #006fb7;
 $project-bg: #f6f8fa;
 $project-bg-transparent: #f6f8faa8;
 
+$error: #d32f2f;
+
 //BORDER
 $border-radius: 6px;
 $border-color: #d9d9d9;
@@ -33,3 +35,16 @@ $pagestepper-text-hover: #ffffff;
 
 //HEADER COLORS
 $header-bg: #ffffff;
+
+//BUTTON COLORS
+$button-primary-bg: $brand;
+$button-primary-bg-active: #081953;
+$button-primary-bg-disabled: #d9d9d9;
+$button-primary-bg-hover: #006fb7b2;
+$button-primary-text: #ffffff;
+$button-primary-text-active: #ffffff;
+$button-primary-text-disabled: #ffffff;
+$button-primary-text-hover: #ffffff;
+
+//LOADER COLORS
+$loader-bg: $brand;

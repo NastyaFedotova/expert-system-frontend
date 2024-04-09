@@ -18,7 +18,7 @@ export type CardProps = {
 
 const cnCard = classname(classes, 'card');
 
-const Card = ({ className, id, image, title, subtitle, onClick }: CardProps) => (
+const Card: React.FC<CardProps> = ({ className, id, image, title, subtitle, onClick }: CardProps) => (
   <div className={cnCard() + ` ${className}`} onClick={onClick} id={id}>
     <Image
       alt="logo"

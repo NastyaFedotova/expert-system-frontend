@@ -1,0 +1,50 @@
+.button {
+  display: flex;
+  align-items: center;
+  gap: $space-xxs;
+  min-height: 52px;
+  width: max-content;
+  padding: $space-s $space-l;
+  border: 0;
+  border-radius: $border-radius;
+  overflow: hidden;
+  background-color: $button-primary-bg;
+  color: $button-primary-text;
+  cursor: pointer;
+
+  &_disabled {
+    cursor: default;
+    background-color: $button-primary-bg-disabled;
+    color: $button-primary-text-disabled;
+  }
+
+  &_loading {
+    cursor: wait;
+  }
+
+  &-loader {
+    border-color: $button-primary-text;
+
+    &_disabled {
+      border-color: $button-primary-text-disabled;
+    }
+  }
+
+  &:hover:enabled {
+    background-color: $button-primary-bg-hover;
+    color: $button-primary-text-hover;
+
+    &-loader {
+      border-color: $button-primary-text-hover;
+    }
+  }
+
+  &:active:enabled {
+    background-color: $button-primary-bg-active;
+    color: $button-primary-text-active;
+
+    &-loader {
+      border-color: $button-primary-text-active;
+    }
+  }
+}

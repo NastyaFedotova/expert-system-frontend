@@ -21,7 +21,7 @@
   }
 
   &-page {
-    display: flex;
+    display: flex !important;
     justify-content: center;
     width: 38px;
     padding: 10px;
@@ -31,13 +31,13 @@
     &:not(:where(.pagestepper-page_currentPage)) {
       &:hover {
         background-color: $pagestepper-bg-hover;
-        color: $pagestepper-text-hover;
+        color: $pagestepper-text-hover !important;
       }
     }
 
     &_currentPage {
       background-color: $brand;
-      color: $pagestepper-text;
+      color: $pagestepper-text !important;
     }
   }
 
