@@ -44,6 +44,7 @@ const createUserStore = (initState: UserStates = initialState) => {
         const result = await loginUserResponse(params);
         set({ isLogin: true, user: result });
         get().router?.replace(get().redirect_to);
+        set({ redirect_to: '/' });
       } catch (error) {
         set({ loginFetchError: JSON.parse(error as string) as TErrorResponse });
       } finally {
