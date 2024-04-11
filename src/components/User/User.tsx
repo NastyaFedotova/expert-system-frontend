@@ -4,6 +4,8 @@ import Popup from 'reactjs-popup';
 import Link from 'next/link';
 
 import { LogoutIcon, UserIcon } from '@/icons';
+import LoginIcon from '@/icons/LoginIcon';
+import useUserStore from '@/store/userStore';
 import { classname } from '@/utils';
 
 import Text, { TEXT_TAG, TEXT_VIEW } from '../Text';
@@ -16,6 +18,10 @@ const User: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const closePopup = useCallback(() => setIsOpen(false), []);
   const openPopup = useCallback(() => setIsOpen(true), []);
+
+  const { isLogin, logoutUser } = useUserStore((store) => store);
+
+  const handlelogout = useCallback(() => logoutUser(), [logoutUser]);
   return (
     <Popup
       open={isOpen}
@@ -24,7 +30,7 @@ const User: React.FC = () => {
           <UserIcon />
         </div>
       }
-      on="hover"
+      on="click"
       position="bottom right"
       repositionOnResize
       onClose={closePopup}
@@ -37,12 +43,21 @@ const User: React.FC = () => {
             Личный кабинет
           </Text>
         </Link>
-        <div className={cnUser('options', { logout: true })}>
-          <LogoutIcon />
-          <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
-            Выйти
-          </Text>
-        </div>
+        {isLogin ? (
+          <div className={cnUser('options', { isLogin })} onClick={handlelogout}>
+            <LogoutIcon />
+            <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
+              Выйти
+            </Text>
+          </div>
+        ) : (
+          <Link href="/login" className={cnUser('options', { isLogin })}>
+            <LoginIcon />
+            <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
+              Войти
+            </Text>
+          </Link>
+        )}
       </div>
     </Popup>
   );

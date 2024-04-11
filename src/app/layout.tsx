@@ -2,7 +2,6 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
-import { Header } from '@/components/Header';
 import { Providers } from '@/providers';
 import { classname } from '@/utils';
 
@@ -25,14 +24,7 @@ const RootLayout = ({
   return (
     <html lang="ru">
       <body className={`${cnMainLayout()} ${inter.className}`}>
-        <Providers>
-          <Header />
-          <main className={cnMainLayout('main-area')}>
-            <span className={cnMainLayout('top-gradient')} />
-            {children}
-            <span className={cnMainLayout('bottom-gradient')} />
-          </main>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

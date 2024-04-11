@@ -2,7 +2,7 @@
 import React, { memo, useCallback } from 'react';
 
 import { ArrowLeftIcon } from '@/icons';
-import { useReposPageStore } from '@/providers/storeProvider';
+import useSystemsPageStore from '@/store/systemsPageStore';
 import { classname } from '@/utils';
 
 import Text, { TEXT_VIEW } from '../Text';
@@ -16,7 +16,7 @@ export type PageStepperProps = {
 const cnPageStepper = classname(classes, 'pagestepper');
 
 const PageStepper: React.FC<PageStepperProps> = ({ classname }) => {
-  const { currentPage, pagesCount, setCurrentPage } = useReposPageStore((store) => store);
+  const { currentPage, pagesCount, setCurrentPage } = useSystemsPageStore((store) => store);
   const getPageHandle = useCallback((page: number) => () => setCurrentPage(page), [setCurrentPage]);
   return (
     <>

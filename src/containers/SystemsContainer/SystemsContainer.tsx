@@ -1,37 +1,36 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { getSystems } from '@/api/services/systems';
 import { Card } from '@/components/Card';
 import { CardSkeleton } from '@/components/CardSkeleton';
 import { SYSTEMS } from '@/constants';
-import { useReposPageStore } from '@/providers/storeProvider';
-import { TSystem } from '@/types/systems';
+import useSystemsPageStore from '@/store/systemsPageStore';
+import useSystemsSearchParamsStore from '@/store/systemsSearchParamsStore';
 import { classname, imageUrl } from '@/utils';
 
-import classes from './RepositoriesContainer.module.scss';
+import classes from './SystemsContainer.module.scss';
 
-const cnOrgRepositoriesContainer = classname(classes, 'repositoriesContainer');
+const cnSystemsContainer = classname(classes, 'systemsContainer');
 
-export type RepositoriesContainerProps = {
-  systems: TSystem[];
-};
+const SystemsContainer: React.FC = () => {
+  const { currentPage, setPagesCount } = useSystemsPageStore((store) => store);
+  const { name, username } = useSystemsSearchParamsStore((store) => store);
 
-const RepositoriesContainer: React.FC = () => {
-  const { currentPage, setPagesCount } = useReposPageStore((store) => store);
   const { data, isSuccess, isLoading } = useQuery({
-    queryKey: [SYSTEMS.GET, { page: currentPage }],
-    queryFn: async () => await getSystems({ page: currentPage }),
+    queryKey: [SYSTEMS.GET, { page: currentPage, name, username }],
+    queryFn: async () => await getSystems({ page: currentPage, name, username }),
   });
 
   useEffect(() => {
     if (data) {
       setPagesCount(data.pages);
     }
-  }, []);
+  }, [data, setPagesCount]);
+  
   return (
-    <div className={cnOrgRepositoriesContainer()}>
+    <div className={cnSystemsContainer()}>
       {data?.data.length &&
         isSuccess &&
         data.data.map((system) => (
@@ -42,4 +41,4 @@ const RepositoriesContainer: React.FC = () => {
   );
 };
 
-export default RepositoriesContainer;
+export default memo(SystemsContainer);

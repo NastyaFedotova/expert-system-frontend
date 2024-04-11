@@ -4,7 +4,8 @@ import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query
 import { getSystems } from '@/api/services/systems';
 import { PageStepper } from '@/components/PageStepper';
 import { SYSTEMS } from '@/constants';
-import { ReposContainer } from '@/containers/RepositoriesContainer';
+import { SearchSystemContainer } from '@/containers/SearchSystemContainer';
+import { ReposContainer } from '@/containers/SystemsContainer';
 import { classname } from '@/utils';
 
 import classes from './page.module.scss';
@@ -20,6 +21,7 @@ export const Page = async (): Promise<React.JSX.Element> => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <div className={cnAppPage()}>
+        <SearchSystemContainer />
         <ReposContainer />
         <PageStepper />
       </div>

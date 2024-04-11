@@ -1,0 +1,15 @@
+.searchSystemContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  width: calc(100% - 40px);
+  gap: $space-m $space-xl;
+  margin: 36px 20px 0px;
+
+  &-input {
+    max-width: 400px;
+    min-width: 230px;
+  }
+}

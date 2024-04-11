@@ -1,6 +1,6 @@
 export type TSystemResponseParams = {
   name?: string;
-  username?: number;
+  username?: string;
   page?: number;
   per_page?: number;
 };

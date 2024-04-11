@@ -13,7 +13,6 @@
     background-color: #fff;
     border-radius: $border-radius;
     border: 1px solid $border-color;
-    //padding: 6px;
     box-shadow: 0px 4px 10px 0px rgba($color: #000000, $alpha: 0.25);
     overflow: hidden;
   }
@@ -26,18 +25,16 @@
     cursor: pointer;
     padding: 14px;
 
-    &_logout {
+    &:hover {
+      background-color: $button-primary-bg-hover;
+      color: #fff;
+    }
+
+    &_isLogin {
       color: $error;
 
       &:hover {
         background-color: $error;
-        color: #fff;
-      }
-    }
-
-    &_user {
-      &:hover {
-        background-color: $button-primary-bg-hover;
         color: #fff;
       }
     }

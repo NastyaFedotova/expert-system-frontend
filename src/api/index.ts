@@ -1,11 +1,10 @@
-import axios, { AxiosHeaderValue, AxiosRequestConfig, AxiosResponseHeaders } from 'axios';
+import axios, { AxiosError, AxiosHeaderValue, AxiosRequestConfig, AxiosResponseHeaders } from 'axios';
+
+import { TErrorResponse } from '@/types/error';
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  headers: {
-    Accept: 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-  },
+  withCredentials: true,
 });
 
 export const getApiRequest = <ResponseType>(
@@ -23,4 +22,10 @@ export const postApiRequest = <ResponseType, BodyType>(
 ): Promise<{
   data: ResponseType;
   headers: AxiosResponseHeaders | Partial<Record<string, AxiosHeaderValue>>;
-}> => api.post<ResponseType>(link, body, config).then((res) => ({ data: res.data, headers: res.headers }));
+}> =>
+  api
+    .post<ResponseType>(link, body, config)
+    .then((res) => ({ data: res.data, headers: res.headers }))
+    .catch((err: AxiosError<TErrorResponse>) => {
+      throw JSON.stringify(err.response?.data);
+    });

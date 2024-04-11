@@ -1,6 +1,7 @@
 .button {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: $space-xxs;
   min-height: 52px;
   width: max-content;
