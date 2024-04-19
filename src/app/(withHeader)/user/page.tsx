@@ -3,6 +3,7 @@ import React, { memo, useCallback, useMemo, useState } from 'react';
 
 import Text, { TEXT_VIEW } from '@/components/Text';
 import Profile from '@/containers/Profile';
+import { UserSystems } from '@/containers/UserSystems';
 import { classname } from '@/utils';
 
 import classes from './page.module.scss';
@@ -23,7 +24,7 @@ export const Page: React.FC = () => {
   const memoChapter = useMemo(() => {
     switch (chapter) {
       case Chapter.CREATED_SYSTEMS:
-        return <div>Созданные системы</div>;
+        return <UserSystems />;
       case Chapter.HISTORY:
         return <div>Истотрия</div>;
       default:

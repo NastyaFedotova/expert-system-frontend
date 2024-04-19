@@ -1,4 +1,10 @@
 .user-systems {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+  gap: 80px;
+  width: 100%;
+  margin-top: 24px;
 }

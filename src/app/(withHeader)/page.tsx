@@ -16,7 +16,7 @@ export const Page = async (): Promise<React.JSX.Element> => {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: [SYSTEMS.GET, { page: 1 }],
-    queryFn: async () => await getSystems(),
+    queryFn: async () => await getSystems({ per_page: 2 }),
   });
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -1,6 +1,6 @@
 import { TUser, TUserLogin, TUserRegistration, TUserUpdate } from '@/types/user';
 
-import { patchApiRequest, postApiRequest } from '..';
+import { getApiRequest, patchApiRequest, postApiRequest } from '..';
 
 export const loginUserResponse = async (loginData: TUserLogin) => {
   const { data } = await postApiRequest<TUser, TUserLogin>(`/user/login`, loginData);
@@ -24,5 +24,10 @@ export const logoutUserResponse = async () => {
 export const updateUserResponse = async (updateData: TUserUpdate) => {
   const { data } = await patchApiRequest<TUser, TUserUpdate>(`/user`, updateData);
 
+  return data;
+};
+
+export const userResponse = async () => {
+  const { data } = await getApiRequest<TUser>(`/user`);
   return data;
 };

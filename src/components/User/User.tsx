@@ -19,9 +19,13 @@ const User: React.FC = () => {
   const closePopup = useCallback(() => setIsOpen(false), []);
   const openPopup = useCallback(() => setIsOpen(true), []);
 
-  const { isLogin, logoutUser } = useUserStore((store) => store);
+  const { isLogin, logoutUser, reset: userStoreReset } = useUserStore((store) => store);
 
-  const handlelogout = useCallback(() => logoutUser(), [logoutUser]);
+  const handlelogout = useCallback(() => {
+    logoutUser();
+    userStoreReset();
+  }, [logoutUser, userStoreReset]);
+
   return (
     <Popup
       open={isOpen}

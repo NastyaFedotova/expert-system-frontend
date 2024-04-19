@@ -20,7 +20,7 @@ const SystemsContainer: React.FC = () => {
 
   const { data, isSuccess, isLoading } = useQuery({
     queryKey: [SYSTEMS.GET, { page: currentPage, name, username }],
-    queryFn: async () => await getSystems({ page: currentPage, name, username }),
+    queryFn: async () => await getSystems({ page: currentPage, name, username, per_page: 2 }),
   });
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const SystemsContainer: React.FC = () => {
       setPagesCount(data.pages);
     }
   }, [data, setPagesCount]);
-  
+
   return (
     <div className={cnSystemsContainer()}>
       {data?.data.length &&

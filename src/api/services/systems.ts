@@ -4,8 +4,8 @@ import { getApiRequest } from '..';
 
 export const getSystems = async (params?: TSystemResponseParams) => {
   const { data, headers } = await getApiRequest<TSystem[]>(`/systems`, {
-    params: { ...params, per_page: 2 },
+    params: { ...params },
   });
-  
+
   return { data, pages: +headers['x-pages'] };
 };

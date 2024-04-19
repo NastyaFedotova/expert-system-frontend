@@ -16,24 +16,30 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const cnButton = classname(classes, 'button');
 
-const Button: React.FC<ButtonProps> = ({ loading, children, className, disabled, onClick, ...props }) => {
-  const handleOnClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    onClick?.(e);
-  }, []);
-  return (
-    <button
-      {...props}
-      className={cnButton({ loading, disabled }) + ` ${className}`}
-      disabled={disabled || loading}
-      onClick={handleOnClick}
-    >
-      {loading && <Loader size="s" className={cnButton('loader', { disabled })} />}
-      <Text tag={TEXT_TAG.span} view={TEXT_VIEW.button}>
-        {children}
-      </Text>
-    </button>
-  );
-};
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ loading, children, className, disabled, onClick, ...props }, ref) => {
+    const handleOnClick = useCallback(
+      (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+        onClick?.(e);
+      },
+      [onClick],
+    );
+    return (
+      <button
+        {...props}
+        className={cnButton({ loading, disabled }) + ` ${className}`}
+        disabled={disabled || loading}
+        onClick={handleOnClick}
+        ref={ref}
+      >
+        {loading && <Loader size="s" className={cnButton('loader', { disabled })} />}
+        <Text tag={TEXT_TAG.span} view={TEXT_VIEW.button}>
+          {children}
+        </Text>
+      </button>
+    );
+  },
+);
 
 export default memo(Button);

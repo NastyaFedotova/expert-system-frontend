@@ -1,6 +1,4 @@
-import { createContext, ReactNode, useContext, useRef } from 'react';
-import { StoreApi, useStore } from 'zustand';
-import { createStore } from 'zustand/vanilla';
+import { create } from 'zustand';
 
 type SystemsPageStates = {
   currentPage: number;
@@ -19,33 +17,31 @@ const initialState: SystemsPageStates = {
 
 export type SystemsPageStore = SystemsPageStates & SystemsPageActions;
 
-const createSystemPageStore = (initState: SystemsPageStates = initialState) => {
-  return createStore<SystemsPageStore>()((set) => ({
-    ...initState,
-    setCurrentPage: (page: number) => set(() => ({ currentPage: page })),
-    setPagesCount: (page: number) => set(() => ({ pagesCount: page })),
-  }));
-};
+const useSystemsPageStore = create<SystemsPageStore>((set) => ({
+  ...initialState,
+  setCurrentPage: (page: number) => set(() => ({ currentPage: page })),
+  setPagesCount: (page: number) => set(() => ({ pagesCount: page })),
+}));
 
-const SystemsPageStoreContext = createContext<StoreApi<SystemsPageStore> | null>(null);
+// const SystemsPageStoreContext = createContext<StoreApi<SystemsPageStore> | null>(null);
 
-export const SystemsPageStoreProvider = ({ children }: { children: ReactNode }) => {
-  const storeRef = useRef<StoreApi<SystemsPageStore>>();
-  if (!storeRef.current) {
-    storeRef.current = createSystemPageStore();
-  }
+// export const SystemsPageStoreProvider = ({ children }: { children: ReactNode }) => {
+//   const storeRef = useRef<StoreApi<SystemsPageStore>>();
+//   if (!storeRef.current) {
+//     storeRef.current = createSystemPageStore();
+//   }
 
-  return <SystemsPageStoreContext.Provider value={storeRef.current}>{children}</SystemsPageStoreContext.Provider>;
-};
+//   return <SystemsPageStoreContext.Provider value={storeRef.current}>{children}</SystemsPageStoreContext.Provider>;
+// };
 
-export const useSystemsPageStore = <T,>(selector: (store: SystemsPageStore) => T): T => {
-  const counterStoreContext = useContext(SystemsPageStoreContext);
+// export const useSystemsPageStore = <T,>(selector: (store: SystemsPageStore) => T): T => {
+//   const counterStoreContext = useContext(SystemsPageStoreContext);
 
-  if (!counterStoreContext) {
-    throw new Error(`useCounterStore must be use within CounterStoreProvider`);
-  }
+//   if (!counterStoreContext) {
+//     throw new Error(`useCounterStore must be use within CounterStoreProvider`);
+//   }
 
-  return useStore(counterStoreContext, selector);
-};
+//   return useStore(counterStoreContext, selector);
+// };
 
 export default useSystemsPageStore;

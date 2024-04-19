@@ -1,19 +1,19 @@
 .errorPopup {
-    padding:$space-xxs $space-m ;
-    border-radius: $border-radius;
-    background-color: #fff;
-    border: 1px solid $border-color;
+  padding: $space-xxs $space-m;
+  border-radius: $border-radius;
+  background-color: #fff;
+  border: 1px solid $border-color;
 
-    &-text {
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 20px;
-        margin: 0;
-        color: $error;
-    }
-    &-errorIcon {
-        width: 20px;
-        height: 20px;
-        color: $error;
-    }
+  &-text {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    margin: 0;
+    color: $error;
+  }
+  &-errorIcon {
+    width: 20px;
+    height: 20px;
+    color: $error;
+  }
 }
