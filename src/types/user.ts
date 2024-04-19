@@ -19,3 +19,12 @@ export type TUserRegistration = {
   first_name: string;
   last_name: string;
 };
+
+export type TUserUpdate = {
+  email?: string;
+  username?: string;
+  first_name?: string;
+  last_name?: string;
+  password?: string;
+  new_password?: string;
+};

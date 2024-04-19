@@ -12,8 +12,8 @@ import { TUser, TUserLogin, TUserRegistration } from '@/types/user';
 type UserStates = {
   isLogin: boolean;
   user?: TUser;
-  loginFetchloading: boolean;
-  loginFetchError?: TErrorResponse;
+  fetchloading: boolean;
+  fetchError?: TErrorResponse;
   router?: AppRouterInstance;
   redirect_to: string;
 };
@@ -28,8 +28,8 @@ type UserActions = {
 const initialState: UserStates = {
   isLogin: false,
   user: undefined,
-  loginFetchloading: false,
-  loginFetchError: undefined,
+  fetchloading: false,
+  fetchError: undefined,
   redirect_to: '/',
 };
 
@@ -39,20 +39,20 @@ const createUserStore = (initState: UserStates = initialState) => {
   return createStore<UserStore>()((set, get) => ({
     ...initState,
     loginUser: async (params: TUserLogin) => {
-      set({ loginFetchloading: true });
+      set({ fetchloading: true });
       try {
         const result = await loginUserResponse(params);
         set({ isLogin: true, user: result });
         get().router?.replace(get().redirect_to);
         set({ redirect_to: '/' });
       } catch (error) {
-        set({ loginFetchError: JSON.parse(error as string) as TErrorResponse });
+        set({ fetchError: JSON.parse(error as string) as TErrorResponse });
       } finally {
-        set({ loginFetchloading: false });
+        set({ fetchloading: false });
       }
     },
     registrationUser: async (params: TUserRegistration & { password2: string }) => {
-      set({ loginFetchloading: true });
+      set({ fetchloading: true });
       try {
         if (params.password !== params.password2) {
           const err: TErrorResponse = {
@@ -66,9 +66,9 @@ const createUserStore = (initState: UserStates = initialState) => {
         get().router?.push('/');
       } catch (error) {
         console.log(error);
-        set({ loginFetchError: JSON.parse(error as string) as TErrorResponse });
+        set({ fetchError: JSON.parse(error as string) as TErrorResponse });
       } finally {
-        set({ loginFetchloading: false });
+        set({ fetchloading: false });
       }
     },
     logoutUser: async () => {

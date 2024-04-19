@@ -5,10 +5,18 @@
   outline: 0;
   background-color: transparent;
   color: $input-text;
-  margin-right: $space-xxs;
-  padding: $space-s 0 $space-s $space-xs;
+  padding: $space-s $space-xs;
   font: inherit;
   line-height: 24px;
+
+  & + * {
+    margin-left: $space-xxs;
+    margin-right: $space-xs;
+  }
+
+  &:has(+ *) {
+    padding-right: 0;
+  }
 
   &::placeholder {
     color: $input-placeholder;
@@ -21,6 +29,7 @@
   }
 
   &-container {
+    position: relative;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
@@ -28,7 +37,7 @@
     height: 52px;
     border: 1px solid $input-border;
     border-radius: $border-radius;
-    overflow: hidden;
+    overflow: visible;
     background-color: $input-bg;
 
     &:has(input:focus) {
@@ -41,12 +50,38 @@
       background-color: $input-bg-disabled;
     }
 
-    &:has(:nth-child(2)) {
-      padding-right: $space-xs;
+    &_error,
+    &:has(input:invalid) {
+      border-color: $error !important;
+    }
+  }
+
+  &-label {
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    padding: 0px 7px;
+    height: 20px;
+    left: 8px;
+    top: -8px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14px;
+    background: linear-gradient(180deg, $project-bg 0%, $project-bg 8px, #ffffff00 9px, #ffffff00 100%);
+
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      visibility 0.15s ease,
+      opacity 0.15s ease;
+
+    &_visible {
+      visibility: visible;
+      opacity: 1;
     }
 
-    &_error {
-      border-color: $error !important;
+    &:has(+ input:disabled) {
+      color: $input-text-disabled;
     }
   }
 }

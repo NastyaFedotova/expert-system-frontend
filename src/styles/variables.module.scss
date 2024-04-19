@@ -53,7 +53,7 @@ $loader-bg: $brand;
 $input-bg: #ffffff;
 $input-bg-disabled: #ffffff;
 $input-bg-focus: #ffffff;
-$input-border: #ffffff;
+$input-border: $border-color;//#7c7eff;
 $input-border-disabled: #ffffff;
 $input-border-focus: $brand;
 $input-placeholder: #afadb5;

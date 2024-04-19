@@ -9,7 +9,7 @@ import classes from './layout.module.scss';
 
 const cnMainLayout = classname(classes, 'mainLayout');
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['cyrillic'] });
 
 export const metadata: Metadata = {
   title: 'ИПО ПЭС',
@@ -22,8 +22,8 @@ const RootLayout = ({
   children: React.ReactNode;
 }>) => {
   return (
-    <html lang="ru">
-      <body className={`${cnMainLayout()} ${inter.className}`}>
+    <html lang="ru" className={inter.className}>
+      <body className={cnMainLayout()}>
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -1,0 +1,25 @@
+.userPage {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+
+    &-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-evenly;
+        gap: $space-m;
+        width: 100%;
+    }
+
+    &-chapter {
+        cursor: pointer;
+        width: 182px;
+        &_selected {
+            text-decoration: underline;
+        }
+    }
+}

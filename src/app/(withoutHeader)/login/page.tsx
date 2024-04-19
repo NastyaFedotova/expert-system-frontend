@@ -16,7 +16,7 @@ const cnLoginPage = classname(classes, 'loginPage');
 
 const Page: React.FC = () => {
   const { register, handleSubmit } = useForm<TUserLogin>();
-  const { loginUser, loginFetchloading, loginFetchError } = useUserStore((store) => store);
+  const { loginUser, fetchloading, fetchError } = useUserStore((store) => store);
   const handleLogin = useCallback((data: TUserLogin) => loginUser(data), [loginUser]);
 
   return (
@@ -29,21 +29,21 @@ const Page: React.FC = () => {
         className={cnLoginPage('input')}
         placeholder="почта"
         type="email"
-        error={!!loginFetchError}
+        error={!!fetchError}
       />
       <Input
         {...register('password')}
         className={cnLoginPage('input')}
         placeholder="пароль"
         type="password"
-        error={!!loginFetchError}
+        error={!!fetchError}
       />
-      {!!loginFetchError && (
+      {!!fetchError && (
         <Text view={TEXT_VIEW.p14} className={cnLoginPage('err')}>
-          {loginFetchError.extra ?? loginFetchError.error}
+          {fetchError.extra ?? fetchError.error}
         </Text>
       )}
-      <Button className={cnLoginPage('button')} loading={loginFetchloading}>
+      <Button className={cnLoginPage('button')} loading={fetchloading}>
         Войти
       </Button>
       <Link href="/registration">

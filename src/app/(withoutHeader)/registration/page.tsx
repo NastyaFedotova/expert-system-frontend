@@ -15,7 +15,7 @@ const cnRegistrationPage = classname(classes, 'registrationPage');
 
 const Page: React.FC = () => {
   const { register, handleSubmit } = useForm<TUserRegistration & { password2: string }>();
-  const { registrationUser, loginFetchloading, loginFetchError } = useUserStore((store) => store);
+  const { registrationUser, fetchloading, fetchError } = useUserStore((store) => store);
   const handleRegistration = useCallback(
     (data: TUserRegistration & { password2: string }) => registrationUser(data),
     [registrationUser],
@@ -30,47 +30,47 @@ const Page: React.FC = () => {
         {...register('username')}
         className={cnRegistrationPage('input')}
         placeholder="никнейм"
-        error={!!loginFetchError}
+        error={!!fetchError}
       />
       <Input
         {...register('email')}
         className={cnRegistrationPage('input')}
         placeholder="почта"
         type="email"
-        error={!!loginFetchError}
+        error={!!fetchError}
       />
       <Input
         {...register('first_name')}
         className={cnRegistrationPage('input')}
         placeholder="имя"
-        error={!!loginFetchError}
+        error={!!fetchError}
       />
       <Input
         {...register('last_name')}
         className={cnRegistrationPage('input')}
         placeholder="фамилия"
-        error={!!loginFetchError}
+        error={!!fetchError}
       />
       <Input
         {...register('password')}
         className={cnRegistrationPage('input')}
         placeholder="пароль"
         type="password"
-        error={!!loginFetchError}
+        error={!!fetchError}
       />
       <Input
         {...register('password2')}
         className={cnRegistrationPage('input')}
         placeholder="подтвердите пароль"
         type="password"
-        error={!!loginFetchError}
+        error={!!fetchError}
       />
-      {!!loginFetchError && (
+      {!!fetchError && (
         <Text view={TEXT_VIEW.p14} className={cnRegistrationPage('err')}>
-          {loginFetchError.extra ?? loginFetchError.error}
+          {fetchError.extra ?? fetchError.error}
         </Text>
       )}
-      <Button className={cnRegistrationPage('button')} loading={loginFetchloading}>
+      <Button className={cnRegistrationPage('button')} loading={fetchloading}>
         Зарегистрироваться
       </Button>
     </form>

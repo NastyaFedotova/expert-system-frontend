@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import useUserStore from '@/store/userStore';
 
-const allowURL = ['/', '/login', '/registration'];
+const allowURL = ['/', '/login', '/registration', '/user'];
 
 export const PrivateRouterProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();

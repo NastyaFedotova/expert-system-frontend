@@ -21,25 +21,34 @@ export type TextProps = {
   color?: 'primary' | 'secondary' | 'accent';
   /** Максимальное кол-во строк */
   maxLines?: number;
+  onClick?: () => void;
 };
 
 const cnTest = classname(classes, 'text');
 
-const Text: React.FC<TextProps> = React.memo(
-  ({ className, view, tag = TEXT_TAG.p, weight, children, color, maxLines }) => {
-    const Tag = tag as keyof ReactHTML;
-    return (
-      <Tag
-        className={cnTest({ color, view }) + ` ${className ?? ''}`}
-        style={{
-          WebkitLineClamp: maxLines,
-          fontWeight: weight === TEXT_WEIGHT.medium ? 500 : weight,
-        }}
-      >
-        {children}
-      </Tag>
-    );
-  },
-);
+const Text: React.FC<TextProps> = ({
+  className,
+  view,
+  tag = TEXT_TAG.p,
+  weight,
+  children,
+  color,
+  maxLines,
+  onClick,
+}) => {
+  const Tag = tag as keyof ReactHTML;
+  return (
+    <Tag
+      className={cnTest({ color, view }) + ` ${className ?? ''}`}
+      style={{
+        WebkitLineClamp: maxLines,
+        fontWeight: weight === TEXT_WEIGHT.medium ? 500 : weight,
+      }}
+      onClick={onClick}
+    >
+      {children}
+    </Tag>
+  );
+};
 
 export default memo(Text);
