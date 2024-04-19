@@ -29,3 +29,18 @@ export const postApiRequest = <ResponseType, BodyType>(
     .catch((err: AxiosError<TErrorResponse>) => {
       throw JSON.stringify(err.response?.data);
     });
+
+export const patchApiRequest = <ResponseType, BodyType>(
+  link: string,
+  body?: BodyType,
+  config?: AxiosRequestConfig,
+): Promise<{
+  data: ResponseType;
+  headers: AxiosResponseHeaders | Partial<Record<string, AxiosHeaderValue>>;
+}> =>
+  api
+    .patch<ResponseType>(link, body, config)
+    .then((res) => ({ data: res.data, headers: res.headers }))
+    .catch((err: AxiosError<TErrorResponse>) => {
+      throw JSON.stringify(err.response?.data);
+    });

@@ -17,7 +17,9 @@
 
     &-chapter {
         cursor: pointer;
-        width: 182px;
+        width: 184px;
+        margin-top: 12px;
+
         &_selected {
             text-decoration: underline;
         }

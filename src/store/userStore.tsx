@@ -5,9 +5,14 @@ import { useRouter } from 'next/navigation';
 import { useStore } from 'zustand';
 import { createStore, StoreApi } from 'zustand/vanilla';
 
-import { loginUserResponse, logoutUserResponse, registrationUserResponse } from '@/api/services/user';
+import {
+  loginUserResponse,
+  logoutUserResponse,
+  registrationUserResponse,
+  updateUserResponse,
+} from '@/api/services/user';
 import { TErrorResponse } from '@/types/error';
-import { TUser, TUserLogin, TUserRegistration } from '@/types/user';
+import { TUser, TUserLogin, TUserRegistration, TUserUpdate } from '@/types/user';
 
 type UserStates = {
   isLogin: boolean;
@@ -21,6 +26,7 @@ type UserStates = {
 type UserActions = {
   loginUser: (params: TUserLogin) => void;
   registrationUser: (params: TUserRegistration & { password2: string }) => void;
+  updateUser: (params: TUserUpdate) => void;
   logoutUser: () => void;
   setRedirectUrl: (pathname: string) => void;
 };
@@ -64,6 +70,18 @@ const createUserStore = (initState: UserStates = initialState) => {
         const result = await registrationUserResponse(params);
         set({ isLogin: true, user: result });
         get().router?.push('/');
+      } catch (error) {
+        console.log(error);
+        set({ fetchError: JSON.parse(error as string) as TErrorResponse });
+      } finally {
+        set({ fetchloading: false });
+      }
+    },
+    updateUser: async (params: TUserUpdate) => {
+      set({ fetchloading: true });
+      try {
+        const result = await updateUserResponse(params);
+        set({ user: result });
       } catch (error) {
         console.log(error);
         set({ fetchError: JSON.parse(error as string) as TErrorResponse });

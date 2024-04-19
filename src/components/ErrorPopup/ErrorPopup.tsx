@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Popup from 'reactjs-popup';
 
 import ErrorIcon from '@/icons/ErrorIcon';
@@ -14,7 +14,7 @@ type ErrorPopupProps = {
 
 const cnPopup = classname(classes, 'errorPopup');
 
-export const ErrorPopup: React.FC<ErrorPopupProps> = ({ error }) => {
+const ErrorPopup: React.FC<ErrorPopupProps> = ({ error }) => {
   return (
     <>
       {error && (
@@ -33,3 +33,5 @@ export const ErrorPopup: React.FC<ErrorPopupProps> = ({ error }) => {
     </>
   );
 };
+
+export default memo(ErrorPopup);

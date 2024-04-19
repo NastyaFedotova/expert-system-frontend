@@ -65,5 +65,8 @@
         cursor: pointer;
     }
 
-    
+    &-err {
+        margin: 0;
+        color: $error;
+    }
 }

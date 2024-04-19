@@ -1,6 +1,6 @@
-import { TUser, TUserLogin, TUserRegistration } from '@/types/user';
+import { TUser, TUserLogin, TUserRegistration, TUserUpdate } from '@/types/user';
 
-import { postApiRequest } from '..';
+import { patchApiRequest, postApiRequest } from '..';
 
 export const loginUserResponse = async (loginData: TUserLogin) => {
   const { data } = await postApiRequest<TUser, TUserLogin>(`/user/login`, loginData);
@@ -13,10 +13,16 @@ export const registrationUserResponse = async (registrationData: TUserRegistrati
     ...registrationData,
     is_superuser: false,
   });
-  
+
   return data;
 };
 
 export const logoutUserResponse = async () => {
   await postApiRequest(`/user/logout`);
+};
+
+export const updateUserResponse = async (updateData: TUserUpdate) => {
+  const { data } = await patchApiRequest<TUser, TUserUpdate>(`/user`, updateData);
+
+  return data;
 };

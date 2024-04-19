@@ -1,1 +1,1 @@
-export { ErrorPopup } from './ErrorPopup';
+export { default } from './ErrorPopup';
