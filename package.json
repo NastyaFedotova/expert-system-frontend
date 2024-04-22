@@ -19,6 +19,7 @@
     "next": "^14",
     "react": "^18",
     "react-content-loader": "^7.0.0",
+    "react-device-detect": "^2.2.3",
     "react-dom": "^18",
     "react-hook-form": "^7.51.2",
     "reactjs-popup": "^2.0.6",

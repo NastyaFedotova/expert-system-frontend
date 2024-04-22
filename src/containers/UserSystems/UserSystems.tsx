@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { getSystems } from '@/api/services/systems';
@@ -20,12 +20,27 @@ export const UserSystems: React.FC = () => {
     queryFn: async () => await getSystems({ user_id: user?.id }),
   });
 
+  const handleEdit = useCallback((id: number) => console.log('system to edit: ', id), []);
+  const handleClick = useCallback((id: number) => () => console.log('system click: ', id), []);
+  const handleDelete = useCallback((id: number) => console.log('system to delete: ', id), []);
+
   return (
     <div className={cnUserProfile()}>
       {data?.data.length &&
         isSuccess &&
         data.data.map((system) => (
-          <Card key={system.id} image={imageUrl(system.image_uri)} title={system.name} subtitle={system.about} />
+          <Card
+            key={system.id}
+            id={system.id}
+            image={imageUrl(system.image_uri)}
+            title={system.name}
+            subtitle={system.about}
+            canEdit
+            onEditClick={handleEdit}
+            canDelete
+            onDeleteClick={handleDelete}
+            onClick={handleClick(system.id)}
+          />
         ))}
       {isLoading && [...Array(6).keys()].map((index) => <CardSkeleton key={index} />)}
     </div>

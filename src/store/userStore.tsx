@@ -122,8 +122,6 @@ const useUserStore = create<UserStore>((set, get) => ({
       await logoutUserResponse();
       get().router?.replace('/');
       Cookies.remove('session_id');
-      //localStorage.removeItem('session_key');
-      //set(initialState);
     } catch (error) {
       console.log(error);
     }
