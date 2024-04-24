@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --hostname 127.0.0.1",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "prettier": "prettier --write \"src/**/*.+(ts|tsx|scss|json)\""
@@ -23,11 +23,12 @@
     "react-dom": "^18",
     "react-hook-form": "^7.51.2",
     "reactjs-popup": "^2.0.6",
+    "sharp": "^0.33.3",
     "yup": "^1.4.0",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "^14",
+    "@next/eslint-plugin-next": "^14.2.2",
     "@tanstack/eslint-plugin-query": "^5",
     "@tanstack/react-query-devtools": "^5",
     "@types/js-cookie": "^3.0.6",

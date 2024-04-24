@@ -88,7 +88,7 @@ const Profile: React.FC = () => {
             label={!!formWatch.first_name?.length && 'Имя'}
             placeholder="имя"
             afterSlot={<ErrorPopup error={errors.first_name?.message} />}
-            error={fetchError?.error || errors.first_name?.message}
+            error={!!fetchError || !!errors.first_name}
           />
           <Input
             {...register('last_name')}
@@ -96,7 +96,7 @@ const Profile: React.FC = () => {
             label={!!formWatch.last_name?.length && 'Фамилия'}
             placeholder="фамилия"
             afterSlot={<ErrorPopup error={errors.last_name?.message} />}
-            error={fetchError?.error || errors.last_name?.message}
+            error={!!fetchError || !!errors.last_name}
           />
         </div>
         <Input
@@ -113,7 +113,7 @@ const Profile: React.FC = () => {
           placeholder="почта"
           type="email"
           afterSlot={<ErrorPopup error={errors.email?.message} />}
-          error={fetchError?.error || errors.email?.message}
+          error={!!fetchError || !!errors.email}
         />
         <Input
           {...register('new_password')}
@@ -123,7 +123,7 @@ const Profile: React.FC = () => {
           autoComplete="new-password"
           type="password"
           afterSlot={<ErrorPopup error={errors.new_password?.message} />}
-          error={fetchError?.error || errors.new_password?.message}
+          error={!!fetchError || !!errors.new_password}
         />
         {!!fetchError && (
           <Text view={TEXT_VIEW.p14} className={cnProfile('err')}>

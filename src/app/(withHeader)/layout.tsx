@@ -7,11 +7,7 @@ import classes from './layout.module.scss';
 
 const cnMainLayout = classname(classes, 'withHeaderLayout');
 
-const WithHeaderLayout = ({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) => {
+const WithHeaderLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
     <>
       <Header />

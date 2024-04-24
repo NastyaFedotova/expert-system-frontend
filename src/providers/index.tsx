@@ -1,6 +1,6 @@
 'use client';
 import { ReactNode, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import useUserStore from '@/store/userStore';
 
@@ -9,17 +9,19 @@ import { ReactQueryProvider } from './reactQuery';
 
 export const Providers = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const { loginUserByCookie, setRouter } = useUserStore((store) => store);
+  const { loginUserByCookie, setHooks } = useUserStore((store) => store);
 
   useEffect(() => {
-    setRouter(router);
+    setHooks({ router, searchParams });
     loginUserByCookie();
-  }, [loginUserByCookie, router, setRouter]);
+  }, [loginUserByCookie, router, searchParams, setHooks]);
 
   return (
     <ReactQueryProvider>
       <PrivateRouterProvider>{children}</PrivateRouterProvider>
+      {/* {children} */}
     </ReactQueryProvider>
   );
 };

@@ -12,7 +12,7 @@ import classes from './page.module.scss';
 
 const cnAppPage = classname(classes, 'appPage');
 
-export const Page = async (): Promise<React.JSX.Element> => {
+const Page: React.FC = async () => {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: [SYSTEMS.GET, { page: 1 }],

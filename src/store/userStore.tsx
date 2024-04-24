@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { ReadonlyURLSearchParams } from 'next/navigation';
 import { create } from 'zustand';
 
 import {
@@ -18,6 +19,7 @@ type UserStates = {
   fetchloading: boolean;
   fetchError?: TErrorResponse;
   router?: AppRouterInstance;
+  searchParams?: ReadonlyURLSearchParams;
 };
 
 type UserActions = {
@@ -26,7 +28,7 @@ type UserActions = {
   updateUser: (params: TUserUpdate) => void;
   loginUserByCookie: () => void;
   logoutUser: () => void;
-  setRouter: (router: AppRouterInstance) => void;
+  setHooks: ({ router }: { router: AppRouterInstance; searchParams: ReadonlyURLSearchParams }) => void;
   reset: () => void;
 };
 
@@ -54,7 +56,8 @@ const useUserStore = create<UserStore>((set, get) => ({
         };
         throw JSON.stringify(err);
       }
-      const redirect_to = new URL(document.location.toString()).searchParams.get('back_uri');
+      const redirect_to = get().searchParams?.get('back_uri');
+      console.log(redirect_to);
       set({ isLogin: true, user: result });
       get().router?.replace(redirect_to ?? '/');
     } catch (error) {
@@ -126,8 +129,8 @@ const useUserStore = create<UserStore>((set, get) => ({
       console.log(error);
     }
   },
-  setRouter: (router: AppRouterInstance) => {
-    set({ router });
+  setHooks: ({ router, searchParams }) => {
+    set({ router, searchParams });
   },
   reset: () => set(initialState),
 }));

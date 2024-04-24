@@ -9,7 +9,7 @@ import classes from './Input.module.scss';
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   /** Слот для иконки справа */
   afterSlot?: React.ReactNode;
-  error?: string;
+  error?: boolean;
   label?: string | boolean;
 };
 

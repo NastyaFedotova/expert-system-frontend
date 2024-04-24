@@ -1,0 +1,12 @@
+.not-found {
+  width: 400px;
+  margin: 24px;
+  &-404 {
+    font-size: 120px;
+    line-height: normal;
+    color: $brand;
+    margin: 20px;
+    text-align: center;
+  }
+  text-align: justify;
+}

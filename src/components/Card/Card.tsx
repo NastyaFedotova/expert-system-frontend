@@ -72,7 +72,7 @@ const Card: React.FC<CardProps> = ({
         <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p20} weight={TEXT_WEIGHT.medium} maxLines={2}>
           {title}
         </Text>
-        <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p16} color="secondary" maxLines={3}>
+        <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p16} color="secondary" maxLines={3} className={cnCard('subtitle')}>
           {subtitle}
         </Text>
       </div>

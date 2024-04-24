@@ -16,7 +16,7 @@ enum Chapter {
   HISTORY = 'history',
 }
 
-export const Page: React.FC = () => {
+const Page: React.FC = () => {
   const [chapter, setChapter] = useState<Chapter>(Chapter.Profile);
 
   const chapterChoice = useCallback((chptr: Chapter) => () => setChapter(chptr), []);
