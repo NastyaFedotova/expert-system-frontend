@@ -22,7 +22,10 @@ export const UserSystems: React.FC = () => {
 
   const handleEdit = useCallback((id: number) => console.log('system to edit: ', id), []);
   const handleClick = useCallback((id: number) => () => console.log('system click: ', id), []);
-  const handleDelete = useCallback((id: number) => console.log('system to delete: ', id), []);
+  const handleDelete = useCallback(
+    (id: number, password: string) => console.log('system to delete: ', id, ' ', password),
+    [],
+  );
 
   return (
     <div className={cnUserProfile()}>

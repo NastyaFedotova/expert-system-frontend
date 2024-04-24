@@ -28,7 +28,7 @@ type UserActions = {
   updateUser: (params: TUserUpdate) => void;
   loginUserByCookie: () => void;
   logoutUser: () => void;
-  setHooks: ({ router }: { router: AppRouterInstance; searchParams: ReadonlyURLSearchParams }) => void;
+  setHooks: ({ router, searchParams }: { router?: AppRouterInstance; searchParams: ReadonlyURLSearchParams }) => void;
   reset: () => void;
 };
 

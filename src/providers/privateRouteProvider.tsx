@@ -1,17 +1,18 @@
 'use client';
-import { ReactNode } from 'react';
+import { ReactNode, useLayoutEffect } from 'react';
 import Cookies from 'js-cookie';
-import { usePathname, useRouter } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
 
 const allowURL = ['/', '/login', '/registration'];
 
 export const PrivateRouterProvider = ({ children }: { children: ReactNode }) => {
-  const router = useRouter();
   const pathname = usePathname();
 
-  if (!Cookies.get('session_id') && !allowURL.includes(pathname)) {
-    router.replace(`/login?back_uri=${pathname}`);
-  }
+  useLayoutEffect(() => {
+    if (!Cookies.get('session_id') && !allowURL.includes(pathname)) {
+      redirect(`/login?back_uri=${pathname}`);
+    }
+  }, [pathname]);
 
-  return <>{children}</>;
+  return children;
 };
