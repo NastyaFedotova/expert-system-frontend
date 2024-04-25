@@ -16,3 +16,13 @@ export type TSystem = {
   private: boolean;
   image_uri: string;
 };
+
+export type TSystemDeleteResponseParams = {
+  system_id: number;
+  password: string;
+};
+
+export type TSystemsWithPage = {
+  systems: TSystem[];
+  pages: number;
+};

@@ -44,3 +44,15 @@ export const patchApiRequest = <ResponseType, BodyType>(
     .catch((err: AxiosError<TErrorResponse>) => {
       throw JSON.stringify(err.response?.data);
     });
+
+export const deleteApiRequest = <ResponseType, BodyType>(
+  link: string,
+  body?: BodyType,
+  config?: AxiosRequestConfig,
+): Promise<ResponseType> =>
+  api
+    .delete<ResponseType>(link, { ...config, data: body })
+    .then((res) => res.data)
+    .catch((err: AxiosError<TErrorResponse>) => {
+      throw JSON.stringify(err.response?.data);
+    });

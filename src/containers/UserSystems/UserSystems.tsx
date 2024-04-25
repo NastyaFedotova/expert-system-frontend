@@ -1,11 +1,12 @@
 import React, { memo, useCallback } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { getSystems } from '@/api/services/systems';
+import { deleteSystem, getSystems } from '@/api/services/systems';
 import { Card } from '@/components/Card';
 import { CardSkeleton } from '@/components/CardSkeleton';
 import { SYSTEMS } from '@/constants';
 import useUserStore from '@/store/userStore';
+import { TSystemsWithPage } from '@/types/systems';
 import { classname, imageUrl } from '@/utils';
 
 import classes from './UserSystems.module.scss';
@@ -20,18 +21,42 @@ export const UserSystems: React.FC = () => {
     queryFn: async () => await getSystems({ user_id: user?.id }),
   });
 
+  const queryClient = useQueryClient();
+
+  const mutate = useMutation({
+    mutationFn: deleteSystem,
+    onMutate: async (data) => {
+      await queryClient.cancelQueries({ queryKey: [SYSTEMS.GET_USER, { user_id: user?.id }] });
+      const previousTodos = queryClient.getQueryData([SYSTEMS.GET_USER, { user_id: user?.id }]);
+      queryClient.setQueryData([SYSTEMS.GET_USER, { user_id: user?.id }], (old: TSystemsWithPage) => ({
+        ...old,
+        systems: old.systems.filter((system) => system.id !== data.system_id),
+      }));
+      return { previousTodos };
+    },
+    onError: (err, newTodo, context) => {
+      queryClient.setQueryData([SYSTEMS.GET_USER, { user_id: user?.id }], context?.previousTodos);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [SYSTEMS.GET_USER, { user_id: user?.id }] });
+    },
+  });
+
   const handleEdit = useCallback((id: number) => console.log('system to edit: ', id), []);
   const handleClick = useCallback((id: number) => () => console.log('system click: ', id), []);
   const handleDelete = useCallback(
-    (id: number, password: string) => console.log('system to delete: ', id, ' ', password),
-    [],
+    (id: number, password: string) => {
+      console.log('system to delete: ', id, ' ', password);
+      mutate.mutate({ system_id: id, password });
+    },
+    [mutate],
   );
 
   return (
     <div className={cnUserProfile()}>
-      {data?.data.length &&
+      {data?.systems.length &&
         isSuccess &&
-        data.data.map((system) => (
+        data.systems.map((system) => (
           <Card
             key={system.id}
             id={system.id}
