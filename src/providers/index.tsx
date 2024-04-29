@@ -1,6 +1,6 @@
 'use client';
 import { ReactNode, useEffect, useLayoutEffect } from 'react';
-import { useRouter, useSearchParams,  } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import useUserStore from '@/store/userStore';
 

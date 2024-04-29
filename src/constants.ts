@@ -4,3 +4,10 @@ export enum SYSTEMS {
   RETRIEVE = 'systems-retrieve',
   POST = 'systems-post',
 }
+
+export enum HISTORIES {
+  GET = 'histories-get',
+  GET_USER = 'users-histories',
+  RETRIEVE = 'histories-retrieve',
+  POST = 'histories-post',
+}

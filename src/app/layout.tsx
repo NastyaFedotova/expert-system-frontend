@@ -1,9 +1,13 @@
 import React, { Suspense } from 'react';
+import moment from 'moment';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 import { Providers } from '@/providers';
 import { classname } from '@/utils';
+
+import 'moment-timezone';
+import 'moment/locale/ru';
 
 import classes from './layout.module.scss';
 
@@ -15,6 +19,9 @@ export const metadata: Metadata = {
   title: 'ИПО ПЭС',
   description: 'Инструментальное программного обеспечение для построения экспертных систем',
 };
+
+moment.locale('ru');
+moment.tz.setDefault('Europe/Moscow');
 
 const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (

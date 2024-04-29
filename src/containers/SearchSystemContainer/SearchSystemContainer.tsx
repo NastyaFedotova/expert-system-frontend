@@ -18,7 +18,7 @@ type TSystemSearchForm = Omit<TSystemResponseParams, 'per_page' | 'page'>;
 export const SearchSystemContainer: React.FC = () => {
   const setSearchParams = useSystemsSearchParamsStore((store) => store.setSearchParamsPage);
   const setCurrentPage = useSystemsPageStore((store) => store.setCurrentPage);
-  const { register, handleSubmit } = useForm<TSystemSearchForm>();
+  const { register, handleSubmit, watch } = useForm<TSystemSearchForm>();
 
   const submitButton = useCallback(
     (data: TSystemSearchForm) => {
@@ -28,10 +28,22 @@ export const SearchSystemContainer: React.FC = () => {
     [setCurrentPage, setSearchParams],
   );
 
+  const formWatch = watch();
+
   return (
     <form onSubmit={handleSubmit(submitButton)} className={cnSearchSystem()}>
-      <Input {...register('name')} placeholder="Название системы" className={cnSearchSystem('input')} />
-      <Input {...register('username')} placeholder="Никнейм пользователя" className={cnSearchSystem('input')} />
+      <Input
+        {...register('name')}
+        placeholder="Название системы"
+        label={!!formWatch.name?.length && 'Название'}
+        className={cnSearchSystem('input')}
+      />
+      <Input
+        {...register('username')}
+        placeholder="Никнейм пользователя"
+        label={!!formWatch.username?.length && 'Никнейм'}
+        className={cnSearchSystem('input')}
+      />
       <Button>Поиск</Button>
     </form>
   );

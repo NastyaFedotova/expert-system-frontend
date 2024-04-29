@@ -4,7 +4,7 @@ import { deleteApiRequest, getApiRequest } from '..';
 
 export const getSystems = async (params?: TSystemResponseParams): Promise<TSystemsWithPage> => {
   const { data, headers } = await getApiRequest<TSystem[]>(`/systems`, {
-    params: { ...params },
+    params,
   });
 
   return { systems: data, pages: +headers['x-pages'] };

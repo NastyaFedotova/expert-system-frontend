@@ -19,6 +19,7 @@ export const UserSystems: React.FC = () => {
   const { data, isSuccess, isLoading } = useQuery({
     queryKey: [SYSTEMS.GET_USER, { user_id: user?.id }],
     queryFn: async () => await getSystems({ user_id: user?.id }),
+    enabled: !!user,
   });
 
   const queryClient = useQueryClient();

@@ -3,6 +3,7 @@ import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import Text, { TEXT_VIEW } from '@/components/Text';
+import HistoryContainer from '@/containers/HistoryContainer';
 import Profile from '@/containers/Profile';
 import { UserSystems } from '@/containers/UserSystems';
 import { classname } from '@/utils';
@@ -46,7 +47,7 @@ const Page: React.FC = () => {
       case Chapter.CREATED_SYSTEMS:
         return <UserSystems />;
       case Chapter.HISTORY:
-        return <div>Истотрия</div>;
+        return <HistoryContainer />;
       default:
         return <Profile />;
     }

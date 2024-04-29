@@ -1,6 +1,5 @@
 'use client';
 import React, { ChangeEvent, memo, MouseEventHandler, ReactNode, useCallback, useState } from 'react';
-import { isDesktop } from 'react-device-detect';
 import Popup from 'reactjs-popup';
 import Image from 'next/image';
 
@@ -97,15 +96,7 @@ const Card: React.FC<CardProps> = ({
       </div>
       {canDelete && (
         <Popup
-          trigger={
-            <TrashIcon
-              width={32}
-              height={32}
-              className={cnCard('deleteIcon')}
-              style={{ opacity: isDesktop ? 0.5 : 1 }}
-              onClick={openPopup}
-            />
-          }
+          trigger={<TrashIcon width={32} height={32} className={cnCard('deleteIcon')} onClick={openPopup} />}
           open={isOpen}
           onClose={closePopup}
           onOpen={openPopup}
@@ -137,15 +128,7 @@ const Card: React.FC<CardProps> = ({
           </div>
         </Popup>
       )}
-      {canEdit && (
-        <EditIcon
-          width={32}
-          height={32}
-          className={cnCard('editIcon')}
-          style={{ opacity: isDesktop ? 0.5 : 1 }}
-          onClick={handleEdit}
-        />
-      )}
+      {canEdit && <EditIcon width={32} height={32} className={cnCard('editIcon')} onClick={handleEdit} />}
     </div>
   );
 };

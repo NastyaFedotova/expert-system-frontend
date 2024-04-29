@@ -17,6 +17,7 @@ export enum TEXT_TAG {
   div = 'div',
   p = 'p',
   span = 'span',
+  li = 'li',
 }
 
 export enum TEXT_WEIGHT {

@@ -21,6 +21,7 @@ export type TextProps = {
   color?: 'primary' | 'secondary' | 'accent';
   /** Максимальное кол-во строк */
   maxLines?: number;
+  title?: string;
   onClick?: () => void;
 };
 
@@ -34,6 +35,7 @@ const Text: React.FC<TextProps> = ({
   children,
   color,
   maxLines,
+  title,
   onClick,
 }) => {
   const Tag = tag as keyof ReactHTML;
@@ -43,8 +45,10 @@ const Text: React.FC<TextProps> = ({
       style={{
         WebkitLineClamp: maxLines,
         fontWeight: weight === TEXT_WEIGHT.medium ? 500 : weight,
+        overflow: maxLines ? 'hidden' : 'visible',
       }}
       onClick={onClick}
+      title={title}
     >
       {children}
     </Tag>

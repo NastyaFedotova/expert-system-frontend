@@ -1,0 +1,24 @@
+.history-card {
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  height: auto;
+  background-color: $card-bg;
+  border-radius: $border-radius;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  @include shadow-hover;
+
+  &-info {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: $space-l;
+    margin: $space-xl $space-xs;
+  }
+
+  &-subtitle {
+    text-align: left;
+  }
+}

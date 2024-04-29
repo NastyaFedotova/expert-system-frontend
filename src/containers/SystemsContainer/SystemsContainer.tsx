@@ -31,7 +31,7 @@ const SystemsContainer: React.FC = () => {
 
   return (
     <div className={cnSystemsContainer()}>
-      {data?.systems.length &&
+      {!!data?.systems.length &&
         isSuccess &&
         data.systems.map((system) => (
           <Card

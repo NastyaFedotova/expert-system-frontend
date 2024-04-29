@@ -6,6 +6,11 @@
     overflow-y: auto;
     border: 0;
     margin: 0px 24px 36px 24px;
+
+    &::-webkit-scrollbar {
+      height: 0;
+      width: 0;
+    }
   }
 
   &-top-gradient {
