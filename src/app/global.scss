@@ -1,0 +1,15 @@
+[data-popup='modal'].popup-overlay {
+  background-color: rgba(#000000, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+  scrollbar-width: 0;
+}
+
+a {
+  color: currentColor;
+  text-decoration: none;
+  border: 0;
+  outline: none;
+}

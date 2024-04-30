@@ -75,7 +75,7 @@ const Page: React.FC = () => {
           view={TEXT_VIEW.p18}
           className={cnUserPage('chapter', { selected: chapter === Chapter.HISTORY })}
         >
-          Истотрия
+          История
         </Text>
       </header>
       {memoChapter}

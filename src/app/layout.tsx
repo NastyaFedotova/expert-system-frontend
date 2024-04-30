@@ -9,6 +9,7 @@ import { classname } from '@/utils';
 import 'moment-timezone';
 import 'moment/locale/ru';
 
+import './global.scss';
 import classes from './layout.module.scss';
 
 const cnMainLayout = classname(classes, 'mainLayout');

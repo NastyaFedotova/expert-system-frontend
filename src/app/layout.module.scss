@@ -10,16 +10,4 @@
   position: relative;
   overflow: hidden;
   background-color: $project-bg;
-
-  * {
-    box-sizing: border-box;
-    scrollbar-width: 0;
-  }
-
-  a {
-    color: currentColor;
-    text-decoration: none;
-    border: 0;
-    outline: none;
-  }
 }
