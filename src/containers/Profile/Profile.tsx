@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Popup from 'reactjs-popup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -32,7 +32,7 @@ const Profile: React.FC = () => {
   const closePopup = useCallback(() => setIsOpen(false), []);
   const openPopup = useCallback(() => setIsOpen(true), []);
 
-  const { user, fetchloading, fetchError, updateUser } = useUserStore((store) => store);
+  const { user, fetchloading, clearFetchError, fetchError, updateUser } = useUserStore((store) => store);
 
   const {
     register,
@@ -42,15 +42,19 @@ const Profile: React.FC = () => {
     trigger,
     resetField,
     formState: { dirtyFields, errors },
+    clearErrors,
   } = useForm<TUserUpdate>({
     defaultValues: { ...user, new_password: '' },
     resolver: yupResolver(validator),
   });
 
+  useEffect(() => {
+    clearErrors();
+    clearFetchError();
+  }, [clearErrors, clearFetchError]);
+
   const handleFormSubmit = useCallback(() => {
     closePopup();
-    resetField('password');
-    resetField('new_password');
     const data = getValues();
 
     type formType = keyof TUserUpdate;
@@ -65,6 +69,8 @@ const Profile: React.FC = () => {
     }, {} as TUserUpdate);
 
     updateUser(changedFields);
+    resetField('password');
+    resetField('new_password');
   }, [closePopup, dirtyFields, getValues, resetField, updateUser]);
 
   const formWatch = watch();
@@ -86,7 +92,7 @@ const Profile: React.FC = () => {
             className={cnProfile('input')}
             autoComplete="off"
             label={!!formWatch.first_name?.length && 'Имя'}
-            placeholder="имя"
+            placeholder="Имя"
             afterSlot={<ErrorPopup error={errors.first_name?.message} />}
             error={!!fetchError || !!errors.first_name}
           />
@@ -94,7 +100,7 @@ const Profile: React.FC = () => {
             {...register('last_name')}
             className={cnProfile('input')}
             label={!!formWatch.last_name?.length && 'Фамилия'}
-            placeholder="фамилия"
+            placeholder="Фамилия"
             afterSlot={<ErrorPopup error={errors.last_name?.message} />}
             error={!!fetchError || !!errors.last_name}
           />
@@ -103,14 +109,14 @@ const Profile: React.FC = () => {
           {...register('username')}
           className={cnProfile('input')}
           label={!!formWatch.username?.length && 'Никнейм'}
-          placeholder="никнейм"
+          placeholder="Никнейм"
           disabled
         />
         <Input
           {...register('email')}
           className={cnProfile('input')}
           label={!!formWatch.email?.length && 'Почта'}
-          placeholder="почта"
+          placeholder="Почта"
           type="email"
           afterSlot={<ErrorPopup error={errors.email?.message} />}
           error={!!fetchError || !!errors.email}
@@ -119,7 +125,7 @@ const Profile: React.FC = () => {
           {...register('new_password')}
           className={cnProfile('input')}
           label={!!formWatch.new_password?.length && 'Пароль'}
-          placeholder="новый пароль"
+          placeholder="Новый пароль"
           autoComplete="new-password"
           type="password"
           afterSlot={<ErrorPopup error={errors.new_password?.message} />}

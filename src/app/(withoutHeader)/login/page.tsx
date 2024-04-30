@@ -15,9 +15,11 @@ import classes from './page.module.scss';
 const cnLoginPage = classname(classes, 'loginPage');
 
 const Page: React.FC = () => {
-  const { register, handleSubmit } = useForm<TUserLogin>();
+  const { register, handleSubmit, watch } = useForm<TUserLogin>();
   const { loginUser, fetchloading, fetchError } = useUserStore((store) => store);
   const handleLogin = useCallback((data: TUserLogin) => loginUser(data), [loginUser]);
+
+  const formWatch = watch();
 
   return (
     <form className={cnLoginPage()} onSubmit={handleSubmit(handleLogin)}>
@@ -27,14 +29,16 @@ const Page: React.FC = () => {
       <Input
         {...register('email')}
         className={cnLoginPage('input')}
-        placeholder="почта"
+        placeholder="Почта"
+        label={!!formWatch.email?.length && 'Почта'}
         type="email"
         error={!!fetchError}
       />
       <Input
         {...register('password')}
         className={cnLoginPage('input')}
-        placeholder="пароль"
+        placeholder="Пароль"
+        label={!!formWatch.password?.length && 'Пароль'}
         type="password"
         error={!!fetchError}
       />
@@ -48,7 +52,7 @@ const Page: React.FC = () => {
       </Button>
       <Link href="/registration">
         <Text view={TEXT_VIEW.p14} className={cnLoginPage('reg')}>
-          Зарегистрироваться
+          Регистрироваться
         </Text>
       </Link>
     </form>

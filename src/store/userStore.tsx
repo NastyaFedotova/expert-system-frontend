@@ -14,7 +14,7 @@ import { TErrorResponse } from '@/types/error';
 import { TUser, TUserLogin, TUserRegistration, TUserUpdate } from '@/types/user';
 
 type UserStates = {
-  isLogin: boolean;
+  isLogin?: boolean;
   user?: TUser;
   fetchloading: boolean;
   fetchError?: TErrorResponse;
@@ -30,10 +30,11 @@ type UserActions = {
   logoutUser: () => void;
   setHooks: ({ router, searchParams }: { router?: AppRouterInstance; searchParams: ReadonlyURLSearchParams }) => void;
   reset: () => void;
+  clearFetchError: () => void;
 };
 
 const initialState: UserStates = {
-  isLogin: false,
+  isLogin: undefined,
   user: undefined,
   fetchloading: false,
   fetchError: undefined,
@@ -57,11 +58,10 @@ const useUserStore = create<UserStore>((set, get) => ({
         throw JSON.stringify(err);
       }
       const redirect_to = get().searchParams?.get('back_uri');
-      console.log(redirect_to);
       set({ isLogin: true, user: result });
       get().router?.replace(redirect_to ?? '/');
     } catch (error) {
-      set({ fetchError: JSON.parse(error as string) as TErrorResponse });
+      set({ fetchError: JSON.parse(error as string) as TErrorResponse, isLogin: false });
     } finally {
       set({ fetchloading: false });
     }
@@ -72,6 +72,7 @@ const useUserStore = create<UserStore>((set, get) => ({
       const result = await userResponse();
       set({ isLogin: true, user: result });
     } catch (error) {
+      set({ isLogin: false });
       Cookies.remove('session_id');
     } finally {
       set({ fetchloading: false });
@@ -121,43 +122,22 @@ const useUserStore = create<UserStore>((set, get) => ({
     }
   },
   logoutUser: async () => {
+    set({ fetchloading: true });
     try {
       await logoutUserResponse();
       get().router?.replace('/');
       Cookies.remove('session_id');
     } catch (error) {
       console.log(error);
+    } finally {
+      set({ fetchloading: false });
     }
   },
   setHooks: ({ router, searchParams }) => {
     set({ router, searchParams });
   },
-  reset: () => set(initialState),
+  reset: () => set({ user: undefined, fetchError: undefined, isLogin: false }),
+  clearFetchError: () => set({ fetchError: undefined }),
 }));
-
-// const UserStoreContext = createContext<StoreApi<UserStore> | null>(null);
-
-// export const UserProvider = ({ children }: { children: ReactNode }) => {
-//   const storeRef = useRef<StoreApi<UserStore>>();
-
-//   const router = useRouter();
-
-//   if (!storeRef.current) {
-//     storeRef.current = createUserStore({ ...initialState, router });
-//   }
-
-//   storeRef.current.getState().loginUserByCookie();
-//   return <UserStoreContext.Provider value={storeRef.current}>{children}</UserStoreContext.Provider>;
-// };
-
-// const useUserStores = <T,>(selector: (store: UserStore) => T): T => {
-//   const counterStoreContext = useContext(UserStoreContext);
-
-//   if (!counterStoreContext) {
-//     throw new Error(`useCounterStore must be use within CounterStoreProvider`);
-//   }
-
-//   return useStore(counterStoreContext, selector);
-// };
 
 export default useUserStore;

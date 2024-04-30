@@ -2,6 +2,7 @@
 import { ReactNode, useEffect, useLayoutEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
+import Loader from '@/components/Loader';
 import useUserStore from '@/store/userStore';
 
 import { PrivateRouterProvider } from './privateRouteProvider';
@@ -11,7 +12,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const { loginUserByCookie, setHooks } = useUserStore((store) => store);
+  const { loginUserByCookie, setHooks, isLogin } = useUserStore((store) => store);
 
   useEffect(() => {
     loginUserByCookie();
@@ -23,7 +24,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
 
   return (
     <ReactQueryProvider>
-      <PrivateRouterProvider>{children}</PrivateRouterProvider>
+      <PrivateRouterProvider>{isLogin === undefined ? <Loader sizepx={116} /> : children}</PrivateRouterProvider>
     </ReactQueryProvider>
   );
 };

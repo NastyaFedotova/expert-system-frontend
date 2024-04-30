@@ -9,12 +9,16 @@ export type LoaderProps = {
   size?: 's' | 'm' | 'l';
   /** Дополнительный класс */
   className?: string;
+  sizepx?: number;
 };
 
 const cnLoader = classname(classes, 'loader');
 
-const Loader: React.FC<LoaderProps> = React.memo(({ size = 'l', className }) => (
-  <div className={cnLoader({ size }) + ` ${className}`} style={{ borderTopColor: 'transparent' }} />
+const Loader: React.FC<LoaderProps> = React.memo(({ size = 'l', className, sizepx }) => (
+  <div
+    className={cnLoader({ size }) + ` ${className}`}
+    style={{ borderTopColor: 'transparent', width: sizepx, height: sizepx }}
+  />
 ));
 
 export default memo(Loader);

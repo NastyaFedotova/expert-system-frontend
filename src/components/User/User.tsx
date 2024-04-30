@@ -8,6 +8,7 @@ import LoginIcon from '@/icons/LoginIcon';
 import useUserStore from '@/store/userStore';
 import { classname } from '@/utils';
 
+import Loader from '../Loader';
 import Text, { TEXT_TAG, TEXT_VIEW } from '../Text';
 
 import classes from './User.module.scss';
@@ -19,7 +20,7 @@ const User: React.FC = () => {
   const closePopup = useCallback(() => setIsOpen(false), []);
   const openPopup = useCallback(() => setIsOpen(true), []);
 
-  const { isLogin, logoutUser, reset: userStoreReset } = useUserStore((store) => store);
+  const { isLogin, logoutUser, reset: userStoreReset, fetchloading } = useUserStore((store) => store);
 
   const handlelogout = useCallback(() => {
     logoutUser();
@@ -30,11 +31,9 @@ const User: React.FC = () => {
     <Popup
       open={isOpen}
       trigger={
-        <div className={cnUser()}>
-          <UserIcon />
-        </div>
+        <div className={cnUser({ disable: fetchloading })}>{!fetchloading ? <UserIcon /> : <Loader size="s" />}</div>
       }
-      on="click"
+      on={!fetchloading ? 'click' : undefined}
       position="bottom right"
       repositionOnResize
       onClose={closePopup}

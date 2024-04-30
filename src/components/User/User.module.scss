@@ -9,6 +9,10 @@
   border: 2px solid $border-color;
   cursor: pointer;
 
+  &_disable {
+    cursor: progress;
+  }
+
   &-popup {
     background-color: #fff;
     border-radius: $border-radius;

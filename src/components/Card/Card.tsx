@@ -123,7 +123,7 @@ const Card: React.FC<CardProps> = ({
               type="password"
             />
             <Button className={cnCard('button')} onClick={handleDelete}>
-              Удалить
+              Удалить систему
             </Button>
           </div>
         </Popup>
