@@ -1,0 +1,76 @@
+.file-upload {
+  position: relative;
+  width: 200px;
+  min-width: 200px;
+  height: 200px;
+
+  border: 2px dashed $border-color;
+  border-radius: $border-radius;
+  background-color: $input-bg;
+
+  &_uploaded {
+    border: 1px solid $border-color;
+  }
+
+  &-input {
+    display: none;
+
+    &-wrapper {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      cursor: pointer;
+    }
+  }
+
+  &-background {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &-image {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: $border-radius;
+  }
+
+  &-delete {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: -8px;
+    right: -8px;
+    color: $brand;
+    cursor: pointer;
+  }
+
+  &-text {
+    &_error {
+      color: $error;
+    }
+  }
+
+  &-label {
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    padding: 0px 7px;
+    height: 20px;
+    left: 8px;
+    top: -8px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14px;
+    background: linear-gradient(180deg, $project-bg 0%, $project-bg 8px, #ffffff00 9px, #ffffff00 100%);
+  }
+}

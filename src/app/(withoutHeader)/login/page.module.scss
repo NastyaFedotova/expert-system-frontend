@@ -8,6 +8,7 @@
   padding: 24px;
   background-color: #fff;
   border-radius: $border-radius;
+  max-width: 300px;
   @include shadow;
 
   &-input {

@@ -13,7 +13,15 @@ export const getApiRequest = <ResponseType>(
 ): Promise<{
   data: ResponseType;
   headers: AxiosResponseHeaders | Partial<Record<string, AxiosHeaderValue>>;
-}> => api.get<ResponseType>(link, config).then((res) => ({ data: res.data, headers: res.headers }));
+}> =>
+  api
+    .get<ResponseType>(link, config)
+    .then((res) => ({ data: res.data, headers: res.headers }))
+    .catch((err: AxiosError<TErrorResponse>) => {
+      console.log(err);
+      console.log(err.response?.data);
+      throw JSON.stringify(err.response?.data);
+    });
 
 export const postApiRequest = <ResponseType, BodyType>(
   link: string,
@@ -27,6 +35,8 @@ export const postApiRequest = <ResponseType, BodyType>(
     .post<ResponseType>(link, body, config)
     .then((res) => ({ data: res.data, headers: res.headers }))
     .catch((err: AxiosError<TErrorResponse>) => {
+      console.log(err);
+      console.log(err.response?.data);
       throw JSON.stringify(err.response?.data);
     });
 

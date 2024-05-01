@@ -48,11 +48,6 @@ const Profile: React.FC = () => {
     resolver: yupResolver(validator),
   });
 
-  useEffect(() => {
-    clearErrors();
-    clearFetchError();
-  }, [clearErrors, clearFetchError]);
-
   const handleFormSubmit = useCallback(() => {
     closePopup();
     const data = getValues();
@@ -81,6 +76,14 @@ const Profile: React.FC = () => {
       trigger();
     },
     [trigger],
+  );
+
+  useEffect(
+    () => () => {
+      clearFetchError();
+      clearErrors();
+    },
+    [clearErrors, clearFetchError],
   );
 
   return (

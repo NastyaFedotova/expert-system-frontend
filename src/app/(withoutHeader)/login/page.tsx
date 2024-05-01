@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 
@@ -15,11 +15,19 @@ import classes from './page.module.scss';
 const cnLoginPage = classname(classes, 'loginPage');
 
 const Page: React.FC = () => {
-  const { register, handleSubmit, watch } = useForm<TUserLogin>();
-  const { loginUser, fetchloading, fetchError } = useUserStore((store) => store);
+  const { register, handleSubmit, watch, clearErrors } = useForm<TUserLogin>();
+  const { loginUser, fetchloading, fetchError, clearFetchError } = useUserStore((store) => store);
   const handleLogin = useCallback((data: TUserLogin) => loginUser(data), [loginUser]);
 
   const formWatch = watch();
+
+  useEffect(
+    () => () => {
+      clearFetchError();
+      clearErrors();
+    },
+    [clearErrors, clearFetchError],
+  );
 
   return (
     <form className={cnLoginPage()} onSubmit={handleSubmit(handleLogin)}>

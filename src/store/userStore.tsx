@@ -12,6 +12,7 @@ import {
 } from '@/api/services/user';
 import { TErrorResponse } from '@/types/error';
 import { TUser, TUserLogin, TUserRegistration, TUserUpdate } from '@/types/user';
+import { errorParser } from '@/utils';
 
 type UserStates = {
   isLogin?: boolean;
@@ -53,7 +54,7 @@ const useUserStore = create<UserStore>((set, get) => ({
       if (!session_key) {
         const err: TErrorResponse = {
           error: 'Не удалось авторизоваться',
-          status: 0,
+          status: 'Not HTTP error',
         };
         throw JSON.stringify(err);
       }
@@ -61,7 +62,8 @@ const useUserStore = create<UserStore>((set, get) => ({
       set({ isLogin: true, user: result });
       get().router?.replace(redirect_to ?? '/');
     } catch (error) {
-      set({ fetchError: JSON.parse(error as string) as TErrorResponse, isLogin: false });
+      console.log(error);
+      set({ fetchError: errorParser(error), isLogin: false });
     } finally {
       set({ fetchloading: false });
     }
@@ -71,7 +73,7 @@ const useUserStore = create<UserStore>((set, get) => ({
     try {
       const result = await userResponse();
       set({ isLogin: true, user: result });
-    } catch (error) {
+    } catch {
       set({ isLogin: false });
       Cookies.remove('session_id');
     } finally {
@@ -85,7 +87,7 @@ const useUserStore = create<UserStore>((set, get) => ({
       if (params.password !== params.password2) {
         const err: TErrorResponse = {
           error: 'Пароли не совпадают',
-          status: 0,
+          status: 'Not HTTP error',
         };
         throw JSON.stringify(err);
       }
@@ -95,7 +97,7 @@ const useUserStore = create<UserStore>((set, get) => ({
       if (!session_key) {
         const err: TErrorResponse = {
           error: 'Не удалось авторизоваться',
-          status: 0,
+          status: 'Not HTTP error',
         };
         throw JSON.stringify(err);
       }
@@ -103,8 +105,7 @@ const useUserStore = create<UserStore>((set, get) => ({
       set({ isLogin: true, user: result });
       get().router?.push('/');
     } catch (error) {
-      console.log(error);
-      set({ fetchError: JSON.parse(error as string) as TErrorResponse });
+      set({ fetchError: errorParser(error) });
     } finally {
       set({ fetchloading: false });
     }
@@ -115,8 +116,7 @@ const useUserStore = create<UserStore>((set, get) => ({
       const result = await updateUserResponse(params);
       set({ user: result });
     } catch (error) {
-      console.log(error);
-      set({ fetchError: JSON.parse(error as string) as TErrorResponse });
+      set({ fetchError: errorParser(error) });
     } finally {
       set({ fetchloading: false });
     }
@@ -127,8 +127,6 @@ const useUserStore = create<UserStore>((set, get) => ({
       await logoutUserResponse();
       get().router?.replace('/');
       Cookies.remove('session_id');
-    } catch (error) {
-      console.log(error);
     } finally {
       set({ fetchloading: false });
     }

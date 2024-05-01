@@ -1,0 +1,42 @@
+.checkbox {
+  display: none;
+
+  &-container {
+    display: block;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background-color: $checkbox-bg;
+    border: 1px solid $checkbox-border;
+    border-radius: $border-radius;
+    overflow: hidden;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $checkbox-bg-hover;
+      border-color: $checkbox-border-hover;
+
+      svg {
+        color: $checkbox-check-hover;
+      }
+    }
+
+    &:has(input:disabled) {
+      background-color: $checkbox-bg-disabled;
+      border-color: $checkbox-border-disabled;
+      cursor: default;
+
+      svg {
+        color: $checkbox-check-disabled;
+      }
+    }
+  }
+
+  &-icon {
+    position: absolute;
+    //margin: -1px;
+    width: 100%;
+    height: 100%;
+    color: $checkbox-check;
+  }
+}

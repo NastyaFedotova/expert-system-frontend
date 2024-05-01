@@ -20,7 +20,10 @@
     @include shadow;
     overflow: hidden;
   }
-
+  &-username {
+    border-bottom: 1px solid $border-color;
+    padding: 14px;
+  }
   &-options {
     display: flex;
     flex-direction: row;

@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import Button from '@/components/Button';
@@ -14,11 +14,21 @@ import classes from './page.module.scss';
 const cnRegistrationPage = classname(classes, 'registrationPage');
 
 const Page: React.FC = () => {
-  const { register, handleSubmit } = useForm<TUserRegistration & { password2: string }>();
-  const { registrationUser, fetchloading, fetchError } = useUserStore((store) => store);
+  const { register, handleSubmit, watch, clearErrors } = useForm<TUserRegistration & { password2: string }>();
+  const { registrationUser, fetchloading, fetchError, clearFetchError } = useUserStore((store) => store);
   const handleRegistration = useCallback(
     (data: TUserRegistration & { password2: string }) => registrationUser(data),
     [registrationUser],
+  );
+
+  const formWatch = watch();
+
+  useEffect(
+    () => () => {
+      clearFetchError();
+      clearErrors();
+    },
+    [clearErrors, clearFetchError],
   );
 
   return (
@@ -29,39 +39,45 @@ const Page: React.FC = () => {
       <Input
         {...register('username')}
         className={cnRegistrationPage('input')}
-        placeholder="никнейм"
+        placeholder="Никнейм"
+        label={!!formWatch.username?.length && 'Никнейм'}
         error={!!fetchError}
       />
       <Input
         {...register('email')}
         className={cnRegistrationPage('input')}
-        placeholder="почта"
+        placeholder="Почта"
+        label={!!formWatch.email?.length && 'Почта'}
         type="email"
         error={!!fetchError}
       />
       <Input
         {...register('first_name')}
         className={cnRegistrationPage('input')}
-        placeholder="имя"
+        placeholder="Имя"
+        label={!!formWatch.first_name?.length && 'Имя'}
         error={!!fetchError}
       />
       <Input
         {...register('last_name')}
         className={cnRegistrationPage('input')}
-        placeholder="фамилия"
+        placeholder="Фамилия"
+        label={!!formWatch.last_name?.length && 'Фамилия'}
         error={!!fetchError}
       />
       <Input
         {...register('password')}
         className={cnRegistrationPage('input')}
-        placeholder="пароль"
+        placeholder="Пароль"
+        label={!!formWatch.password?.length && 'Пароль'}
         type="password"
         error={!!fetchError}
       />
       <Input
         {...register('password2')}
         className={cnRegistrationPage('input')}
-        placeholder="подтвердите пароль"
+        placeholder="Подтвердите пароль"
+        label={!!formWatch.password2?.length && 'Повторный пароль'}
         type="password"
         error={!!fetchError}
       />

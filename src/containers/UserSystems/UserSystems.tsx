@@ -17,8 +17,8 @@ export const UserSystems: React.FC = () => {
   const { user } = useUserStore((store) => store);
 
   const { data, isSuccess, isLoading } = useQuery({
-    queryKey: [SYSTEMS.GET_USER, { user_id: user?.id }],
-    queryFn: async () => await getSystems({ user_id: user?.id }),
+    queryKey: [SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }],
+    queryFn: async () => await getSystems({ user_id: user?.id, all_types: true }),
     enabled: !!user,
   });
 
@@ -27,19 +27,19 @@ export const UserSystems: React.FC = () => {
   const mutate = useMutation({
     mutationFn: deleteSystem,
     onMutate: async (data) => {
-      await queryClient.cancelQueries({ queryKey: [SYSTEMS.GET_USER, { user_id: user?.id }] });
-      const previousTodos = queryClient.getQueryData([SYSTEMS.GET_USER, { user_id: user?.id }]);
-      queryClient.setQueryData([SYSTEMS.GET_USER, { user_id: user?.id }], (old: TSystemsWithPage) => ({
+      await queryClient.cancelQueries({ queryKey: [SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }] });
+      const previousTodos = queryClient.getQueryData([SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }]);
+      queryClient.setQueryData([SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }], (old: TSystemsWithPage) => ({
         ...old,
         systems: old.systems.filter((system) => system.id !== data.system_id),
       }));
       return { previousTodos };
     },
     onError: (err, newTodo, context) => {
-      queryClient.setQueryData([SYSTEMS.GET_USER, { user_id: user?.id }], context?.previousTodos);
+      queryClient.setQueryData([SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }], context?.previousTodos);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: [SYSTEMS.GET_USER, { user_id: user?.id }] });
+      queryClient.invalidateQueries({ queryKey: [SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }] });
     },
   });
 

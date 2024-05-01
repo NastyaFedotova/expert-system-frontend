@@ -4,6 +4,7 @@ import Popup from 'reactjs-popup';
 import Link from 'next/link';
 
 import { LogoutIcon, UserIcon } from '@/icons';
+import AddIcon from '@/icons/AddIcon';
 import LoginIcon from '@/icons/LoginIcon';
 import useUserStore from '@/store/userStore';
 import { classname } from '@/utils';
@@ -17,51 +18,65 @@ const cnUser = classname(classes, 'user');
 
 const User: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isLogin, logoutUser, reset: userStoreReset, fetchloading, user } = useUserStore((store) => store);
+
   const closePopup = useCallback(() => setIsOpen(false), []);
   const openPopup = useCallback(() => setIsOpen(true), []);
-
-  const { isLogin, logoutUser, reset: userStoreReset, fetchloading } = useUserStore((store) => store);
 
   const handlelogout = useCallback(() => {
     logoutUser();
     userStoreReset();
+    setIsOpen(false);
   }, [logoutUser, userStoreReset]);
 
   return (
     <Popup
       open={isOpen}
       trigger={
-        <div className={cnUser({ disable: fetchloading })}>{!fetchloading ? <UserIcon /> : <Loader size="s" />}</div>
+        <span>
+          {!fetchloading && !isLogin ? (
+            <Link href="/login" className={cnUser()}>
+              <LoginIcon />
+            </Link>
+          ) : (
+            <div className={cnUser({ disable: fetchloading })}>
+              {!fetchloading && isLogin ? <UserIcon /> : <Loader size="s" />}
+            </div>
+          )}
+        </span>
       }
-      on={!fetchloading ? 'click' : undefined}
       position="bottom right"
       repositionOnResize
       onClose={closePopup}
       onOpen={openPopup}
     >
-      <div className={cnUser('popup')} onClick={closePopup}>
-        <Link href="/user" className={cnUser('options', { user: true })}>
-          <UserIcon />
-          <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
-            Личный кабинет
-          </Text>
-        </Link>
-        {isLogin ? (
+      {!fetchloading && isLogin && (
+        <div className={cnUser('popup')} onClick={closePopup}>
+          <div className={cnUser('username')}>
+            <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18} color="secondary">
+              {user?.username}
+            </Text>
+          </div>
+          <Link href="/user" className={cnUser('options')}>
+            <UserIcon />
+            <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
+              Личный кабинет
+            </Text>
+          </Link>
+          <Link href="/system" className={cnUser('options')}>
+            <AddIcon />
+            <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
+              Создать
+            </Text>
+          </Link>
           <div className={cnUser('options', { isLogin })} onClick={handlelogout}>
             <LogoutIcon />
             <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
               Выйти
             </Text>
           </div>
-        ) : (
-          <Link href="/login" className={cnUser('options', { isLogin })}>
-            <LoginIcon />
-            <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
-              Войти
-            </Text>
-          </Link>
-        )}
-      </div>
+        </div>
+      )}
     </Popup>
   );
 };
