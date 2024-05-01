@@ -16,6 +16,12 @@ export const getSystems = async (params?: TSystemRequestParams): Promise<TSystem
   return { systems: data.toSorted((a, b) => b.id - a.id), pages: +headers['x-pages'] };
 };
 
+export const getSystemOne = async (system_id: number): Promise<TSystem> => {
+  const { data } = await getApiRequest<TSystem>(`/systems/${system_id}`);
+
+  return data;
+};
+
 export const deleteSystem = async (params: TSystemDeleteResponseParams) => {
   const { system_id, ...data } = params;
   const result = await deleteApiRequest(`/systems/${system_id}`, data);
@@ -24,19 +30,19 @@ export const deleteSystem = async (params: TSystemDeleteResponseParams) => {
 };
 
 export const createSystem = async (params: TSystemNew) => {
-  const data = new FormData();
-  data.append('name', params.name);
-  data.append('private', String(params.private));
+  const formData = new FormData();
+  formData.append('name', params.name);
+  formData.append('private', String(params.private));
   const image = params.image?.item(0);
   if (image) {
-    data.append('image', image);
+    formData.append('image', image);
   }
   const about = params.about;
   if (about) {
-    data.append('about', about);
+    formData.append('about', about);
   }
 
-  const result = await postApiRequest<TSystem, FormData>(`/systems`, data);
+  const { data } = await postApiRequest<TSystem, FormData>(`/systems`, formData);
 
-  return result;
+  return data;
 };

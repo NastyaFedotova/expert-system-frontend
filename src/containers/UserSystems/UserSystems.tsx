@@ -1,5 +1,6 @@
 import React, { memo, useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 import { deleteSystem, getSystems } from '@/api/services/systems';
 import { Card } from '@/components/Card';
@@ -14,6 +15,7 @@ import classes from './UserSystems.module.scss';
 const cnUserProfile = classname(classes, 'user-systems');
 
 export const UserSystems: React.FC = () => {
+  const router = useRouter();
   const { user } = useUserStore((store) => store);
 
   const { data, isSuccess, isLoading } = useQuery({
@@ -28,15 +30,24 @@ export const UserSystems: React.FC = () => {
     mutationFn: deleteSystem,
     onMutate: async (data) => {
       await queryClient.cancelQueries({ queryKey: [SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }] });
-      const previousTodos = queryClient.getQueryData([SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }]);
-      queryClient.setQueryData([SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }], (old: TSystemsWithPage) => ({
-        ...old,
-        systems: old.systems.filter((system) => system.id !== data.system_id),
-      }));
+      const previousTodos = queryClient.getQueryData<TSystemsWithPage>([
+        SYSTEMS.GET_USER,
+        { user_id: user?.id, all_types: true },
+      ]);
+      queryClient.setQueryData<TSystemsWithPage>(
+        [SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }],
+        (old?: TSystemsWithPage) => ({
+          pages: old?.pages ?? 1,
+          systems: old?.systems.filter((system) => system.id !== data.system_id) ?? [],
+        }),
+      );
       return { previousTodos };
     },
     onError: (err, newTodo, context) => {
-      queryClient.setQueryData([SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }], context?.previousTodos);
+      queryClient.setQueryData<TSystemsWithPage>(
+        [SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }],
+        context?.previousTodos,
+      );
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }] });
@@ -44,7 +55,7 @@ export const UserSystems: React.FC = () => {
   });
 
   const handleEdit = useCallback((id: number) => console.log('system to edit: ', id), []);
-  const handleClick = useCallback((id: number) => () => console.log('system click: ', id), []);
+  const handleClick = useCallback((id: number) => () => router.push(`/system/${id}`), [router]);
   const handleDelete = useCallback(
     (id: number, password: string) => {
       console.log('system to delete: ', id, ' ', password);

@@ -18,8 +18,6 @@ export const getApiRequest = <ResponseType>(
     .get<ResponseType>(link, config)
     .then((res) => ({ data: res.data, headers: res.headers }))
     .catch((err: AxiosError<TErrorResponse>) => {
-      console.log(err);
-      console.log(err.response?.data);
       throw JSON.stringify(err.response?.data);
     });
 
@@ -35,8 +33,6 @@ export const postApiRequest = <ResponseType, BodyType>(
     .post<ResponseType>(link, body, config)
     .then((res) => ({ data: res.data, headers: res.headers }))
     .catch((err: AxiosError<TErrorResponse>) => {
-      console.log(err);
-      console.log(err.response?.data);
       throw JSON.stringify(err.response?.data);
     });
 

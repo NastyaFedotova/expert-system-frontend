@@ -2,9 +2,11 @@
 import React, { memo, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { boolean, mixed, object, ObjectSchema, string } from 'yup';
 
+import { createSystem } from '@/api/services/systems';
 import Button from '@/components/Button';
 import CheckBox from '@/components/CheckBox';
 import ErrorPopup from '@/components/ErrorPopup';
@@ -12,8 +14,10 @@ import FileUpload from '@/components/FileUpload';
 import Input from '@/components/Input';
 import Text, { TEXT_VIEW } from '@/components/Text';
 import TextArea from '@/components/TextArea';
-import useSystemStore from '@/store/systemStore';
-import { TSystemNew } from '@/types/systems';
+import { SYSTEMS } from '@/constants';
+import useUserStore from '@/store/userStore';
+import { TErrorResponse } from '@/types/error';
+import { TSystem, TSystemNew } from '@/types/systems';
 import { classname } from '@/utils';
 
 import classes from './page.module.scss';
@@ -29,7 +33,7 @@ const validator: ObjectSchema<TSystemNew> = object({
 
 const Page: React.FC = () => {
   const router = useRouter();
-
+  const user = useUserStore((store) => store.user);
   const {
     register,
     handleSubmit,
@@ -42,7 +46,12 @@ const Page: React.FC = () => {
     resolver: yupResolver(validator),
   });
 
-  const { fetchloading, fetchError, system, createSystem, clearFetchError } = useSystemStore((store) => store);
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending, error, status, data } = useMutation<TSystem, TErrorResponse, TSystemNew>({
+    mutationFn: createSystem,
+    onSuccess: (data) => queryClient.setQueryData([SYSTEMS.RETRIEVE, { user_id: user?.id, system_id: data.id }], data),
+  });
 
   const handleFormSubmit = useCallback(
     (data: TSystemNew) => {
@@ -67,9 +76,10 @@ const Page: React.FC = () => {
       //   }
       // }, {} as TSystemNew);
       console.log(data);
-      createSystem(data);
+      //createSystem(data);
+      mutate(data);
     },
-    [createSystem],
+    [mutate],
   );
 
   const formWatch = watch();
@@ -83,17 +93,16 @@ const Page: React.FC = () => {
   );
 
   useEffect(() => {
-    if (!fetchloading && system) {
-      router.push(`/system/${system.id}`);
+    if (status === 'success') {
+      router.push(`/system/${data.id}`);
     }
-  }, [fetchloading, router, system]);
+  }, [data, isPending, router, status]);
 
   useEffect(
     () => () => {
-      clearFetchError();
       clearErrors();
     },
-    [clearErrors, clearFetchError, fetchloading, router, system],
+    [clearErrors],
   );
 
   return (
@@ -136,16 +145,12 @@ const Page: React.FC = () => {
               afterSlot={<ErrorPopup error={errors.about?.message} />}
             />
           </div>
-          {!!fetchError && (
+          {!!error && (
             <Text view={TEXT_VIEW.p14} className={cnSystemCreatePage('err')}>
-              {fetchError.extra ?? fetchError.error}
+              {error.extra ?? error.error}
             </Text>
           )}
-          <Button
-            className={cnSystemCreatePage('button')}
-            disabled={!!Object.keys(errors).length}
-            loading={fetchloading}
-          >
+          <Button className={cnSystemCreatePage('button')} disabled={!!Object.keys(errors).length} loading={isPending}>
             Cоздать систему
           </Button>
         </form>
