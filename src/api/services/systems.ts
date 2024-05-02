@@ -4,9 +4,10 @@ import {
   TSystemNew,
   TSystemRequestParams,
   TSystemsWithPage,
+  TSystemUpdate,
 } from '@/types/systems';
 
-import { deleteApiRequest, getApiRequest, postApiRequest } from '..';
+import { deleteApiRequest, getApiRequest, patchApiRequest, postApiRequest } from '..';
 
 export const getSystems = async (params?: TSystemRequestParams): Promise<TSystemsWithPage> => {
   const { data, headers } = await getApiRequest<TSystem[]>(`/systems`, {
@@ -43,6 +44,29 @@ export const createSystem = async (params: TSystemNew) => {
   }
 
   const { data } = await postApiRequest<TSystem, FormData>(`/systems`, formData);
+
+  return data;
+};
+
+export const updateSystem = async (params: TSystemUpdate & { system_id: number }) => {
+  const { system_id, ...responseParams } = params;
+  const formData = new FormData();
+
+  type paramsKeys = keyof TSystemUpdate;
+
+  Object.keys(responseParams).forEach((key) => {
+    const param = key as paramsKeys;
+    if (param === 'image') {
+      const image = responseParams[param]?.item(0);
+      if (image) {
+        formData.append('image', image);
+      }
+    } else {
+      formData.append(String(param), String(responseParams[param]));
+    }
+  });
+
+  const { data } = await patchApiRequest<TSystem, FormData>(`/systems/${system_id}`, formData);
 
   return data;
 };

@@ -8,7 +8,7 @@ import { CardSkeleton } from '@/components/CardSkeleton';
 import { SYSTEMS } from '@/constants';
 import useUserStore from '@/store/userStore';
 import { TSystemsWithPage } from '@/types/systems';
-import { classname, imageUrl } from '@/utils';
+import { classname } from '@/utils';
 
 import classes from './UserSystems.module.scss';
 
@@ -72,7 +72,7 @@ export const UserSystems: React.FC = () => {
           <Card
             key={system.id}
             id={system.id}
-            image={imageUrl(system.image_uri)}
+            image={system.image_uri}
             title={system.name}
             subtitle={system.about}
             canEdit

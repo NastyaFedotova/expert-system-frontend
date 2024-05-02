@@ -8,7 +8,7 @@ import { CardSkeleton } from '@/components/CardSkeleton';
 import { SYSTEMS } from '@/constants';
 import useSystemsPageStore from '@/store/systemsPageStore';
 import useSystemsSearchParamsStore from '@/store/systemsSearchParamsStore';
-import { classname, imageUrl } from '@/utils';
+import { classname } from '@/utils';
 
 import classes from './SystemsContainer.module.scss';
 
@@ -34,13 +34,7 @@ const SystemsContainer: React.FC = () => {
       {!!data?.systems.length &&
         isSuccess &&
         data.systems.map((system) => (
-          <Card
-            id={system.id}
-            key={system.id}
-            image={imageUrl(system.image_uri)}
-            title={system.name}
-            subtitle={system.about}
-          />
+          <Card id={system.id} key={system.id} image={system.image_uri} title={system.name} subtitle={system.about} />
         ))}
       {isLoading && [...Array(20).keys()].map((index) => <CardSkeleton key={index} />)}
     </div>

@@ -30,40 +30,42 @@ const Page: React.FC = () => {
   );
 
   return (
-    <form className={cnLoginPage()} onSubmit={handleSubmit(handleLogin)}>
-      <Text view={TEXT_VIEW.p20} className={cnLoginPage('title')}>
-        Авторизация
-      </Text>
-      <Input
-        {...register('email')}
-        className={cnLoginPage('input')}
-        placeholder="Почта"
-        label={!!formWatch.email?.length && 'Почта'}
-        type="email"
-        error={!!fetchError}
-      />
-      <Input
-        {...register('password')}
-        className={cnLoginPage('input')}
-        placeholder="Пароль"
-        label={!!formWatch.password?.length && 'Пароль'}
-        type="password"
-        error={!!fetchError}
-      />
-      {!!fetchError && (
-        <Text view={TEXT_VIEW.p14} className={cnLoginPage('err')}>
-          {fetchError.extra ?? fetchError.error}
+    <main className={cnLoginPage('wrapper')}>
+      <form className={cnLoginPage()} onSubmit={handleSubmit(handleLogin)}>
+        <Text view={TEXT_VIEW.p20} className={cnLoginPage('title')}>
+          Авторизация
         </Text>
-      )}
-      <Button className={cnLoginPage('button')} loading={fetchloading}>
-        Войти
-      </Button>
-      <Link href="/registration">
-        <Text view={TEXT_VIEW.p14} className={cnLoginPage('reg')}>
-          Регистрироваться
-        </Text>
-      </Link>
-    </form>
+        <Input
+          {...register('email')}
+          className={cnLoginPage('input')}
+          placeholder="Почта"
+          label={!!formWatch.email?.length && 'Почта'}
+          type="email"
+          error={!!fetchError}
+        />
+        <Input
+          {...register('password')}
+          className={cnLoginPage('input')}
+          placeholder="Пароль"
+          label={!!formWatch.password?.length && 'Пароль'}
+          type="password"
+          error={!!fetchError}
+        />
+        {!!fetchError && (
+          <Text view={TEXT_VIEW.p14} className={cnLoginPage('err')}>
+            {fetchError.extra ?? fetchError.error}
+          </Text>
+        )}
+        <Button className={cnLoginPage('button')} loading={fetchloading}>
+          Войти
+        </Button>
+        <Link href="/registration">
+          <Text view={TEXT_VIEW.p14} className={cnLoginPage('reg')}>
+            Регистрироваться
+          </Text>
+        </Link>
+      </form>
+    </main>
   );
 };
 

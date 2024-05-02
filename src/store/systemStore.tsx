@@ -29,8 +29,8 @@ const useSystemStore = create<SystemStore>((set) => ({
   createSystem: async (params: TSystemNew) => {
     set({ fetchloading: true });
     try {
-      const { data } = await createSystem(params);
-      set({ system: data });
+      const result = await createSystem(params);
+      set({ system: result });
     } catch (error) {
       console.log(error);
       set({ fetchError: errorParser(error) });

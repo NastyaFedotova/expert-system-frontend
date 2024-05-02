@@ -15,13 +15,20 @@ export type TSystem = {
   updated_at: string;
   name: string;
   private: boolean;
-  image_uri: string;
+  image_uri?: string;
 };
 
 export type TSystemNew = {
   about?: string;
   name: string;
   private: boolean;
+  image?: FileList;
+};
+
+export type TSystemUpdate = {
+  about?: string;
+  name?: string;
+  private?: boolean;
   image?: FileList;
 };
 

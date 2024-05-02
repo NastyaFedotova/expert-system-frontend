@@ -8,7 +8,7 @@ import CloseIcon from '@/icons/CloseIcon';
 import EditIcon from '@/icons/EditIcon';
 import TrashIcon from '@/icons/TrashIcon';
 import defaultImage from '@/public/default-image.png';
-import { classname } from '@/utils';
+import { classname, imageUrl } from '@/utils';
 
 import Button from '../Button';
 import Input from '../Input';
@@ -18,7 +18,7 @@ import classes from './Card.module.scss';
 export type CardProps = {
   id: number;
   className?: string;
-  image: string;
+  image?: string;
   title: ReactNode;
   subtitle: ReactNode;
   onClick?: MouseEventHandler;
@@ -77,7 +77,7 @@ const Card: React.FC<CardProps> = ({
     <div className={cnCard() + ` ${className}`} onClick={onClick} id={String(id)}>
       <Image
         alt="logo"
-        src={isError ? defaultImage : image}
+        src={isError || !image ? defaultImage : imageUrl(image)}
         className={cnCard('image')}
         width={280}
         height={280}

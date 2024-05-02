@@ -32,64 +32,66 @@ const Page: React.FC = () => {
   );
 
   return (
-    <form className={cnRegistrationPage()} onSubmit={handleSubmit(handleRegistration)}>
-      <Text view={TEXT_VIEW.p20} className={cnRegistrationPage('title')}>
-        Регистрация
-      </Text>
-      <Input
-        {...register('username')}
-        className={cnRegistrationPage('input')}
-        placeholder="Никнейм"
-        label={!!formWatch.username?.length && 'Никнейм'}
-        error={!!fetchError}
-      />
-      <Input
-        {...register('email')}
-        className={cnRegistrationPage('input')}
-        placeholder="Почта"
-        label={!!formWatch.email?.length && 'Почта'}
-        type="email"
-        error={!!fetchError}
-      />
-      <Input
-        {...register('first_name')}
-        className={cnRegistrationPage('input')}
-        placeholder="Имя"
-        label={!!formWatch.first_name?.length && 'Имя'}
-        error={!!fetchError}
-      />
-      <Input
-        {...register('last_name')}
-        className={cnRegistrationPage('input')}
-        placeholder="Фамилия"
-        label={!!formWatch.last_name?.length && 'Фамилия'}
-        error={!!fetchError}
-      />
-      <Input
-        {...register('password')}
-        className={cnRegistrationPage('input')}
-        placeholder="Пароль"
-        label={!!formWatch.password?.length && 'Пароль'}
-        type="password"
-        error={!!fetchError}
-      />
-      <Input
-        {...register('password2')}
-        className={cnRegistrationPage('input')}
-        placeholder="Подтвердите пароль"
-        label={!!formWatch.password2?.length && 'Повторный пароль'}
-        type="password"
-        error={!!fetchError}
-      />
-      {!!fetchError && (
-        <Text view={TEXT_VIEW.p14} className={cnRegistrationPage('err')}>
-          {fetchError.extra ?? fetchError.error}
+    <main className={cnRegistrationPage('wrapper')}>
+      <form className={cnRegistrationPage()} onSubmit={handleSubmit(handleRegistration)}>
+        <Text view={TEXT_VIEW.p20} className={cnRegistrationPage('title')}>
+          Регистрация
         </Text>
-      )}
-      <Button className={cnRegistrationPage('button')} loading={fetchloading}>
-        Зарегистрироваться
-      </Button>
-    </form>
+        <Input
+          {...register('username')}
+          className={cnRegistrationPage('input')}
+          placeholder="Никнейм"
+          label={!!formWatch.username?.length && 'Никнейм'}
+          error={!!fetchError}
+        />
+        <Input
+          {...register('email')}
+          className={cnRegistrationPage('input')}
+          placeholder="Почта"
+          label={!!formWatch.email?.length && 'Почта'}
+          type="email"
+          error={!!fetchError}
+        />
+        <Input
+          {...register('first_name')}
+          className={cnRegistrationPage('input')}
+          placeholder="Имя"
+          label={!!formWatch.first_name?.length && 'Имя'}
+          error={!!fetchError}
+        />
+        <Input
+          {...register('last_name')}
+          className={cnRegistrationPage('input')}
+          placeholder="Фамилия"
+          label={!!formWatch.last_name?.length && 'Фамилия'}
+          error={!!fetchError}
+        />
+        <Input
+          {...register('password')}
+          className={cnRegistrationPage('input')}
+          placeholder="Пароль"
+          label={!!formWatch.password?.length && 'Пароль'}
+          type="password"
+          error={!!fetchError}
+        />
+        <Input
+          {...register('password2')}
+          className={cnRegistrationPage('input')}
+          placeholder="Подтвердите пароль"
+          label={!!formWatch.password2?.length && 'Повторный пароль'}
+          type="password"
+          error={!!fetchError}
+        />
+        {!!fetchError && (
+          <Text view={TEXT_VIEW.p14} className={cnRegistrationPage('err')}>
+            {fetchError.extra ?? fetchError.error}
+          </Text>
+        )}
+        <Button className={cnRegistrationPage('button')} loading={fetchloading}>
+          Зарегистрироваться
+        </Button>
+      </form>
+    </main>
   );
 };
 

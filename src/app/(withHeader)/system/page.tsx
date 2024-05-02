@@ -53,34 +53,7 @@ const Page: React.FC = () => {
     onSuccess: (data) => queryClient.setQueryData([SYSTEMS.RETRIEVE, { user_id: user?.id, system_id: data.id }], data),
   });
 
-  const handleFormSubmit = useCallback(
-    (data: TSystemNew) => {
-      // const data = getValues();
-
-      // type formType = keyof TSystemNew;
-      // const changedFields = Object.keys(dirtyFields).reduce((fields, field) => {
-      //   const formField = field as formType;
-      //   switch (formField) {
-      //     case 'name':
-      //       fields.name = data.name;
-      //       return fields;
-      //     case 'private':
-      //       fields.name = data.name;
-      //       return fields;
-      //     case 'image':
-      //       fields.image = data.image;
-      //       return fields;
-      //     default:
-      //       fields[formField] = data[formField];
-      //       return fields;
-      //   }
-      // }, {} as TSystemNew);
-      console.log(data);
-      //createSystem(data);
-      mutate(data);
-    },
-    [mutate],
-  );
+  const handleFormSubmit = useCallback((data: TSystemNew) => mutate(data), [mutate]);
 
   const formWatch = watch();
 
@@ -125,12 +98,8 @@ const Page: React.FC = () => {
           <div className={cnSystemCreatePage('raw')}>
             <div className={cnSystemCreatePage('column')}>
               <FileUpload {...register('image')} accept="image/*" />
-              <div className={cnSystemCreatePage('checkbox-wrapper')}>
-                <CheckBox
-                  {...register('private')}
-                  checked={formWatch.private}
-                  className={cnSystemCreatePage('checkbox')}
-                />
+              <div className={cnSystemCreatePage('checkbox')}>
+                <CheckBox {...register('private')} checked={formWatch.private} />
                 <Text view={TEXT_VIEW.p18} className={cnSystemCreatePage('checkbox-label')}>
                   Приватная
                 </Text>

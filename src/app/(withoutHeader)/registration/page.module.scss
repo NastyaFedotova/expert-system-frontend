@@ -6,9 +6,22 @@
   gap: $space-s;
   max-width: 400px;
   padding: 24px;
+  margin: 24px;
   background-color: #fff;
   border-radius: $border-radius;
   @include shadow;
+
+  &-wrapper {
+    width: 100%;
+    min-height: 100%;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+
+    display: grid;
+    grid-template-columns: max-content;
+    grid-template-rows: max-content;
+  }
 
   &-input {
     border-color: #006fb7;
