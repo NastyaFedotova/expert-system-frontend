@@ -1,3 +1,4 @@
+'use client'
 import React, { memo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
@@ -8,7 +9,7 @@ import { HISTORIES } from '@/constants';
 import useUserStore from '@/store/userStore';
 import { classname } from '@/utils';
 
-import classes from './HistoryContainer.module.scss';
+import classes from './page.module.scss';
 
 const cnHistory = classname(classes, 'history');
 

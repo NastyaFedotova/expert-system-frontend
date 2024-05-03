@@ -24,13 +24,13 @@ import classes from './page.module.scss';
 
 const cnSystem = classname(classes, 'editor-system');
 
-export type SystemContainerProps = {
+type SystemContainerProps = {
   params: { system_id: number };
 };
 
 const validator: ObjectSchema<TSystemUpdate> = object({
   name: string().required('Обязательное поле').max(128, 'Максимальная длина - 128'),
-  about: string().max(1024, 'Максимальная длина - 1024'),
+  about: string().min(0).max(1024, 'Максимальная длина - 1024'),
   private: boolean().required(),
   image: mixed<FileList>(),
 });
@@ -70,8 +70,14 @@ const SystemContainer: React.FC<SystemContainerProps> = ({ params: { system_id }
   >({
     mutationFn: updateSystem,
     onSuccess: (data) => {
-      console.log([SYSTEMS.RETRIEVE, { user_id: user?.id, system_id: system_id }]);
       queryClient.setQueryData([SYSTEMS.RETRIEVE, { user_id: user?.id, system_id: system_id }], data);
+      queryClient.setQueryData<TSystemsWithPage>(
+        [SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }],
+        (old?: TSystemsWithPage) => ({
+          pages: old?.pages ?? 1,
+          systems: old?.systems ? old.systems.map((system) => (system.id === data.id ? data : system)) : [data],
+        }),
+      );
     },
   });
 
@@ -103,7 +109,7 @@ const SystemContainer: React.FC<SystemContainerProps> = ({ params: { system_id }
             fields.name = data.name;
             return fields;
           case 'private':
-            fields.name = data.name;
+            fields.private = data.private;
             return fields;
           case 'image':
             fields.image = data.image;

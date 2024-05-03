@@ -1,5 +1,4 @@
-const path = require('path');
-
+/** @type {import('next').NextConfig} */
 module.exports = {
   sassOptions: {
     additionalData: `
@@ -8,10 +7,9 @@ module.exports = {
             `,
   },
   images: {
-    domains: ['127.0.0.1'],
     remotePatterns: [
       {
-        protocol: 'http',
+        //protocol: 'http',
         hostname: '127.0.0.1',
         port: '8000',
         pathname: '/api/v1/images/**',

@@ -14,7 +14,7 @@ import useUserStore from '@/store/userStore';
 import { TUserUpdate } from '@/types/user';
 import { classname } from '@/utils';
 
-import classes from './Profile.module.scss';
+import classes from './page.module.scss';
 
 const cnProfile = classname(classes, 'profile');
 

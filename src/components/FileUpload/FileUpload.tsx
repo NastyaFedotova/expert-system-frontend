@@ -63,6 +63,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, InputProps>(
             style={{
               objectFit: 'cover',
             }}
+            quality={100}
             className={cnFileUpload('image')}
           />
         ) : (

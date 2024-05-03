@@ -1,8 +1,9 @@
-.userPage {
+.userPage-layout {
   display: grid;
   grid-template-rows: max-content 1fr;
   grid-template-columns: 100%;
   align-items: center;
+  justify-items: center;
 
   min-height: 100%;
   width: 100%;
@@ -16,7 +17,7 @@
     width: 100%;
   }
 
-  &-chapter {
+  &-section {
     cursor: pointer;
     width: 184px;
     margin-top: 12px;

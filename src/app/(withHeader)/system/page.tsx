@@ -17,7 +17,7 @@ import TextArea from '@/components/TextArea';
 import { SYSTEMS } from '@/constants';
 import useUserStore from '@/store/userStore';
 import { TErrorResponse } from '@/types/error';
-import { TSystem, TSystemNew } from '@/types/systems';
+import { TSystem, TSystemNew, TSystemsWithPage } from '@/types/systems';
 import { classname } from '@/utils';
 
 import classes from './page.module.scss';
@@ -50,7 +50,16 @@ const Page: React.FC = () => {
 
   const { mutate, isPending, error, status, data } = useMutation<TSystem, TErrorResponse, TSystemNew>({
     mutationFn: createSystem,
-    onSuccess: (data) => queryClient.setQueryData([SYSTEMS.RETRIEVE, { user_id: user?.id, system_id: data.id }], data),
+    onSuccess: (data) => {
+      queryClient.setQueryData([SYSTEMS.RETRIEVE, { user_id: user?.id, system_id: data.id }], data);
+      queryClient.setQueryData<TSystemsWithPage>(
+        [SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }],
+        (old?: TSystemsWithPage) => ({
+          pages: old?.pages ?? 1,
+          systems: [data].concat(old?.systems ?? []),
+        }),
+      );
+    },
   });
 
   const handleFormSubmit = useCallback((data: TSystemNew) => mutate(data), [mutate]);

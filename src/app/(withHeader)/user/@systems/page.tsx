@@ -1,3 +1,4 @@
+'use client';
 import React, { memo, useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -10,7 +11,7 @@ import useUserStore from '@/store/userStore';
 import { TSystemsWithPage } from '@/types/systems';
 import { classname } from '@/utils';
 
-import classes from './UserSystems.module.scss';
+import classes from './page.module.scss';
 
 const cnUserProfile = classname(classes, 'user-systems');
 

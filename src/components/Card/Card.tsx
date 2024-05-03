@@ -84,6 +84,7 @@ const Card: React.FC<CardProps> = ({
         style={{
           objectFit: 'cover',
         }}
+        quality={100}
         onError={errorHandler}
       />
       <div className={cnCard('info')}>
