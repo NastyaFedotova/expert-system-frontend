@@ -30,7 +30,7 @@ type SystemContainerProps = {
 
 const validator: ObjectSchema<TSystemUpdate> = object({
   name: string().required('Обязательное поле').max(128, 'Максимальная длина - 128'),
-  about: string().min(0).max(1024, 'Максимальная длина - 1024'),
+  about: string().nullable().max(1024, 'Максимальная длина - 1024'),
   private: boolean().required(),
   image: mixed<FileList>(),
 });

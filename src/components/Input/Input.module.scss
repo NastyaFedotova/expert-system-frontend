@@ -30,7 +30,7 @@
 
   &-container {
     position: relative;
-    display: flex;
+    display: flex !important;
     flex-wrap: nowrap;
     align-items: center;
     width: 100%;

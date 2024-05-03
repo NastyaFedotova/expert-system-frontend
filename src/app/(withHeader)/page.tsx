@@ -16,7 +16,7 @@ const Page: React.FC = async () => {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: [SYSTEMS.GET, { page: 1 }],
-    queryFn: async () => await getSystems({ per_page: 2 }),
+    queryFn: async () => await getSystems({ per_page: 12 }),
   });
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -1,5 +1,5 @@
 export type TErrorResponse = {
   error: string;
-  extra?: string;
+  extra?: string | null;
   status: string;
 };

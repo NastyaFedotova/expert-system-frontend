@@ -20,7 +20,7 @@ const SystemsContainer: React.FC = () => {
 
   const { data, isSuccess, isLoading } = useQuery({
     queryKey: [SYSTEMS.GET, { page: currentPage, name, username }],
-    queryFn: async () => await getSystems({ page: currentPage, name, username, per_page: 2 }),
+    queryFn: async () => await getSystems({ page: currentPage, name, username, per_page: 12 }),
   });
 
   useEffect(() => {

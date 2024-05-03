@@ -53,7 +53,6 @@ const FileUpload = React.forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className={cnFileUpload({ uploaded: !!imagePreview || initImage }) + ` ${className}`}>
-        <div className={cnFileUpload('label')}>Изображение</div>
         {imagePreview || initImage ? (
           <Image
             src={initImage && initialImageUrl ? imageUrl(initialImageUrl) : imagePreview}
@@ -67,12 +66,15 @@ const FileUpload = React.forwardRef<HTMLInputElement, InputProps>(
             className={cnFileUpload('image')}
           />
         ) : (
-          <div className={cnFileUpload('background')}>
-            <UploadIcon width={140} height={140} />
-            <Text tag={TEXT_TAG.div} view={TEXT_VIEW.p16} className={cnFileUpload('text', { error: isError })}>
-              {`${isError ? 'Превышен макс.' : 'Макс.'} размер - ${MAX_SIZE / (1024 * 1024)}МБ`}
-            </Text>
-          </div>
+          <>
+            <div className={cnFileUpload('label')}>Изображение</div>
+            <div className={cnFileUpload('background')}>
+              <UploadIcon width={140} height={140} />
+              <Text tag={TEXT_TAG.div} view={TEXT_VIEW.p16} className={cnFileUpload('text', { error: isError })}>
+                {`${isError ? 'Превышен макс.' : 'Макс.'} размер - ${MAX_SIZE / (1024 * 1024)}МБ`}
+              </Text>
+            </div>
+          </>
         )}
         <label className={cnFileUpload('input-wrapper')}>
           <input {...props} ref={ref} type="file" className={cnFileUpload('input')} onChange={handleOnChange} />

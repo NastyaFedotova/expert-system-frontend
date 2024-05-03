@@ -10,7 +10,7 @@ export type TSystemRequestParams = {
 export type TSystem = {
   id: number;
   user_id: number;
-  about?: string;
+  about?: string | null;
   created_at: string;
   updated_at: string;
   name: string;
@@ -26,7 +26,7 @@ export type TSystemNew = {
 };
 
 export type TSystemUpdate = {
-  about?: string;
+  about?: string | null;
   name?: string;
   private?: boolean;
   image?: FileList;
