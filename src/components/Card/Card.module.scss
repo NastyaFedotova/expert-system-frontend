@@ -43,21 +43,6 @@
     }
   }
 
-  &-editIcon {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    border-radius: 50%;
-    background-color: #fff;
-    padding: 4px;
-    opacity: 0.5;
-    border: 1px solid $border-color;
-
-    &:hover {
-      opacity: 1 !important;
-    }
-  }
-
   &-input {
     width: 250px;
 
@@ -111,6 +96,47 @@
       &:hover {
         background-color: rgba($error, 0.75);
       }
+    }
+  }
+
+  &-popup {
+    background-color: #fff;
+    border-radius: $border-radius;
+    border: 1px solid $border-color;
+    @include shadow;
+    overflow: hidden;
+  }
+
+  &-dotsIcon {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    border-radius: 50%;
+    background-color: #fff;
+    padding: 4px;
+    opacity: 0.5;
+    border: 1px solid $border-color;
+
+    &:hover {
+      opacity: 1 !important;
+    }
+
+    &_active {
+      opacity: 1 !important;
+    }
+  }
+
+  &-options {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: $space-xs;
+    cursor: pointer;
+    padding: 14px;
+
+    &:hover {
+      background-color: $button-primary-bg-hover;
+      color: #fff;
     }
   }
 }

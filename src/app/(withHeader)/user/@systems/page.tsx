@@ -7,6 +7,7 @@ import { deleteSystem, getSystems } from '@/api/services/systems';
 import { Card } from '@/components/Card';
 import { CardSkeleton } from '@/components/CardSkeleton';
 import { SYSTEMS } from '@/constants';
+import useSystemStore from '@/store/systemStore';
 import useUserStore from '@/store/userStore';
 import { TSystemsWithPage } from '@/types/systems';
 import { classname } from '@/utils';
@@ -18,7 +19,7 @@ const cnUserProfile = classname(classes, 'user-systems');
 export const UserSystems: React.FC = () => {
   const router = useRouter();
   const { user } = useUserStore((store) => store);
-
+  const downloadSystemBackup = useSystemStore((store) => store.downloadSystemBackup);
   const { data, isSuccess, isLoading } = useQuery({
     queryKey: [SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }],
     queryFn: async () => await getSystems({ user_id: user?.id, all_types: true }),
@@ -55,7 +56,7 @@ export const UserSystems: React.FC = () => {
     },
   });
 
-  const handleEdit = useCallback((id: number) => router.push(`/system/${id}`), [router]);
+  const handleEdit = useCallback((id: number) => () => router.push(`/system/${id}`), [router]);
   const handleClick = useCallback((id: number) => () => console.log('system to click: ', id), []);
   const handleDelete = useCallback(
     (id: number, password: string) => {
@@ -64,7 +65,10 @@ export const UserSystems: React.FC = () => {
     },
     [mutate],
   );
-
+  const handleDownload = useCallback(
+    (system_id: number) => () => downloadSystemBackup(system_id),
+    [downloadSystemBackup],
+  );
   return (
     <div className={cnUserProfile()}>
       {data?.systems.length &&
@@ -76,11 +80,11 @@ export const UserSystems: React.FC = () => {
             image={system.image_uri}
             title={system.name}
             subtitle={system.about}
-            canEdit
-            onEditClick={handleEdit}
-            canDelete
+            modifiable
+            onEditClick={handleEdit(system.id)}
             onDeleteClick={handleDelete}
             onClick={handleClick(system.id)}
+            onDownloadClick={handleDownload(system.id)}
           />
         ))}
       {isLoading && [...Array(6).keys()].map((index) => <CardSkeleton key={index} />)}

@@ -1,45 +1,27 @@
 import { create } from 'zustand';
 
-import { createSystem } from '@/api/services/systems';
-import { TErrorResponse } from '@/types/error';
-import { TSystem, TSystemNew } from '@/types/systems';
-import { errorParser } from '@/utils';
-
-type SystemStates = {
-  fetchloading: boolean;
-  fetchError?: TErrorResponse;
-  system?: TSystem;
-};
+import { getSystemBackupUrl } from '@/api/services/systems';
 
 type SystemActions = {
-  createSystem: (params: TSystemNew) => void;
-  reset: () => void;
-  clearFetchError: () => void;
+  downloadSystemBackup: (system_id: number) => void;
 };
 
-const initialState: SystemStates = {
-  fetchloading: false,
-  fetchError: undefined,
-};
+export type SystemStore = SystemActions;
 
-export type SystemStore = SystemStates & SystemActions;
-
-const useSystemStore = create<SystemStore>((set) => ({
-  ...initialState,
-  createSystem: async (params: TSystemNew) => {
-    set({ fetchloading: true });
+const useSystemStore = create<SystemStore>(() => ({
+  downloadSystemBackup: async (system_id) => {
     try {
-      const result = await createSystem(params);
-      set({ system: result });
+      const url = await getSystemBackupUrl(system_id);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `backup.isbes`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
     } catch (error) {
       console.log(error);
-      set({ fetchError: errorParser(error) });
-    } finally {
-      set({ fetchloading: false });
     }
   },
-  reset: () => set(initialState),
-  clearFetchError: () => set({ fetchError: undefined }),
 }));
 
 export default useSystemStore;

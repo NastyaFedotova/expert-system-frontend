@@ -5,6 +5,8 @@ import Image from 'next/image';
 
 import Text, { TEXT_TAG, TEXT_VIEW, TEXT_WEIGHT } from '@/components/Text';
 import CloseIcon from '@/icons/CloseIcon';
+import DotsIcon from '@/icons/DotsIcon';
+import DownloadIcon from '@/icons/DownloadIcon';
 import EditIcon from '@/icons/EditIcon';
 import TrashIcon from '@/icons/TrashIcon';
 import defaultImage from '@/public/default-image.png';
@@ -22,10 +24,10 @@ export type CardProps = {
   title: ReactNode;
   subtitle: ReactNode;
   onClick?: MouseEventHandler;
-  canDelete?: boolean;
+  modifiable?: boolean;
   onDeleteClick?: (id: number, password: string) => void;
-  canEdit?: boolean;
-  onEditClick?: (id: number) => void;
+  onEditClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onDownloadClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 };
 
 const cnCard = classname(classes, 'card');
@@ -36,36 +38,34 @@ const Card: React.FC<CardProps> = ({
   image,
   title,
   subtitle,
-  canDelete,
-  canEdit,
+  modifiable,
   onClick,
   onDeleteClick,
   onEditClick,
+  onDownloadClick,
 }: CardProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isOptionOpen, setIsOptionOpen] = useState(false);
   const [isError, setIsError] = useState(false);
   const [password, setPassword] = useState('');
 
-  const closePopup = useCallback(() => {
-    setIsOpen(false);
+  const closeDeletePopup = useCallback(() => {
+    setIsDeleteOpen(false);
     setPassword('');
   }, []);
-  const openPopup = useCallback(() => setIsOpen(true), []);
+  const openDeletePopup = useCallback(() => setIsDeleteOpen(true), []);
+
+  const closeOptionPopup = useCallback(() => setIsOptionOpen(false), []);
+  const openOptionPopup = useCallback(() => setIsOptionOpen(true), []);
+
   const errorHandler = useCallback(() => setIsError(true), []);
   const handleDelete = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
       onDeleteClick?.(id, password);
-      closePopup();
+      closeDeletePopup();
     },
-    [closePopup, id, onDeleteClick, password],
-  );
-  const handleEdit = useCallback(
-    (event: React.MouseEvent<SVGElement>) => {
-      event.stopPropagation();
-      onEditClick?.(id);
-    },
-    [id, onEditClick],
+    [closeDeletePopup, id, onDeleteClick, password],
   );
 
   const onInputChange = useCallback(
@@ -95,41 +95,63 @@ const Card: React.FC<CardProps> = ({
           {subtitle}
         </Text>
       </div>
-      {canDelete && (
-        <Popup
-          trigger={<TrashIcon width={32} height={32} className={cnCard('deleteIcon')} onClick={openPopup} />}
-          open={isOpen}
-          onClose={closePopup}
-          onOpen={openPopup}
-          modal
-          closeOnDocumentClick
-          repositionOnResize
-          closeOnEscape
-        >
-          <div className={cnCard('modal')}>
-            <CloseIcon className={cnCard('closeIcon')} onClick={closePopup} />
-            <Text view={TEXT_VIEW.p20} weight={TEXT_WEIGHT.bold} className={cnCard('modal-text')}>
-              Подтверждение удаления
-            </Text>
-            <Text view={TEXT_VIEW.p16} className={cnCard('modal-text')}>
-              {`Для подтверждения удаления Вам необходимо ввести пароль от вашей учетной записи.`}
-            </Text>
-            <Input
-              value={password}
-              onChange={onInputChange}
-              className={cnCard('input', { modal: true })}
-              required
-              placeholder={'введите пароль'}
-              autoComplete="password"
-              type="password"
-            />
-            <Button className={cnCard('button')} onClick={handleDelete}>
-              Удалить систему
-            </Button>
-          </div>
-        </Popup>
+      {modifiable && (
+        <>
+          <Popup
+            trigger={<TrashIcon width={32} height={32} className={cnCard('deleteIcon')} onClick={openDeletePopup} />}
+            open={isDeleteOpen}
+            modal
+            closeOnDocumentClick
+            repositionOnResize
+            closeOnEscape
+          >
+            <div className={cnCard('modal')}>
+              <CloseIcon className={cnCard('closeIcon')} onClick={closeDeletePopup} />
+              <Text view={TEXT_VIEW.p20} weight={TEXT_WEIGHT.bold} className={cnCard('modal-text')}>
+                Подтверждение удаления
+              </Text>
+              <Text view={TEXT_VIEW.p16} className={cnCard('modal-text')}>
+                {`Для подтверждения удаления Вам необходимо ввести пароль от вашей учетной записи.`}
+              </Text>
+              <Input
+                value={password}
+                onChange={onInputChange}
+                className={cnCard('input', { modal: true })}
+                required
+                placeholder={'введите пароль'}
+                autoComplete="password"
+                type="password"
+              />
+              <Button className={cnCard('button')} onClick={handleDelete}>
+                Удалить систему
+              </Button>
+            </div>
+          </Popup>
+          <Popup
+            open={isOptionOpen}
+            trigger={<DotsIcon width={32} height={32} className={cnCard('dotsIcon', { active: isOptionOpen })} />}
+            position="bottom left"
+            repositionOnResize
+            onClose={closeOptionPopup}
+            onOpen={openOptionPopup}
+          >
+            <div className={cnCard('popup')} onClick={closeOptionPopup}>
+              <div className={cnCard('options')} onClick={onEditClick}>
+                <EditIcon />
+                <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
+                  Редактировать
+                </Text>
+              </div>
+              <a className={cnCard('options')} onClick={onDownloadClick} download="backup.txt">
+                <DownloadIcon />
+                <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
+                  Скачать копию
+                </Text>
+              </a>
+            </div>
+          </Popup>
+        </>
       )}
-      {canEdit && <EditIcon width={32} height={32} className={cnCard('editIcon')} onClick={handleEdit} />}
     </div>
   );
 };
