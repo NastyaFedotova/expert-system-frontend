@@ -1,10 +1,9 @@
 'use client';
 import React, { memo, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { boolean, mixed, object, ObjectSchema, string } from 'yup';
 
 import { createSystem } from '@/api/services/systems';
 import Button from '@/components/Button';
@@ -19,17 +18,11 @@ import useUserStore from '@/store/userStore';
 import { TErrorResponse } from '@/types/error';
 import { TSystem, TSystemNew, TSystemsWithPage } from '@/types/systems';
 import { classname } from '@/utils';
+import { systemNewValidation } from '@/validation/system';
 
 import classes from './page.module.scss';
 
 const cnSystemCreatePage = classname(classes, 'systemCreatePage');
-
-const validator: ObjectSchema<TSystemNew> = object({
-  name: string().required('Обязательное поле').max(128, 'Максимальная длина - 128'),
-  about: string().max(1024, 'Максимальная длина - 1024'),
-  private: boolean().required(),
-  image: mixed(),
-});
 
 const Page: React.FC = () => {
   const router = useRouter();
@@ -43,7 +36,7 @@ const Page: React.FC = () => {
     formState: { errors },
   } = useForm<TSystemNew>({
     defaultValues: { private: true },
-    resolver: yupResolver(validator),
+    resolver: zodResolver(systemNewValidation),
   });
 
   const queryClient = useQueryClient();

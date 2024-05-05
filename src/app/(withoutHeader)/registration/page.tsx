@@ -1,23 +1,34 @@
 'use client';
 import React, { memo, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import Button from '@/components/Button';
+import ErrorPopup from '@/components/ErrorPopup';
 import Input from '@/components/Input';
 import Text, { TEXT_VIEW } from '@/components/Text';
 import useUserStore from '@/store/userStore';
 import { TUserRegistration } from '@/types/user';
 import { classname } from '@/utils';
+import { userRegistrationValidation } from '@/validation/user';
 
 import classes from './page.module.scss';
 
 const cnRegistrationPage = classname(classes, 'registrationPage');
 
 const Page: React.FC = () => {
-  const { register, handleSubmit, watch, clearErrors } = useForm<TUserRegistration & { password2: string }>();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    clearErrors,
+    formState: { errors },
+  } = useForm<TUserRegistration>({ resolver: zodResolver(userRegistrationValidation) });
   const { registrationUser, fetchloading, fetchError, clearFetchError } = useUserStore((store) => store);
   const handleRegistration = useCallback(
-    (data: TUserRegistration & { password2: string }) => registrationUser(data),
+    (data: TUserRegistration) => {
+      registrationUser(data);
+    },
     [registrationUser],
   );
 
@@ -42,45 +53,50 @@ const Page: React.FC = () => {
           className={cnRegistrationPage('input')}
           placeholder="Никнейм"
           label={!!formWatch.username?.length && 'Никнейм'}
-          error={!!fetchError}
+          afterSlot={<ErrorPopup error={errors.username?.message} />}
+          error={!!errors.username}
         />
         <Input
           {...register('email')}
           className={cnRegistrationPage('input')}
           placeholder="Почта"
           label={!!formWatch.email?.length && 'Почта'}
-          type="email"
-          error={!!fetchError}
+          afterSlot={<ErrorPopup error={errors.email?.message} />}
+          error={!!errors.email}
         />
         <Input
           {...register('first_name')}
           className={cnRegistrationPage('input')}
           placeholder="Имя"
           label={!!formWatch.first_name?.length && 'Имя'}
-          error={!!fetchError}
+          afterSlot={<ErrorPopup error={errors.first_name?.message} />}
+          error={!!errors.first_name}
         />
         <Input
           {...register('last_name')}
           className={cnRegistrationPage('input')}
           placeholder="Фамилия"
           label={!!formWatch.last_name?.length && 'Фамилия'}
-          error={!!fetchError}
+          afterSlot={<ErrorPopup error={errors.last_name?.message} />}
+          error={!!errors.last_name}
         />
         <Input
           {...register('password')}
           className={cnRegistrationPage('input')}
           placeholder="Пароль"
           label={!!formWatch.password?.length && 'Пароль'}
+          afterSlot={<ErrorPopup error={errors.password?.message} />}
           type="password"
-          error={!!fetchError}
+          error={!!errors.password}
         />
         <Input
-          {...register('password2')}
+          {...register('password_submit')}
           className={cnRegistrationPage('input')}
           placeholder="Подтвердите пароль"
-          label={!!formWatch.password2?.length && 'Повторный пароль'}
+          label={!!formWatch.password_submit?.length && 'Подтвердите пароль'}
+          afterSlot={<ErrorPopup error={errors.password_submit?.message} />}
           type="password"
-          error={!!fetchError}
+          error={!!errors.password_submit}
         />
         {!!fetchError && (
           <Text view={TEXT_VIEW.p14} className={cnRegistrationPage('err')}>

@@ -25,7 +25,7 @@ type UserStates = {
 
 type UserActions = {
   loginUser: (params: TUserLogin) => void;
-  registrationUser: (params: TUserRegistration & { password2: string }) => void;
+  registrationUser: (params: TUserRegistration) => void;
   updateUser: (params: TUserUpdate) => void;
   loginUserByCookie: () => void;
   logoutUser: () => void;
@@ -80,17 +80,10 @@ const useUserStore = create<UserStore>((set, get) => ({
       set({ fetchloading: false });
     }
   },
-  registrationUser: async (params: TUserRegistration & { password2: string }) => {
+  registrationUser: async (params) => {
     set({ fetchloading: true });
     Cookies.remove('session_id');
     try {
-      if (params.password !== params.password2) {
-        const err: TErrorResponse = {
-          error: 'Пароли не совпадают',
-          status: 'Not HTTP error',
-        };
-        throw JSON.stringify(err);
-      }
       const result = await registrationUserResponse(params);
 
       const session_key = Cookies.get('session_id');

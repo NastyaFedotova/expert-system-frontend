@@ -1,6 +1,7 @@
 'use client';
 import React, { memo, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 
 import Button from '@/components/Button';
@@ -9,13 +10,16 @@ import Text, { TEXT_VIEW } from '@/components/Text';
 import useUserStore from '@/store/userStore';
 import { TUserLogin } from '@/types/user';
 import { classname } from '@/utils';
+import { userLoginValidation } from '@/validation/user';
 
 import classes from './page.module.scss';
 
 const cnLoginPage = classname(classes, 'loginPage');
 
 const Page: React.FC = () => {
-  const { register, handleSubmit, watch, clearErrors } = useForm<TUserLogin>();
+  const { register, handleSubmit, watch, clearErrors } = useForm<TUserLogin>({
+    resolver: zodResolver(userLoginValidation),
+  });
   const { loginUser, fetchloading, fetchError, clearFetchError } = useUserStore((store) => store);
   const handleLogin = useCallback((data: TUserLogin) => loginUser(data), [loginUser]);
 

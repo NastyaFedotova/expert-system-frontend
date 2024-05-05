@@ -1,30 +1,16 @@
-export type TUser = {
-  id: number;
-  email: string;
-  username: string;
-  created_at: string;
-  first_name: string;
-  last_name: string;
-};
+import { z } from 'zod';
 
-export type TUserLogin = {
-  email: string;
-  password: string;
-};
+import {
+  userLoginValidation,
+  userRegistrationValidation,
+  userResponseUpdateValidation,
+  userValidation,
+} from '@/validation/user';
 
-export type TUserRegistration = {
-  email: string;
-  username: string;
-  password: string;
-  first_name: string;
-  last_name: string;
-};
+export type TUser = z.infer<typeof userValidation>;
 
-export type TUserUpdate = {
-  email?: string;
-  username?: string;
-  first_name?: string;
-  last_name?: string;
-  password?: string;
-  new_password?: string;
-};
+export type TUserLogin = z.infer<typeof userLoginValidation>;
+
+export type TUserRegistration = z.infer<typeof userRegistrationValidation>;
+
+export type TUserUpdate = z.infer<typeof userResponseUpdateValidation>;

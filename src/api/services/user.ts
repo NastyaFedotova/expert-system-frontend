@@ -9,10 +9,7 @@ export const loginUserResponse = async (loginData: TUserLogin) => {
 };
 
 export const registrationUserResponse = async (registrationData: TUserRegistration) => {
-  const { data } = await postApiRequest<TUser, TUserRegistration & { is_superuser: boolean }>(`/user/registration`, {
-    ...registrationData,
-    is_superuser: false,
-  });
+  const { data } = await postApiRequest<TUser, TUserRegistration>(`/user/registration`, registrationData);
 
   return data;
 };

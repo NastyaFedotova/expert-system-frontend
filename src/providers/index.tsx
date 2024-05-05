@@ -1,5 +1,5 @@
 'use client';
-import { ReactNode, useEffect, useLayoutEffect } from 'react';
+import { ReactNode, useLayoutEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import Loader from '@/components/Loader';
@@ -12,11 +12,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const { loginUserByCookie, setHooks, isLogin } = useUserStore((store) => store);
-
-  useEffect(() => {
-    loginUserByCookie();
-  }, [loginUserByCookie]);
+  const { setHooks, isLogin } = useUserStore((store) => store);
 
   useLayoutEffect(() => {
     setHooks({ router, searchParams });

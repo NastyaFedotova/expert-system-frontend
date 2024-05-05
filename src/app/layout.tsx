@@ -6,9 +6,6 @@ import { Inter } from 'next/font/google';
 import { Providers } from '@/providers';
 import { classname } from '@/utils';
 
-import 'moment-timezone';
-import 'moment/locale/ru';
-
 import './global.scss';
 import classes from './layout.module.scss';
 
@@ -22,7 +19,6 @@ export const metadata: Metadata = {
 };
 
 moment.locale('ru');
-moment.tz.setDefault('Europe/Moscow');
 
 const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (

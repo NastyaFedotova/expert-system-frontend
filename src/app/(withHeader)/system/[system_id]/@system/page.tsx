@@ -1,9 +1,8 @@
 'use client';
 import React, { memo, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { boolean, mixed, object, ObjectSchema, string } from 'yup';
 
 import { getImage } from '@/api/services/image';
 import { getSystemOne, updateSystem } from '@/api/services/systems';
@@ -19,23 +18,17 @@ import useUserStore from '@/store/userStore';
 import { TErrorResponse } from '@/types/error';
 import { TSystem, TSystemsWithPage, TSystemUpdate } from '@/types/systems';
 import { classname } from '@/utils';
+import { systemUpdateValidation } from '@/validation/system';
 
 import classes from './page.module.scss';
 
 const cnSystem = classname(classes, 'editor-system');
 
-type SystemContainerProps = {
+type PageProps = {
   params: { system_id: number };
 };
 
-const validator: ObjectSchema<TSystemUpdate> = object({
-  name: string().required('Обязательное поле').max(128, 'Максимальная длина - 128'),
-  about: string().nullable().max(1024, 'Максимальная длина - 1024'),
-  private: boolean().required(),
-  image: mixed<FileList>(),
-});
-
-const SystemContainer: React.FC<SystemContainerProps> = ({ params: { system_id } }) => {
+const Page: React.FC<PageProps> = ({ params: { system_id } }) => {
   const queryClient = useQueryClient();
   const user = useUserStore((store) => store.user);
 
@@ -55,7 +48,8 @@ const SystemContainer: React.FC<SystemContainerProps> = ({ params: { system_id }
         const img = await getImage(data.image_uri);
         const dt = new DataTransfer();
         dt.items.add(img);
-        return dt.files;
+        return img;
+        //return dt.files;
       }
     },
     gcTime: 0,
@@ -90,7 +84,7 @@ const SystemContainer: React.FC<SystemContainerProps> = ({ params: { system_id }
     reset,
   } = useForm<TSystemUpdate>({
     defaultValues: { ...data, image },
-    resolver: yupResolver(validator),
+    resolver: zodResolver(systemUpdateValidation),
   });
 
   useEffect(() => {
@@ -182,4 +176,4 @@ const SystemContainer: React.FC<SystemContainerProps> = ({ params: { system_id }
   );
 };
 
-export default memo(SystemContainer);
+export default memo(Page);

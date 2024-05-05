@@ -2,8 +2,7 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Popup from 'reactjs-popup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { object, ObjectSchema, string } from 'yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import Button from '@/components/Button';
 import ErrorPopup from '@/components/ErrorPopup';
@@ -13,19 +12,11 @@ import CloseIcon from '@/icons/CloseIcon';
 import useUserStore from '@/store/userStore';
 import { TUserUpdate } from '@/types/user';
 import { classname } from '@/utils';
+import { userUpdateValidation } from '@/validation/user';
 
 import classes from './page.module.scss';
 
 const cnProfile = classname(classes, 'profile');
-
-const validator: ObjectSchema<TUserUpdate> = object({
-  username: string(),
-  email: string().email('Неправильный формат'),
-  first_name: string(),
-  last_name: string(),
-  new_password: string().matches(/.{8,}/, { message: 'Минимальная длина пароля - 8', excludeEmptyString: true }),
-  password: string(),
-});
 
 const Profile: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +36,7 @@ const Profile: React.FC = () => {
     clearErrors,
   } = useForm<TUserUpdate>({
     defaultValues: { ...user, new_password: '' },
-    resolver: yupResolver(validator),
+    resolver: zodResolver(userUpdateValidation),
   });
 
   const handleFormSubmit = useCallback(() => {
@@ -97,7 +88,7 @@ const Profile: React.FC = () => {
             label={!!formWatch.first_name?.length && 'Имя'}
             placeholder="Имя"
             afterSlot={<ErrorPopup error={errors.first_name?.message} />}
-            error={!!fetchError || !!errors.first_name}
+            error={!!errors.first_name}
           />
           <Input
             {...register('last_name')}
@@ -105,7 +96,7 @@ const Profile: React.FC = () => {
             label={!!formWatch.last_name?.length && 'Фамилия'}
             placeholder="Фамилия"
             afterSlot={<ErrorPopup error={errors.last_name?.message} />}
-            error={!!fetchError || !!errors.last_name}
+            error={!!errors.last_name}
           />
         </div>
         <Input
@@ -122,7 +113,7 @@ const Profile: React.FC = () => {
           placeholder="Почта"
           type="email"
           afterSlot={<ErrorPopup error={errors.email?.message} />}
-          error={!!fetchError || !!errors.email}
+          error={!!errors.email}
         />
         <Input
           {...register('new_password')}
@@ -132,7 +123,7 @@ const Profile: React.FC = () => {
           autoComplete="new-password"
           type="password"
           afterSlot={<ErrorPopup error={errors.new_password?.message} />}
-          error={!!fetchError || !!errors.new_password}
+          error={!!errors.new_password}
         />
         {!!fetchError && (
           <Text view={TEXT_VIEW.p14} className={cnProfile('err')}>
@@ -174,7 +165,11 @@ const Profile: React.FC = () => {
               autoComplete="new-password"
               type="password"
             />
-            <Button className={cnProfile('button')} onClick={handleSubmit(handleFormSubmit)}>
+            <Button
+              className={cnProfile('button')}
+              onClick={handleSubmit(handleFormSubmit)}
+              disabled={!formWatch.password?.length}
+            >
               Подтвердить
             </Button>
           </div>

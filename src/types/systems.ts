@@ -1,3 +1,7 @@
+import { z } from 'zod';
+
+import { systemNewValidation, systemUpdateValidation, systemValidation } from '@/validation/system';
+
 export type TSystemRequestParams = {
   user_id?: number;
   name?: string;
@@ -7,30 +11,11 @@ export type TSystemRequestParams = {
   all_types?: boolean;
 };
 
-export type TSystem = {
-  id: number;
-  user_id: number;
-  about?: string | null;
-  created_at: string;
-  updated_at: string;
-  name: string;
-  private: boolean;
-  image_uri?: string;
-};
+export type TSystem = z.infer<typeof systemValidation>;
 
-export type TSystemNew = {
-  about?: string;
-  name: string;
-  private: boolean;
-  image?: FileList;
-};
+export type TSystemNew = z.infer<typeof systemNewValidation>;
 
-export type TSystemUpdate = {
-  about?: string | null;
-  name?: string;
-  private?: boolean;
-  image?: FileList;
-};
+export type TSystemUpdate = z.infer<typeof systemUpdateValidation>;
 
 export type TSystemDeleteResponseParams = {
   system_id: number;
