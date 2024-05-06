@@ -45,11 +45,7 @@ const Page: React.FC<PageProps> = ({ params: { system_id } }) => {
     queryKey: ['image', data.image_uri],
     queryFn: async () => {
       if (data.image_uri) {
-        const img = await getImage(data.image_uri);
-        const dt = new DataTransfer();
-        dt.items.add(img);
-        return img;
-        //return dt.files;
+        return await getImage(data.image_uri);
       }
     },
     gcTime: 0,
@@ -65,13 +61,19 @@ const Page: React.FC<PageProps> = ({ params: { system_id } }) => {
     mutationFn: updateSystem,
     onSuccess: (data) => {
       queryClient.setQueryData([SYSTEMS.RETRIEVE, { user_id: user?.id, system_id: system_id }], data);
-      queryClient.setQueryData<TSystemsWithPage>(
-        [SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }],
-        (old?: TSystemsWithPage) => ({
-          pages: old?.pages ?? 1,
-          systems: old?.systems ? old.systems.map((system) => (system.id === data.id ? data : system)) : [data],
-        }),
-      );
+      const currentUserSystems = queryClient.getQueryData<TSystemsWithPage>([
+        SYSTEMS.GET_USER,
+        { user_id: user?.id, all_types: true },
+      ]);
+      if (currentUserSystems) {
+        queryClient.setQueryData<TSystemsWithPage>(
+          [SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }],
+          (old?: TSystemsWithPage) => ({
+            pages: old?.pages ?? 1,
+            systems: [data].concat(currentUserSystems.systems),
+          }),
+        );
+      }
     },
   });
 
@@ -82,6 +84,7 @@ const Page: React.FC<PageProps> = ({ params: { system_id } }) => {
     formState: { dirtyFields, errors },
     clearErrors,
     reset,
+    setValue,
   } = useForm<TSystemUpdate>({
     defaultValues: { ...data, image },
     resolver: zodResolver(systemUpdateValidation),
@@ -95,7 +98,7 @@ const Page: React.FC<PageProps> = ({ params: { system_id } }) => {
 
   const handleFormSubmit = useCallback(
     (data: TSystemUpdate) => {
-      type formType = keyof TSystemUpdate;
+      type formType = keyof Omit<TSystemUpdate, 'is_image_removed'>;
       const changedFields = Object.keys(dirtyFields).reduce((fields, field) => {
         const formField = field as formType;
         switch (formField) {
@@ -113,13 +116,18 @@ const Page: React.FC<PageProps> = ({ params: { system_id } }) => {
             return fields;
         }
       }, {} as TSystemUpdate);
+      if (!data.image) {
+        changedFields.is_image_removed = true;
+      }
       mutate({ ...changedFields, system_id: system_id });
     },
     [dirtyFields, mutate, system_id],
   );
 
-  const formWatch = watch();
+  const onDeleteUploadFileClick = useCallback(() => setValue('image', undefined, { shouldDirty: true }), [setValue]);
 
+  const formWatch = watch();
+  
   useEffect(
     () => () => {
       clearErrors();
@@ -141,7 +149,13 @@ const Page: React.FC<PageProps> = ({ params: { system_id } }) => {
         />
         <div className={cnSystem('raw')}>
           <div className={cnSystem('column')}>
-            <FileUpload {...register('image')} accept="image/*" disabled={isPending} initialImageUrl={data.image_uri} />
+            <FileUpload
+              {...register('image')}
+              accept="image/*"
+              disabled={isPending}
+              initialImageUrl={data.image_uri}
+              onDeleteClick={onDeleteUploadFileClick}
+            />
             <div className={cnSystem('checkbox')}>
               <CheckBox {...register('private')} checked={formWatch.private} disabled={isPending} />
               <Text view={TEXT_VIEW.p18} className={cnSystem('checkbox-label')}>

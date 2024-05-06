@@ -20,7 +20,8 @@ export const systemUpdateValidation = systemValidation
     image: z
       .custom<FileList>()
       .optional()
-      .transform((files) => files?.item(0)),
+      .transform((files) => files?.item(0) ?? null),
+    is_image_removed: z.boolean().default(false),
   })
   .partial();
 

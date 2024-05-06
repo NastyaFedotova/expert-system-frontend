@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useRef, useState } from 'react';
 import Image from 'next/image';
 
 import CloseIcon from '@/icons/CloseIcon';
@@ -11,6 +11,7 @@ import classes from './FileUpload.module.scss';
 
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   initialImageUrl?: string;
+  onDeleteClick?: () => void;
 };
 
 const cnFileUpload = classname(classes, 'file-upload');
@@ -18,11 +19,11 @@ const cnFileUpload = classname(classes, 'file-upload');
 const MAX_SIZE = 1024 * 1024;
 
 const FileUpload = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, onChange, initialImageUrl, ...props }, ref) => {
+  ({ className, onChange, onDeleteClick, initialImageUrl, ...props }, ref) => {
     const [initImage, setInitImage] = useState(!!initialImageUrl);
     const [imagePreview, setImagePreview] = useState('');
     const [isError, setIsError] = useState(false);
-
+    const labelInput = useRef<HTMLLabelElement>(null);
     const handleOnChange = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         onChange?.(event);
@@ -49,7 +50,8 @@ const FileUpload = React.forwardRef<HTMLInputElement, InputProps>(
     const deleteImage = useCallback(() => {
       setImagePreview('');
       setInitImage(false);
-    }, []);
+      onDeleteClick?.();
+    }, [onDeleteClick]);
 
     return (
       <div className={cnFileUpload({ uploaded: !!imagePreview || initImage }) + ` ${className}`}>
@@ -76,7 +78,7 @@ const FileUpload = React.forwardRef<HTMLInputElement, InputProps>(
             </div>
           </>
         )}
-        <label className={cnFileUpload('input-wrapper')}>
+        <label className={cnFileUpload('input-wrapper')} ref={labelInput}>
           <input {...props} ref={ref} type="file" className={cnFileUpload('input')} onChange={handleOnChange} />
         </label>
         {(!!imagePreview || initImage) && <CloseIcon className={cnFileUpload('delete')} onClick={deleteImage} />}

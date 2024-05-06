@@ -27,7 +27,7 @@ type UserActions = {
   loginUser: (params: TUserLogin) => void;
   registrationUser: (params: TUserRegistration) => void;
   updateUser: (params: TUserUpdate) => void;
-  loginUserByCookie: () => void;
+  loginUserByCookie: () => Promise<TUser | undefined>;
   logoutUser: () => void;
   setHooks: ({ router, searchParams }: { router?: AppRouterInstance; searchParams: ReadonlyURLSearchParams }) => void;
   reset: () => void;
@@ -70,8 +70,9 @@ const useUserStore = create<UserStore>((set, get) => ({
   },
   loginUserByCookie: async () => {
     set({ fetchloading: true });
+    let result: TUser | undefined;
     try {
-      const result = await userResponse();
+      result = await userResponse();
       set({ isLogin: true, user: result });
     } catch {
       set({ isLogin: false });
@@ -79,6 +80,7 @@ const useUserStore = create<UserStore>((set, get) => ({
     } finally {
       set({ fetchloading: false });
     }
+    return result;
   },
   registrationUser: async (params) => {
     set({ fetchloading: true });
