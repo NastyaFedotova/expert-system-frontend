@@ -127,7 +127,7 @@ const Page: React.FC<PageProps> = ({ params: { system_id } }) => {
   const onDeleteUploadFileClick = useCallback(() => setValue('image', undefined, { shouldDirty: true }), [setValue]);
 
   const formWatch = watch();
-  
+
   useEffect(
     () => () => {
       clearErrors();
