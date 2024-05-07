@@ -68,7 +68,7 @@ const Profile: React.FC = () => {
     },
     [trigger],
   );
-
+  console.log(errors, dirtyFields);
   useEffect(
     () => () => {
       clearFetchError();

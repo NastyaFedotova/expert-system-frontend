@@ -42,7 +42,6 @@ const Card: React.FC<CardProps> = ({
   onClick,
   onDeleteClick,
   onEditClick,
-  onDownloadClick,
 }: CardProps) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isOptionOpen, setIsOptionOpen] = useState(false);
@@ -142,7 +141,7 @@ const Card: React.FC<CardProps> = ({
                   Редактировать
                 </Text>
               </div>
-              <a className={cnCard('options')} onClick={onDownloadClick} download="backup.txt">
+              <a className={cnCard('options')} onClick={undefined} download="backup.txt">
                 <DownloadIcon />
                 <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
                   Скачать копию

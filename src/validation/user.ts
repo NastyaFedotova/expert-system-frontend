@@ -28,9 +28,19 @@ export const userLoginValidation = z.object({
   password: z.string(),
 });
 
-export const userUpdateValidation = userValidation.omit({ id: true, created_at: true }).extend({
-  password: z.string().optional(),
-  new_password: z.string().min(8, 'Минимальная длина - 8').max(24, 'Максимальная длина - 24').optional(),
-});
+export const userResponseUpdateValidation = userValidation
+  .omit({ id: true, created_at: true })
+  .extend({
+    password: z.string(),
+    new_password: z.string().max(24, 'Максимальная длина - 24'),
+  })
+  .partial()
+  .required({ password: true });
 
-export const userResponseUpdateValidation = userUpdateValidation.partial().required({ password: true });
+export const userUpdateValidation = userResponseUpdateValidation
+  .required()
+  .partial({ new_password: true, password: true })
+  .refine((val) => (val.new_password?.length ? val.new_password?.length >= 8 : true), {
+    message: 'Минимальная длина - 8',
+    path: ['new_password'],
+  });

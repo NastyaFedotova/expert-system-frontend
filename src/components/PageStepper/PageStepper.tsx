@@ -2,7 +2,7 @@
 import React, { memo, useCallback } from 'react';
 
 import { ArrowLeftIcon } from '@/icons';
-import useSystemsPageStore from '@/store/systemsPageStore';
+import useSystemsSearchParamsStore from '@/store/systemsSearchParamsStore';
 import { classname } from '@/utils';
 
 import Text, { TEXT_VIEW } from '../Text';
@@ -10,17 +10,25 @@ import Text, { TEXT_VIEW } from '../Text';
 import classes from './PageStepper.module.scss';
 
 export type PageStepperProps = {
-  classname?: string;
+  classname?: number;
+  current_page?: number;
 };
 
 const cnPageStepper = classname(classes, 'pagestepper');
 
 const PageStepper: React.FC<PageStepperProps> = ({ classname }) => {
-  const { currentPage, pagesCount, setCurrentPage } = useSystemsPageStore((store) => store);
-  const getPageHandle = useCallback((page: number) => () => setCurrentPage(page), [setCurrentPage]);
+  const { currentPage, pagesCount, setSearchParamsPage } = useSystemsSearchParamsStore((store) => store);
+  const getPageHandle = useCallback(
+    (page: number) => () =>
+      setSearchParamsPage({
+        currentPage: page,
+      }),
+    [setSearchParamsPage],
+  );
+
   return (
     <>
-      {pagesCount > 1 && (
+      {pagesCount > 1 && currentPage <= pagesCount && (
         <div className={cnPageStepper() + ` ${classname}`}>
           <ArrowLeftIcon
             className={cnPageStepper('icon', { left: true, disabled: 1 === currentPage })}
