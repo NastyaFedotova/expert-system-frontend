@@ -5,3 +5,7 @@ export const mainPageValidation = z.object({
   name: z.string().nullish(),
   username: z.string().nullish(),
 });
+
+export const systemIdValidation = z.object({
+  system_id: z.coerce.number(),
+});

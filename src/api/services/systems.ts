@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import {
   TSystem,
   TSystemDeleteResponseParams,
@@ -14,7 +16,10 @@ export const getSystems = async (params?: TSystemRequestParams): Promise<TSystem
     params,
   });
 
-  return { systems: data.toSorted((a, b) => b.id - a.id), pages: +headers['x-pages'] };
+  return {
+    systems: data.toSorted((a, b) => (moment(b.updated_at).isAfter(a.updated_at) ? 1 : -1)),
+    pages: +headers['x-pages'],
+  };
 };
 
 export const getSystemOne = async (system_id: number): Promise<TSystem> => {

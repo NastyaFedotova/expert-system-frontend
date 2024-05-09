@@ -1,0 +1,45 @@
+.editor-attributes {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+
+  &-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 24px;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 76px;
+  }
+
+  &-newAttr {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: $space-s;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    padding: 14px;
+    max-width: 1000px;
+    width: 100%;
+
+    &-input {
+      width: 100%;
+    }
+
+    &-addIcon {
+      color: $brand;
+      cursor: pointer;
+    }
+  }
+
+  &-submitButton {
+    position: fixed;
+    z-index: 100;
+    bottom: 24px;
+  }
+}

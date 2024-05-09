@@ -1,9 +1,11 @@
 'use client';
 import React, { memo, useCallback } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { ArrowLeftIcon } from '@/icons';
 import useSystemsSearchParamsStore from '@/store/systemsSearchParamsStore';
 import { classname } from '@/utils';
+import { mainPageSearchParamsParse } from '@/utils/searchParams';
 
 import Text, { TEXT_VIEW } from '../Text';
 
@@ -17,15 +19,22 @@ export type PageStepperProps = {
 const cnPageStepper = classname(classes, 'pagestepper');
 
 const PageStepper: React.FC<PageStepperProps> = ({ classname }) => {
-  const { currentPage, pagesCount, setSearchParamsPage } = useSystemsSearchParamsStore((store) => store);
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+  const validateParams = mainPageSearchParamsParse(searchParams);
+  const { currentPage, pagesCount, setSystemsSearchParams } = useSystemsSearchParamsStore((store) => store);
   const getPageHandle = useCallback(
-    (page: number) => () =>
-      setSearchParamsPage({
-        currentPage: page,
-      }),
-    [setSearchParamsPage],
-  );
+    (page: number) => () => {
+      const newSearchParams = new URLSearchParams();
+      Object.entries(validateParams).forEach(([key, value]) => value && newSearchParams.set(key, String(value)));
+      newSearchParams.set('page', String(page));
+      router.replace(`${pathname}?${newSearchParams.toString()}`);
 
+      setSystemsSearchParams({ currentPage: page });
+    },
+    [pathname, router, setSystemsSearchParams, validateParams],
+  );
   return (
     <>
       {pagesCount > 1 && currentPage <= pagesCount && (

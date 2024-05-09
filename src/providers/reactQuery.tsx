@@ -9,6 +9,7 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       staleTime: 5 * 60 * 1000,
       gcTime: 5 * 60 * 1000,
+      retry: false,
     },
   },
 });
@@ -16,6 +17,6 @@ const queryClient = new QueryClient({
 export const ReactQueryProvider = ({ children }: { children: ReactNode }) => (
   <QueryClientProvider client={queryClient}>
     {children}
-    <ReactQueryDevtools />
+    <ReactQueryDevtools buttonPosition="bottom-left" />
   </QueryClientProvider>
 );

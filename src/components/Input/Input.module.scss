@@ -14,9 +14,9 @@
     margin-right: $space-xs;
   }
 
-  &:has(+ *) {
-    padding-right: 0;
-  }
+  // &:has(+ *) {
+  //   padding-right: 0;
+  // }
 
   &::placeholder {
     color: $input-placeholder;

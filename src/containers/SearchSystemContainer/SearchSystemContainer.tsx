@@ -1,7 +1,7 @@
 'use client';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import Button from '@/components/Button';
 import Input from '@/components/Input';
@@ -18,19 +18,29 @@ type TSystemSearchForm = Omit<TSystemRequestParams, 'per_page' | 'page'>;
 
 export const SearchSystemContainer: React.FC = () => {
   const searchParams = useSearchParams();
-  const setSearchParams = useSystemsSearchParamsStore((store) => store.setSearchParamsPage);
-  const setSearchParamsPage = useSystemsSearchParamsStore((store) => store.setSearchParamsPage);
-  const validateParams = mainPageSearchParamsParse(searchParams);
+  const pathname = usePathname();
+  const router = useRouter();
+  const { setSearchName, setSearchUsername, setCurrentPage } = useSystemsSearchParamsStore((store) => store);
+  const validateParams = useMemo(() => mainPageSearchParamsParse(searchParams), [searchParams]);
   const { register, handleSubmit, watch } = useForm<TSystemSearchForm>({
     defaultValues: { name: validateParams.name, username: validateParams.username },
   });
 
   const submitButton = useCallback(
     (data: TSystemSearchForm) => {
-      setSearchParams(data);
-      setSearchParamsPage({ currentPage: 1 });
+      const newSearchParams = new URLSearchParams({ page: '1' });
+      if (data.name?.length) {
+        newSearchParams.set('name', data.name);
+        setSearchName(data.name);
+      }
+      if (data.username?.length) {
+        newSearchParams.set('username', data.username);
+        setSearchUsername(data.username);
+      }
+      router.replace(`${pathname}?${newSearchParams.toString()}`);
+      setCurrentPage(1);
     },
-    [setSearchParams, setSearchParamsPage],
+    [pathname, router, setCurrentPage, setSearchName, setSearchUsername],
   );
 
   const formWatch = watch();

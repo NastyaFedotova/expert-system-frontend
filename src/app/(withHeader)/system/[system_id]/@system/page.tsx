@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useEffect } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
@@ -18,6 +18,7 @@ import useUserStore from '@/store/userStore';
 import { TErrorResponse } from '@/types/error';
 import { TSystem, TSystemsWithPage, TSystemUpdate } from '@/types/systems';
 import { classname } from '@/utils';
+import { systemIdValidation } from '@/validation/searchParams';
 import { systemUpdateValidation } from '@/validation/system';
 
 import classes from './page.module.scss';
@@ -28,7 +29,9 @@ type PageProps = {
   params: { system_id: number };
 };
 
-const Page: React.FC<PageProps> = ({ params: { system_id } }) => {
+const Page: React.FC<PageProps> = ({ params }) => {
+  const validateParams = systemIdValidation.safeParse(params);
+  const system_id = useMemo(() => validateParams.data?.system_id ?? -1, [validateParams]);
   const queryClient = useQueryClient();
   const user = useUserStore((store) => store.user);
 
@@ -97,26 +100,27 @@ const Page: React.FC<PageProps> = ({ params: { system_id } }) => {
   }, [data, image, reset, status]);
 
   const handleFormSubmit = useCallback(
-    (data: TSystemUpdate) => {
+    (formData: TSystemUpdate) => {
       type formType = keyof Omit<TSystemUpdate, 'is_image_removed'>;
       const changedFields = Object.keys(dirtyFields).reduce((fields, field) => {
         const formField = field as formType;
         switch (formField) {
           case 'name':
-            fields.name = data.name;
+            fields.name = formData.name;
             return fields;
           case 'private':
-            fields.private = data.private;
+            fields.private = formData.private;
             return fields;
           case 'image':
-            fields.image = data.image;
+            fields.image = formData.image;
             return fields;
           default:
-            fields[formField] = data[formField];
+            fields[formField] = formData[formField];
             return fields;
         }
       }, {} as TSystemUpdate);
-      if (!data.image) {
+
+      if (formData.image === undefined) {
         changedFields.is_image_removed = true;
       }
       mutate({ ...changedFields, system_id: system_id });

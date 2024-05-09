@@ -3,6 +3,7 @@ import { ReactNode, useLayoutEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import Loader from '@/components/Loader';
+import useSystemStore from '@/store/systemStore';
 import useUserStore from '@/store/userStore';
 
 import { PrivateRouterProvider } from './privateRouteProvider';
@@ -13,6 +14,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
   const searchParams = useSearchParams();
 
   const { setHooks, isLogin } = useUserStore((store) => store);
+  const isLoading = useSystemStore((store) => store.isLoading);
 
   useLayoutEffect(() => {
     setHooks({ router, searchParams });
@@ -20,7 +22,9 @@ export const Providers = ({ children }: { children: ReactNode }) => {
 
   return (
     <ReactQueryProvider>
-      <PrivateRouterProvider>{isLogin === undefined ? <Loader sizepx={116} /> : children}</PrivateRouterProvider>
+      <PrivateRouterProvider>
+        {isLogin === undefined || isLoading ? <Loader sizepx={116} /> : children}
+      </PrivateRouterProvider>
     </ReactQueryProvider>
   );
 };

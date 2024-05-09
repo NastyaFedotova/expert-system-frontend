@@ -16,4 +16,11 @@ export enum USER {
   COOKIE = 'user-by-cookie-login',
 }
 
+export enum ATTRIBUTES {
+  GET = 'attributes-get',
+  GET_USER = 'users-attributes',
+  RETRIEVE = 'attributes-retrieve',
+  POST = 'attributes-post',
+}
+
 export const RUS_LETTERS_ONLY = new RegExp(/[^а-яА-Я]/);
