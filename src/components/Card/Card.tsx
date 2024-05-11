@@ -50,6 +50,7 @@ const Card: React.FC<CardProps> = ({
 
   const closeDeletePopup = useCallback(() => {
     setIsDeleteOpen(false);
+    console.log('close');
     setPassword('');
   }, []);
   const openDeletePopup = useCallback(() => setIsDeleteOpen(true), []);
@@ -97,8 +98,10 @@ const Card: React.FC<CardProps> = ({
       {modifiable && (
         <>
           <Popup
-            trigger={<TrashIcon width={32} height={32} className={cnCard('deleteIcon')} onClick={openDeletePopup} />}
+            trigger={<TrashIcon width={32} height={32} className={cnCard('deleteIcon')} />}
             open={isDeleteOpen}
+            onClose={closeDeletePopup}
+            onOpen={openDeletePopup}
             modal
             closeOnDocumentClick
             repositionOnResize

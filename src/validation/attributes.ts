@@ -19,3 +19,5 @@ export const attributeWithAttributeValuesNewValidation = attributeNewValidation.
 });
 
 export const formAttrWithValuesValidation = z.object({ formData: z.array(attributeWithAttributeValuesValidation) });
+
+export const attributeUpdateValidation = attributeValidation.omit({ system_id: true });

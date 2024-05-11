@@ -1,17 +1,24 @@
 'use client';
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 
-import { getAttributesWithValues } from '@/api/services/attributes';
+import {
+  createAttributesWithValues,
+  deleteAttributes,
+  getAttributesWithValues,
+  updateAttributes,
+} from '@/api/services/attributes';
+import { createAttributesValues, deleteAttributesValues, updateAttributesValues } from '@/api/services/attributeValues';
 import AttributeField from '@/components/AttributeField';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import { ATTRIBUTES } from '@/constants';
 import AddIcon from '@/icons/AddIcon';
 import useUserStore from '@/store/userStore';
-import { TAttributeWithAttributeValues } from '@/types/attributes';
+import { TAttributeUpdate, TAttributeWithAttributeValues, TAttributeWithAttributeValuesNew } from '@/types/attributes';
+import { TAttributeValuesNew, TAttributeValuesUpdate } from '@/types/attributeValues';
 import { classname } from '@/utils';
 import { formAttrWithValuesValidation } from '@/validation/attributes';
 import { systemIdValidation } from '@/validation/searchParams';
@@ -25,61 +32,149 @@ type PageProps = {
 };
 
 const Page: React.FC<PageProps> = ({ params }) => {
-  const validateParams = systemIdValidation.safeParse(params);
-  const system_id = useMemo(() => validateParams.data?.system_id ?? -1, [validateParams.data?.system_id]);
-
+  const queryClient = useQueryClient();
   const user = useUserStore((store) => store.user);
-  const { data } = useSuspenseQuery({
+
+  const [toDelete, setToDelete] = useState({ attributes: [] as number[], attrValues: [] as number[] });
+
+  const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
+
+  const { data, isLoading } = useSuspenseQuery({
     queryKey: [ATTRIBUTES.GET, { user: user?.id, system: system_id }],
     queryFn: () => getAttributesWithValues(system_id),
   });
-
   const {
     control,
     handleSubmit,
-    watch,
-    formState: { errors, dirtyFields },
+    reset,
+    formState: { dirtyFields, isValid },
   } = useForm<{ formData: TAttributeWithAttributeValues[] }>({
     defaultValues: { formData: data },
     resolver: zodResolver(formAttrWithValuesValidation),
   });
+  const { mutate, isPending } = useMutation({
+    mutationFn: (responseList: Promise<unknown>[]) => Promise.allSettled(responseList),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [ATTRIBUTES.GET, { user: user?.id, system: system_id }] }),
+    onSettled: () => setToDelete({ attributes: [], attrValues: [] }),
+  });
 
-  const { fields, append, remove } = useFieldArray({ control, name: 'formData', keyName: 'arrayId' });
+  const { fields, append } = useFieldArray({ control, name: 'formData', keyName: 'arrayId' });
 
   const handleFormSubmit = useCallback(
-    (formData: { formData: TAttributeWithAttributeValues[] }) => console.log(formData),
-    [],
-  );
+    (form: { formData: TAttributeWithAttributeValues[] }) => {
+      const attrUpdate: TAttributeUpdate[] = [];
+      const attrValueUpdate: TAttributeValuesUpdate[] = [];
+      const attrNew: TAttributeWithAttributeValuesNew[] = [];
+      const attrValueNew: TAttributeValuesNew[] = [];
+      const attrValueDelete: number[] = [];
 
-  const formWatch = watch();
-  console.log(data, errors, dirtyFields, formWatch);
+      form.formData.forEach((attribute, attrIndex) => {
+        const newValuesNewAttribute: string[] = [];
+        attribute.values.forEach((attrValue, attrValueIndex) => {
+          if (!toDelete.attrValues.includes(attrValue.id)) {
+            if (attrValue.id === -1) {
+              if (attrValue.attribute_id === -1) {
+                newValuesNewAttribute.push(attrValue.value);
+              } else {
+                attrValueNew.push({ attribute_id: attrValue.attribute_id, value: attrValue.value });
+              }
+            }
+            if (
+              !dirtyFields.formData?.[attrIndex]?.values?.[attrValueIndex]?.id &&
+              dirtyFields.formData?.[attrIndex]?.values?.[attrValueIndex]?.value
+            ) {
+              attrValueUpdate.push({ id: attrValue.id, value: attrValue.value });
+            }
+          } else if (!toDelete.attributes.includes(attribute.id)) {
+            attrValueDelete.push(attrValue.id);
+          }
+        });
+        if (!toDelete.attributes.includes(attribute.id)) {
+          if (attribute.id === -1) {
+            attrNew.push({ system_id: attribute.system_id, name: attribute.name, values_name: newValuesNewAttribute });
+          }
+          if (!dirtyFields.formData?.[attrIndex]?.id && dirtyFields.formData?.[attrIndex]?.name) {
+            attrUpdate.push({ id: attribute.id, name: attribute.name });
+          }
+        }
+      });
+
+      const responses = [];
+      if (attrNew.length) {
+        responses.push(createAttributesWithValues(attrNew));
+      }
+      if (attrUpdate.length) {
+        responses.push(updateAttributes(attrUpdate));
+      }
+      if (attrValueNew.length) {
+        responses.push(createAttributesValues(attrValueNew));
+      }
+      if (attrValueUpdate.length) {
+        responses.push(updateAttributesValues(attrValueUpdate));
+      }
+      if (toDelete.attributes.length) {
+        responses.push(deleteAttributes(toDelete.attributes));
+      }
+      if (attrValueDelete.length) {
+        responses.push(deleteAttributesValues(attrValueDelete));
+      }
+
+      mutate(responses);
+    },
+    [dirtyFields, mutate, toDelete],
+  );
   const handleAddAttr = useCallback(
     () => append({ id: -1, system_id: system_id, name: '', values: [] }),
     [append, system_id],
   );
+  const handleDeleteAttr = useCallback(
+    (attrId: number) => () =>
+      setToDelete((prev) => ({ attributes: prev.attributes.concat(attrId), attrValues: prev.attrValues })),
+    [],
+  );
+  const handleDeleteAttrValue = useCallback((attrValueId: number) => {
+    console.log(attrValueId);
+    setToDelete((prev) => ({ attributes: prev.attributes, attrValues: prev.attrValues.concat(attrValueId) }));
+  }, []);
 
-  const handleDeleteAttr = useCallback((attrIndex: number) => () => remove(attrIndex), [remove]);
+  useEffect(() => reset({ formData: data }), [data, reset]);
 
   return (
     <main className={cnAttributes()}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className={cnAttributes('form')}>
         {fields.map((attribute, index) => (
-          <AttributeField
-            key={attribute.arrayId}
-            attributeId={attribute.id}
-            control={control}
-            index={index}
-            onDelete={handleDeleteAttr(index)}
-          />
+          <>
+            {toDelete.attributes.includes(attribute.id) ? (
+              <span key={attribute.arrayId} style={{ display: 'none' }} />
+            ) : (
+              <AttributeField
+                key={attribute.arrayId}
+                attributeId={attribute.id}
+                control={control}
+                index={index}
+                onDelete={handleDeleteAttr(attribute.id)}
+                onAttributeValueDelete={handleDeleteAttrValue}
+                deletedSubFieldIds={toDelete.attrValues}
+              />
+            )}
+          </>
         ))}
         <div className={cnAttributes('newAttr')}>
           <AddIcon width={30} height={30} className={cnAttributes('newAttr-addIcon')} onClick={handleAddAttr} />
           <Input className={cnAttributes('newAttr-input')} onClick={handleAddAttr} placeholder="Новый атрибут" />
         </div>
-        <Button className={cnAttributes('submitButton')}>Сохранить</Button>
+        <div className={cnAttributes('loadingScreen', { enabled: isLoading || isPending })} />
+        <Button
+          className={cnAttributes('submitButton')}
+          disabled={!isValid || isLoading || isPending}
+          loading={isLoading || isPending}
+        >
+          Сохранить
+        </Button>
       </form>
     </main>
   );
 };
-// я юблю никиту гордеева сииииииииииииииииииииииииильно!!
+// я люблю никиту гордеева сииииииииииииииииииииииииильно!!
 export default memo(Page);

@@ -31,9 +31,8 @@ const Page: React.FC = () => {
     register,
     handleSubmit,
     watch,
-    trigger,
     clearErrors,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<TSystemNew>({
     defaultValues: { private: true },
     resolver: zodResolver(systemNewValidation),
@@ -59,14 +58,6 @@ const Page: React.FC = () => {
 
   const formWatch = watch();
 
-  const emptySubmit = useCallback(
-    (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      trigger();
-    },
-    [trigger],
-  );
-
   useEffect(() => {
     if (status === 'success') {
       router.push(`/system/${data.id}`);
@@ -88,7 +79,7 @@ const Page: React.FC = () => {
         </Text>
       </header>
       <main>
-        <form onSubmit={handleSubmit(handleFormSubmit)} className={cnSystemCreatePage('form')} onChange={emptySubmit}>
+        <form onSubmit={handleSubmit(handleFormSubmit)} className={cnSystemCreatePage('form')}>
           <Input
             {...register('name')}
             placeholder="Название системы"
@@ -121,7 +112,7 @@ const Page: React.FC = () => {
               {error.extra ?? error.error}
             </Text>
           )}
-          <Button className={cnSystemCreatePage('button')} disabled={!!Object.keys(errors).length} loading={isPending}>
+          <Button className={cnSystemCreatePage('button')} disabled={!isValid} loading={isPending}>
             Cоздать систему
           </Button>
         </form>

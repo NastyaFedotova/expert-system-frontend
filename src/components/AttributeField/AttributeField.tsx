@@ -20,18 +20,36 @@ type AttributeFieldProps = {
     formData: TAttributeWithAttributeValues[];
   }>;
   onDelete: () => void;
+  onAttributeValueDelete: (attrValueId: number) => void;
+  deletedSubFieldIds: number[];
 };
 
 const cnFields = classname(classes, 'fieldWithFields');
 
-const AttributeField: React.FC<AttributeFieldProps> = ({ control, index, attributeId, onDelete }) => {
+const AttributeField: React.FC<AttributeFieldProps> = ({
+  control,
+  index,
+  attributeId,
+  onDelete,
+  onAttributeValueDelete,
+  deletedSubFieldIds,
+}) => {
   const {
     field,
     fieldState: { error },
   } = useController({ control, name: `formData.${index}.name` });
-  const { fields, remove, append } = useFieldArray({ control, name: `formData.${index}.values` });
+  const { fields, append, remove } = useFieldArray({ control, name: `formData.${index}.values`, keyName: 'arrayId' });
 
-  const handleDeleteAttrValue = useCallback((attrValueIndex: number) => () => remove(attrValueIndex), [remove]);
+  const handleDeleteAttrValue = useCallback(
+    (attrValueId: number, attrValueIndex: number) => () => {
+      if (attrValueId === -1) {
+        remove(attrValueIndex);
+      } else {
+        onAttributeValueDelete(attrValueId);
+      }
+    },
+    [onAttributeValueDelete, remove],
+  );
   const handleAddAttrValue = useCallback(
     () => append({ id: -1, attribute_id: attributeId, value: '' }),
     [append, attributeId],
@@ -50,15 +68,21 @@ const AttributeField: React.FC<AttributeFieldProps> = ({ control, index, attribu
       />
       <div className={cnFields('attrValues')}>
         {fields.map((attrValue, attrValueIndex) => (
-          <AttrValue
-            key={attrValue.id}
-            control={control}
-            attrIndex={index}
-            attrValueIndex={attrValueIndex}
-            onDeleteClick={handleDeleteAttrValue(attrValueIndex)}
-          />
+          <>
+            {deletedSubFieldIds.includes(attrValue.id) ? (
+              <span key={attrValue.arrayId} style={{ display: 'none' }} />
+            ) : (
+              <AttrValue
+                key={attrValue.arrayId}
+                control={control}
+                attrIndex={index}
+                attrValueIndex={attrValueIndex}
+                onDeleteClick={handleDeleteAttrValue(attrValue.id, attrValueIndex)}
+              />
+            )}
+          </>
         ))}
-        <div className={cnFields('newValue')}>
+        <div className={cnFields('newValue')} key="new-attrValue">
           <AddIcon width={30} height={30} className={cnFields('newValue-addIcon')} onClick={handleAddAttrValue} />
           <Input
             className={cnFields('newValue-input')}

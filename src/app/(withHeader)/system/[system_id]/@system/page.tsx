@@ -30,10 +30,10 @@ type PageProps = {
 };
 
 const Page: React.FC<PageProps> = ({ params }) => {
-  const validateParams = systemIdValidation.safeParse(params);
-  const system_id = useMemo(() => validateParams.data?.system_id ?? -1, [validateParams]);
   const queryClient = useQueryClient();
   const user = useUserStore((store) => store.user);
+
+  const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
 
   const { data } = useSuspenseQuery({
     queryKey: [SYSTEMS.RETRIEVE, { user_id: user?.id, system_id: system_id }],
@@ -84,7 +84,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
     register,
     watch,
     handleSubmit,
-    formState: { dirtyFields, errors },
+    formState: { dirtyFields, errors, isValid },
     clearErrors,
     reset,
     setValue,
@@ -93,11 +93,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
     resolver: zodResolver(systemUpdateValidation),
   });
 
-  useEffect(() => {
-    if (status === 'success') {
-      reset({ ...data, image });
-    }
-  }, [data, image, reset, status]);
+  const formWatch = watch();
 
   const handleFormSubmit = useCallback(
     (formData: TSystemUpdate) => {
@@ -127,10 +123,13 @@ const Page: React.FC<PageProps> = ({ params }) => {
     },
     [dirtyFields, mutate, system_id],
   );
-
   const onDeleteUploadFileClick = useCallback(() => setValue('image', undefined, { shouldDirty: true }), [setValue]);
 
-  const formWatch = watch();
+  useEffect(() => {
+    if (status === 'success') {
+      reset({ ...data, image });
+    }
+  }, [data, image, reset, status]);
 
   useEffect(
     () => () => {
@@ -184,7 +183,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
         )}
         <Button
           className={cnSystem('button')}
-          disabled={!Object.keys(dirtyFields).length || !!Object.keys(errors).length}
+          disabled={!Object.keys(dirtyFields).length || !isValid}
           loading={isPending}
         >
           Сохранить изменения

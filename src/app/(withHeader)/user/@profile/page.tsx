@@ -32,7 +32,7 @@ const Profile: React.FC = () => {
     handleSubmit,
     trigger,
     resetField,
-    formState: { dirtyFields, errors },
+    formState: { dirtyFields, errors, isValid },
     clearErrors,
   } = useForm<TUserUpdate>({
     defaultValues: { ...user, new_password: '' },
@@ -135,7 +135,7 @@ const Profile: React.FC = () => {
             <Button
               className={cnProfile('button')}
               type="button"
-              disabled={!Object.keys(dirtyFields).length || !!Object.keys(errors).length}
+              disabled={!Object.keys(dirtyFields).length || !isValid}
               loading={fetchloading}
             >
               Сохранить изменения
