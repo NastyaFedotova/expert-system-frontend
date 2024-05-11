@@ -1,0 +1,59 @@
+.fieldWithFields {
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  padding: 14px;
+  max-width: 1000px;
+  width: 100%;
+  position: relative;
+
+  &-input {
+    width: 100%;
+  }
+
+  &-newValue {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: $space-s;
+    padding: $space-s 0 0 0;
+    max-width: 1000px;
+    width: 100%;
+
+    &-input {
+      width: 100%;
+    }
+
+    &-addIcon {
+      color: $brand;
+      cursor: pointer;
+    }
+  }
+
+  &-delete {
+    position: absolute;
+
+    top: -12px;
+    right: -12px;
+    color: $error;
+    cursor: pointer;
+    background-color: $project-bg;
+    border-radius: 50%;
+  }
+
+  &-checkbox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+
+    &-input {
+      width: 20px;
+      height: 20px;
+    }
+
+    &-label {
+      margin: 0;
+    }
+  }
+}

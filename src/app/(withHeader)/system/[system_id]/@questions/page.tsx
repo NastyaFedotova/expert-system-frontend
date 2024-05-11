@@ -1,0 +1,215 @@
+'use client';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+
+import { createAnswers, deleteAnswers, updateAnswers } from '@/api/services/answers';
+import {
+  createQuestionsWithAnswers,
+  deleteQuestions,
+  getQuestionsWithAnswers,
+  updateQuestions,
+} from '@/api/services/questions';
+import Button from '@/components/Button';
+import Input from '@/components/Input';
+import QuestionField from '@/components/QuestionField';
+import { QUESTIONS } from '@/constants';
+import AddIcon from '@/icons/AddIcon';
+import useUserStore from '@/store/userStore';
+import { TAnswersNew, TAnswersUpdate } from '@/types/answers';
+import { TQuestionsUpdate, TQuestionsWithAnswersForm, TQuestionsWithAnswersNew } from '@/types/questions';
+import { classname } from '@/utils';
+import { formQuestionWithAnswersValidation } from '@/validation/questions';
+import { systemIdValidation } from '@/validation/searchParams';
+
+import classes from './page.module.scss';
+
+const cnQuestions = classname(classes, 'editor-questions');
+
+type PageProps = {
+  params: { system_id: number };
+};
+
+const Page: React.FC<PageProps> = ({ params }) => {
+  const queryClient = useQueryClient();
+  const user = useUserStore((store) => store.user);
+
+  const [toDelete, setToDelete] = useState({ questions: [] as number[], answers: [] as number[] });
+
+  const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
+
+  const { data, isLoading } = useSuspenseQuery({
+    queryKey: [QUESTIONS.GET, { user: user?.id, system: system_id }],
+    queryFn: () => getQuestionsWithAnswers(system_id),
+  });
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { dirtyFields, isValid },
+  } = useForm<TQuestionsWithAnswersForm>({
+    defaultValues: { formData: data },
+    resolver: zodResolver(formQuestionWithAnswersValidation),
+  });
+  const { mutate, isPending } = useMutation({
+    mutationFn: (responseList: Promise<unknown>[]) => Promise.allSettled(responseList),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: [QUESTIONS.GET, { user: user?.id, system: system_id }] }),
+    onSettled: () => setToDelete({ questions: [], answers: [] }),
+  });
+
+  const { fields, append, remove } = useFieldArray({ control, name: 'formData', keyName: 'arrayId' });
+  const formWatch = watch();
+
+  const isFormDirty = useMemo(
+    () => !!dirtyFields.formData?.length || !!toDelete.answers.length || !!toDelete.questions.length,
+    [dirtyFields.formData, toDelete],
+  );
+  console.log(formWatch, !!dirtyFields.formData?.length, isFormDirty);
+  const handleFormSubmit = useCallback(
+    (form: TQuestionsWithAnswersForm) => {
+      console.log(form);
+      const questionsUpdate: TQuestionsUpdate[] = [];
+      const answersUpdate: TAnswersUpdate[] = [];
+      const questionsNew: TQuestionsWithAnswersNew[] = [];
+      const answersNew: TAnswersNew[] = [];
+      const questionsDelete: number[] = [];
+      const answersDelete: number[] = [];
+
+      form.formData.forEach((question, questionIndex) => {
+        const newAnswersNewQuestions: string[] = [];
+
+        question.answers.forEach((answer, answerIndex) => {
+          switch (true) {
+            case toDelete.questions.includes(question.id):
+              questionsDelete.push(question.id);
+              return;
+            case !question.with_chooses:
+              answersDelete.push(answer.id);
+              return;
+            case !toDelete.answers.includes(answer.id):
+              if (answer.id === -1) {
+                if (answer.question_id === -1) {
+                  newAnswersNewQuestions.push(answer.body);
+                } else {
+                  answersNew.push({ question_id: answer.question_id, body: answer.body });
+                }
+              }
+              if (
+                !dirtyFields.formData?.[questionIndex]?.answers?.[answerIndex]?.id &&
+                dirtyFields.formData?.[questionIndex]?.answers?.[answerIndex]?.body
+              ) {
+                answersUpdate.push({ id: answer.id, body: answer.body });
+              }
+              return;
+            default:
+              answersDelete.push(answer.id);
+              return;
+          }
+        });
+
+        if (!toDelete.questions.includes(question.id)) {
+          if (question.id === -1) {
+            questionsNew.push({
+              system_id: question.system_id,
+              body: question.body,
+              with_chooses: question.with_chooses,
+              answers_body: newAnswersNewQuestions,
+            });
+          }
+          if (
+            !dirtyFields.formData?.[questionIndex]?.id &&
+            (dirtyFields.formData?.[questionIndex]?.body || dirtyFields.formData?.[questionIndex]?.with_chooses)
+          ) {
+            questionsUpdate.push({ id: question.id, body: question.body, with_chooses: question.with_chooses });
+          }
+        }
+      });
+
+      const responses = [];
+      if (questionsNew.length) {
+        responses.push(createQuestionsWithAnswers(questionsNew));
+      }
+      if (questionsUpdate.length) {
+        responses.push(updateQuestions(questionsUpdate));
+      }
+      if (answersNew.length) {
+        responses.push(createAnswers(answersNew));
+      }
+      if (answersUpdate.length) {
+        responses.push(updateAnswers(answersUpdate));
+      }
+      if (questionsDelete.length) {
+        responses.push(deleteQuestions(questionsDelete));
+      }
+      if (answersDelete.length) {
+        responses.push(deleteAnswers(answersDelete));
+      }
+
+      mutate(responses);
+    },
+    [dirtyFields, mutate, toDelete],
+  );
+  const handleAddQuestion = useCallback(
+    () => append({ id: -1, system_id: system_id, body: '', with_chooses: true, answers: [] }),
+    [append, system_id],
+  );
+  const handleDeleteQuestion = useCallback(
+    (questionId: number, questionIndex: number) => () => {
+      if (questionId === -1) {
+        remove(questionIndex);
+      } else {
+        setToDelete((prev) => ({ questions: prev.questions.concat(questionId), answers: prev.answers }));
+      }
+    },
+    [remove],
+  );
+  const handleDeleteAnswer = useCallback(
+    (AnswerId: number) =>
+      setToDelete((prev) => ({ questions: prev.questions, answers: prev.answers.concat(AnswerId) })),
+    [],
+  );
+
+  useEffect(() => reset({ formData: data }), [data, reset]);
+
+  return (
+    <main className={cnQuestions()}>
+      <form onSubmit={handleSubmit(handleFormSubmit)} className={cnQuestions('form')}>
+        {fields.map((question, questionIndex) => (
+          <>
+            {toDelete.questions.includes(question.id) ? (
+              <span key={question.arrayId} style={{ display: 'none' }} />
+            ) : (
+              <QuestionField
+                key={question.arrayId}
+                questionId={question.id}
+                control={control}
+                questionIndex={questionIndex}
+                onDelete={handleDeleteQuestion(question.id, questionIndex)}
+                onAnswerDelete={handleDeleteAnswer}
+                deletedSubFieldIds={toDelete.answers}
+              />
+            )}
+          </>
+        ))}
+        <div className={cnQuestions('newQuestion')}>
+          <AddIcon width={30} height={30} className={cnQuestions('newQuestion-addIcon')} onClick={handleAddQuestion} />
+          <Input className={cnQuestions('newQuestion-input')} onClick={handleAddQuestion} placeholder="Новый вопрос" />
+        </div>
+        <div className={cnQuestions('loadingScreen', { enabled: isLoading || isPending })} />
+        <Button
+          className={cnQuestions('submitButton', { visible: isFormDirty })}
+          disabled={!isValid || isLoading || isPending}
+          loading={isLoading || isPending}
+        >
+          Сохранить
+        </Button>
+      </form>
+    </main>
+  );
+};
+
+export default memo(Page);

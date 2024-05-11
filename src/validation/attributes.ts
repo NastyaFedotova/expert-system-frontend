@@ -12,10 +12,8 @@ export const attributeWithAttributeValuesValidation = attributeValidation.extend
   values: z.array(attributeValuesValidation),
 });
 
-export const attributeNewValidation = attributeValidation.omit({ id: true });
-
-export const attributeWithAttributeValuesNewValidation = attributeNewValidation.extend({
-  values_name: z.array(z.string().max(128, 'Максимальная длина - 128')),
+export const attributeWithAttributeValuesNewValidation = attributeValidation.omit({ id: true }).extend({
+  values_name: z.array(z.string().min(1, 'Поле не может быть пустым').max(128, 'Максимальная длина - 128')),
 });
 
 export const formAttrWithValuesValidation = z.object({ formData: z.array(attributeWithAttributeValuesValidation) });

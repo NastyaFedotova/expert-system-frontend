@@ -59,7 +59,12 @@ const Page: React.FC<PageProps> = ({ params }) => {
     onSettled: () => setToDelete({ attributes: [], attrValues: [] }),
   });
 
-  const { fields, append } = useFieldArray({ control, name: 'formData', keyName: 'arrayId' });
+  const { fields, append, remove } = useFieldArray({ control, name: 'formData', keyName: 'arrayId' });
+
+  const isFormDirty = useMemo(
+    () => !!dirtyFields.formData?.length || !!toDelete.attrValues.length || !!toDelete.attributes.length,
+    [dirtyFields, toDelete],
+  );
 
   const handleFormSubmit = useCallback(
     (form: { formData: TAttributeWithAttributeValues[] }) => {
@@ -129,9 +134,14 @@ const Page: React.FC<PageProps> = ({ params }) => {
     [append, system_id],
   );
   const handleDeleteAttr = useCallback(
-    (attrId: number) => () =>
-      setToDelete((prev) => ({ attributes: prev.attributes.concat(attrId), attrValues: prev.attrValues })),
-    [],
+    (attrId: number, attrIndex: number) => () => {
+      if (attrId === -1) {
+        remove(attrIndex);
+      } else {
+        setToDelete((prev) => ({ attributes: prev.attributes.concat(attrId), attrValues: prev.attrValues }));
+      }
+    },
+    [remove],
   );
   const handleDeleteAttrValue = useCallback((attrValueId: number) => {
     console.log(attrValueId);
@@ -143,7 +153,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
   return (
     <main className={cnAttributes()}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className={cnAttributes('form')}>
-        {fields.map((attribute, index) => (
+        {fields.map((attribute, attrIndex) => (
           <>
             {toDelete.attributes.includes(attribute.id) ? (
               <span key={attribute.arrayId} style={{ display: 'none' }} />
@@ -152,8 +162,8 @@ const Page: React.FC<PageProps> = ({ params }) => {
                 key={attribute.arrayId}
                 attributeId={attribute.id}
                 control={control}
-                index={index}
-                onDelete={handleDeleteAttr(attribute.id)}
+                index={attrIndex}
+                onDelete={handleDeleteAttr(attribute.id, attrIndex)}
                 onAttributeValueDelete={handleDeleteAttrValue}
                 deletedSubFieldIds={toDelete.attrValues}
               />
@@ -166,7 +176,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
         </div>
         <div className={cnAttributes('loadingScreen', { enabled: isLoading || isPending })} />
         <Button
-          className={cnAttributes('submitButton')}
+          className={cnAttributes('submitButton', { visible: isFormDirty })}
           disabled={!isValid || isLoading || isPending}
           loading={isLoading || isPending}
         >

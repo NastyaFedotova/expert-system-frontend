@@ -17,10 +17,11 @@ export enum USER {
 }
 
 export enum ATTRIBUTES {
-  GET = 'attributes-get',
-  GET_USER = 'users-attributes',
-  RETRIEVE = 'attributes-retrieve',
-  POST = 'attributes-post',
+  GET = 'attributes-with-attributeValues-get',
+}
+
+export enum QUESTIONS {
+  GET = 'questions-with-answers-get',
 }
 
 export const RUS_LETTERS_ONLY = new RegExp(/[^а-яА-Я]/);

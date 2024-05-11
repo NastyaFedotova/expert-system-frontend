@@ -41,10 +41,11 @@ const getSection = (param: string | null): Section => {
 type SystemEditorPageLayoutProps = {
   system: React.ReactNode;
   attributes: React.ReactNode;
+  questions: React.ReactNode;
   params: { system_id: number };
 };
 
-const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, params }) => {
+const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, questions, params }) => {
   const validateParams = systemIdValidation.safeParse(params);
   const router = useRouter();
   const user = useUserStore((store) => store.user);
@@ -83,13 +84,13 @@ const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, par
       case Section.OBJECTS:
         return <>objects</>;
       case Section.QUESTIONS:
-        return <>questions</>;
+        return questions;
       case Section.RULES:
         return <>rules</>;
       default:
         return system;
     }
-  }, [attributes, section, system]);
+  }, [attributes, questions, section, system]);
 
   return (
     <div className={cnMainLayout()}>

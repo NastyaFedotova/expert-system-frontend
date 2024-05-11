@@ -7,7 +7,7 @@ export const getAttributesWithValues = async (system_id: number): Promise<TAttri
     params: { system_id },
   });
 
-  return data;
+  return data.sort((a, b) => a.id - b.id);
 };
 
 export const createAttributesWithValues = async (
