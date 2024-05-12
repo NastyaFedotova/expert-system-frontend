@@ -43,7 +43,7 @@ const Page: React.FC = () => {
           {...register('email')}
           className={cnLoginPage('input')}
           placeholder="Почта"
-          label={!!formWatch.email?.length && 'Почта'}
+          label={formWatch.email?.length ? 'Почта' : undefined}
           type="email"
           error={!!fetchError}
         />
@@ -51,7 +51,7 @@ const Page: React.FC = () => {
           {...register('password')}
           className={cnLoginPage('input')}
           placeholder="Пароль"
-          label={!!formWatch.password?.length && 'Пароль'}
+          label={formWatch.password?.length ? 'Пароль' : undefined}
           type="password"
           error={!!fetchError}
         />

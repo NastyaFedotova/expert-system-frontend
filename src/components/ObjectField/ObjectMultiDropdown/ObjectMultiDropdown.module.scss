@@ -11,7 +11,7 @@
     position: absolute;
     border-radius: $border-radius;
     width: 100%;
-    top: calc(52px + $space-xxs);
+    top: calc(52px + 6px);
     background-color: $dropdown-options-bg;
     box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.25);
     z-index: 100;

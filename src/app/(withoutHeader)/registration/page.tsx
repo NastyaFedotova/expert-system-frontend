@@ -52,7 +52,7 @@ const Page: React.FC = () => {
           {...register('username')}
           className={cnRegistrationPage('input')}
           placeholder="Никнейм"
-          label={!!formWatch.username?.length && 'Никнейм'}
+          label={formWatch.username?.length ? 'Никнейм' : undefined}
           afterSlot={<ErrorPopup error={errors.username?.message} />}
           error={!!errors.username}
         />
@@ -60,7 +60,7 @@ const Page: React.FC = () => {
           {...register('email')}
           className={cnRegistrationPage('input')}
           placeholder="Почта"
-          label={!!formWatch.email?.length && 'Почта'}
+          label={formWatch.email?.length ? 'Почта' : undefined}
           afterSlot={<ErrorPopup error={errors.email?.message} />}
           error={!!errors.email}
         />
@@ -68,7 +68,7 @@ const Page: React.FC = () => {
           {...register('first_name')}
           className={cnRegistrationPage('input')}
           placeholder="Имя"
-          label={!!formWatch.first_name?.length && 'Имя'}
+          label={formWatch.first_name?.length ? 'Имя' : undefined}
           afterSlot={<ErrorPopup error={errors.first_name?.message} />}
           error={!!errors.first_name}
         />
@@ -76,7 +76,7 @@ const Page: React.FC = () => {
           {...register('last_name')}
           className={cnRegistrationPage('input')}
           placeholder="Фамилия"
-          label={!!formWatch.last_name?.length && 'Фамилия'}
+          label={formWatch.last_name?.length ? 'Фамилия' : undefined}
           afterSlot={<ErrorPopup error={errors.last_name?.message} />}
           error={!!errors.last_name}
         />
@@ -84,7 +84,7 @@ const Page: React.FC = () => {
           {...register('password')}
           className={cnRegistrationPage('input')}
           placeholder="Пароль"
-          label={!!formWatch.password?.length && 'Пароль'}
+          label={formWatch.password?.length ? 'Пароль' : undefined}
           afterSlot={<ErrorPopup error={errors.password?.message} />}
           type="password"
           error={!!errors.password}
@@ -93,7 +93,7 @@ const Page: React.FC = () => {
           {...register('password_submit')}
           className={cnRegistrationPage('input')}
           placeholder="Подтвердите пароль"
-          label={!!formWatch.password_submit?.length && 'Подтвердите пароль'}
+          label={formWatch.password_submit?.length ? 'Подтвердите пароль' : undefined}
           afterSlot={<ErrorPopup error={errors.password_submit?.message} />}
           type="password"
           error={!!errors.password_submit}

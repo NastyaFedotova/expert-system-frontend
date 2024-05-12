@@ -76,7 +76,7 @@ const ObjectMultiDropdown: React.FC<ObjectMultiDropdownProps> = ({
   return (
     <div className={cnObjectMultiDropdown() + ` ${className}`} ref={dropdownRef}>
       <Input
-        value={inputValue}
+        defaultValue={inputValue}
         viewOnly
         afterSlot={
           <ArrowDownIcon
@@ -87,6 +87,7 @@ const ObjectMultiDropdown: React.FC<ObjectMultiDropdownProps> = ({
         }
         label={attributeName.length > 32 ? attributeName.slice(0, 29).concat('...') : attributeName}
         labelTitle={attributeName}
+        placeholder="Значения атрибута"
         onClick={handleOnClickInput}
       />
       {popoverVisible && (

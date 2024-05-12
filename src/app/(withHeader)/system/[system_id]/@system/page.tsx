@@ -144,7 +144,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
         <Input
           {...register('name')}
           placeholder="Название системы"
-          label={!!formWatch.name?.length && 'Название ситемы'}
+          label={formWatch.name?.length ? 'Название ситемы' : undefined}
           error={!!errors.name}
           afterSlot={<ErrorPopup error={errors.name?.message} />}
           className={cnSystem('input')}

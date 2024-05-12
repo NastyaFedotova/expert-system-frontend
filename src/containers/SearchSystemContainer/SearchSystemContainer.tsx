@@ -50,13 +50,13 @@ export const SearchSystemContainer: React.FC = () => {
       <Input
         {...register('name')}
         placeholder="Название системы"
-        label={!!formWatch.name?.length && 'Название'}
+        label={formWatch.name?.length ? 'Название' : undefined}
         className={cnSearchSystem('input')}
       />
       <Input
         {...register('username')}
         placeholder="Никнейм пользователя"
-        label={!!formWatch.username?.length && 'Никнейм'}
+        label={formWatch.username?.length ? 'Никнейм' : undefined}
         className={cnSearchSystem('input')}
       />
       <Button>Поиск</Button>

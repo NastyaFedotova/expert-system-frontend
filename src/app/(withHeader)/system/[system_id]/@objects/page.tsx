@@ -87,8 +87,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
   });
   const { mutate, isPending } = useMutation({
     mutationFn: (responseList: Promise<unknown>[]) => Promise.allSettled(responseList),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: [ATTRIBUTES.GET, { user: user?.id, system: system_id }] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [OBJECTS.GET, { user: user?.id, system: system_id }] }),
     onSettled: () => setToDelete([]),
   });
 

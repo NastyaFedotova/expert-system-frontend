@@ -85,7 +85,7 @@ const Profile: React.FC = () => {
             {...register('first_name')}
             className={cnProfile('input')}
             autoComplete="off"
-            label={!!formWatch.first_name?.length && 'Имя'}
+            label={formWatch.first_name?.length ? 'Имя' : undefined}
             placeholder="Имя"
             afterSlot={<ErrorPopup error={errors.first_name?.message} />}
             error={!!errors.first_name}
@@ -93,7 +93,7 @@ const Profile: React.FC = () => {
           <Input
             {...register('last_name')}
             className={cnProfile('input')}
-            label={!!formWatch.last_name?.length && 'Фамилия'}
+            label={formWatch.last_name?.length ? 'Фамилия' : undefined}
             placeholder="Фамилия"
             afterSlot={<ErrorPopup error={errors.last_name?.message} />}
             error={!!errors.last_name}
@@ -102,14 +102,14 @@ const Profile: React.FC = () => {
         <Input
           {...register('username')}
           className={cnProfile('input')}
-          label={!!formWatch.username?.length && 'Никнейм'}
+          label={formWatch.username?.length ? 'Никнейм' : undefined}
           placeholder="Никнейм"
           disabled
         />
         <Input
           {...register('email')}
           className={cnProfile('input')}
-          label={!!formWatch.email?.length && 'Почта'}
+          label={formWatch.email?.length ? 'Почта' : undefined}
           placeholder="Почта"
           type="email"
           afterSlot={<ErrorPopup error={errors.email?.message} />}
@@ -118,7 +118,7 @@ const Profile: React.FC = () => {
         <Input
           {...register('new_password')}
           className={cnProfile('input')}
-          label={!!formWatch.new_password?.length && 'Пароль'}
+          label={formWatch.new_password?.length ? 'Пароль' : undefined}
           placeholder="Новый пароль"
           autoComplete="new-password"
           type="password"
