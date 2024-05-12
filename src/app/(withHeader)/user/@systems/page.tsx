@@ -59,10 +59,7 @@ export const UserSystems: React.FC = () => {
   const handleEdit = useCallback((id: number) => () => router.push(`/system/${id}`), [router]);
   const handleClick = useCallback((id: number) => () => console.log('system to click: ', id), []);
   const handleDelete = useCallback(
-    (id: number, password: string) => {
-      console.log('system to delete: ', id, ' ', password);
-      mutate.mutate({ system_id: id, password });
-    },
+    (id: number, password: string) => mutate.mutate({ system_id: id, password }),
     [mutate],
   );
   const handleDownload = useCallback(

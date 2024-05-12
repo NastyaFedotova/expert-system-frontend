@@ -41,16 +41,16 @@ const getSection = (param: string | null): Section => {
 type SystemEditorPageLayoutProps = {
   system: React.ReactNode;
   attributes: React.ReactNode;
+  objects: React.ReactNode;
   questions: React.ReactNode;
   params: { system_id: number };
 };
 
-const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, questions, params }) => {
-  const validateParams = systemIdValidation.safeParse(params);
+const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, objects, questions, params }) => {
   const router = useRouter();
   const user = useUserStore((store) => store.user);
   const getSystem = useSystemStore((store) => store.getSystem);
-  const system_id = useMemo(() => validateParams.data?.system_id ?? -1, [validateParams]);
+  const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
   const queryClient = useQueryClient();
   const { status } = useQuery({
     queryKey: [SYSTEMS.RETRIEVE, { user_id: user?.id, system_id }],
@@ -82,7 +82,7 @@ const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, que
       case Section.ATTRIBUTES:
         return attributes;
       case Section.OBJECTS:
-        return <>objects</>;
+        return objects;
       case Section.QUESTIONS:
         return questions;
       case Section.RULES:
@@ -90,7 +90,7 @@ const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, que
       default:
         return system;
     }
-  }, [attributes, questions, section, system]);
+  }, [attributes, objects, questions, section, system]);
 
   return (
     <div className={cnMainLayout()}>

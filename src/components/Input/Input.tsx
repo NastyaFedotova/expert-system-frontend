@@ -10,21 +10,25 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   /** Слот для иконки справа */
   afterSlot?: React.ReactNode;
   error?: boolean;
-  label?: string | boolean;
+  label?: string;
+  labelTitle?: string;
+  viewOnly?: boolean;
 };
 
 const cnInput = classname(classes, 'input');
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ afterSlot, className, type = 'text', error, label, ...props }, ref) => {
+  ({ afterSlot, className, type = 'text', error, label, labelTitle, viewOnly, ...props }, ref) => {
     return (
       <Text
         tag={TEXT_TAG.div}
         view={TEXT_VIEW.p16}
         className={cnInput('container', { error: !!error }) + ` ${className}`}
       >
-        <div className={cnInput('label', { visible: !!label })}>{label}</div>
-        <input {...props} ref={ref} type={type} className={cnInput()} />
+        <div className={cnInput('label', { visible: !!label })} title={labelTitle}>
+          {label}
+        </div>
+        <input {...props} ref={ref} type={type} className={cnInput({ viewOnly })} />
         {afterSlot}
       </Text>
     );

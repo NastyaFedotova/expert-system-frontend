@@ -1,9 +1,9 @@
-import { TQuestionsUpdate, TQuestionsWithAnswers, TQuestionsWithAnswersNew } from '@/types/questions';
+import { TQuestionUpdate, TQuestionWithAnswers, TQuestionWithAnswersNew } from '@/types/questions';
 
 import { deleteApiRequest, getApiRequest, patchApiRequest, postApiRequest } from '..';
 
-export const getQuestionsWithAnswers = async (system_id: number): Promise<TQuestionsWithAnswers[]> => {
-  const { data } = await getApiRequest<TQuestionsWithAnswers[]>(`/questions`, {
+export const getQuestionsWithAnswers = async (system_id: number): Promise<TQuestionWithAnswers[]> => {
+  const { data } = await getApiRequest<TQuestionWithAnswers[]>(`/questions`, {
     params: { system_id },
   });
 
@@ -11,15 +11,15 @@ export const getQuestionsWithAnswers = async (system_id: number): Promise<TQuest
 };
 
 export const createQuestionsWithAnswers = async (
-  questions: TQuestionsWithAnswersNew[],
-): Promise<TQuestionsWithAnswers[]> => {
-  const { data } = await postApiRequest<TQuestionsWithAnswers[], TQuestionsWithAnswersNew[]>(`/questions`, questions);
+  questions: TQuestionWithAnswersNew[],
+): Promise<TQuestionWithAnswers[]> => {
+  const { data } = await postApiRequest<TQuestionWithAnswers[], TQuestionWithAnswersNew[]>(`/questions`, questions);
 
   return data;
 };
 
-export const updateQuestions = async (questions: TQuestionsUpdate[]): Promise<TQuestionsWithAnswers[]> => {
-  const { data } = await patchApiRequest<TQuestionsWithAnswers[], TQuestionsUpdate[]>(
+export const updateQuestions = async (questions: TQuestionUpdate[]): Promise<TQuestionWithAnswers[]> => {
+  const { data } = await patchApiRequest<TQuestionWithAnswers[], TQuestionUpdate[]>(
     `/questions/multiple_patch`,
     questions,
   );

@@ -1,6 +1,6 @@
 import { number, z } from 'zod';
 
-import { answersValidation } from './answers';
+import { answerValidation } from './answers';
 
 export const questionValidation = z.object({
   id: z.number(),
@@ -10,7 +10,7 @@ export const questionValidation = z.object({
 });
 
 export const questionWithAnswersValidation = questionValidation.extend({
-  answers: z.array(answersValidation),
+  answers: z.array(answerValidation),
 });
 
 export const questionWithAnswersNewValidation = questionValidation.omit({ id: true }).extend({

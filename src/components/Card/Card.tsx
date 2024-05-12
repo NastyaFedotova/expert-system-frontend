@@ -50,7 +50,6 @@ const Card: React.FC<CardProps> = ({
 
   const closeDeletePopup = useCallback(() => {
     setIsDeleteOpen(false);
-    console.log('close');
     setPassword('');
   }, []);
   const openDeletePopup = useCallback(() => setIsDeleteOpen(true), []);

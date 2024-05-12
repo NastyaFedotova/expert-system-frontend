@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
 import {
-  attributeValuesNewValidation,
-  attributeValuesUpdateValidation,
-  attributeValuesValidation,
+  attributeValueNewValidation,
+  attributeValueUpdateValidation,
+  attributeValueValidation,
 } from '@/validation/attributeValues';
 
-export type TAttributeValues = z.infer<typeof attributeValuesValidation>;
+export type TAttributeValue = z.infer<typeof attributeValueValidation>;
 
-export type TAttributeValuesUpdate = z.infer<typeof attributeValuesUpdateValidation>;
+export type TAttributeValueUpdate = z.infer<typeof attributeValueUpdateValidation>;
 
-export type TAttributeValuesNew = z.infer<typeof attributeValuesNewValidation>;
+export type TAttributeValueNew = z.infer<typeof attributeValueNewValidation>;

@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
-import { answersNewValidation, answersUpdateValidation, answersValidation } from '@/validation/answers';
+import { answerNewValidation, answerUpdateValidation, answerValidation } from '@/validation/answers';
 
-export type TAnswers = z.infer<typeof answersValidation>;
+export type TAnswer = z.infer<typeof answerValidation>;
 
-export type TAnswersUpdate = z.infer<typeof answersUpdateValidation>;
+export type TAnswerUpdate = z.infer<typeof answerUpdateValidation>;
 
-export type TAnswersNew = z.infer<typeof answersNewValidation>;
+export type TAnswerNew = z.infer<typeof answerNewValidation>;

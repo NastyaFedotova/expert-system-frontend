@@ -24,4 +24,8 @@ export enum QUESTIONS {
   GET = 'questions-with-answers-get',
 }
 
+export enum OBJECTS {
+  GET = 'objects-with-attributeValues-get',
+}
+
 export const RUS_LETTERS_ONLY = new RegExp(/[^а-яА-Я]/);

@@ -1,0 +1,30 @@
+.multidropdown {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  &-options {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: absolute;
+    border-radius: $border-radius;
+    width: 100%;
+    top: calc(52px + $space-xxs);
+    background-color: $dropdown-options-bg;
+    box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.25);
+  }
+
+  &-option {
+    margin: $space-s $space-xs;
+    cursor: pointer;
+
+    &:hover {
+      color: $text-secondary;
+    }
+  }
+
+  &-arrow {
+    cursor: pointer;
+  }
+}

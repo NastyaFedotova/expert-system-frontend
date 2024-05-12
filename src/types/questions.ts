@@ -7,10 +7,10 @@ import {
   questionWithAnswersValidation,
 } from '@/validation/questions';
 
-export type TQuestionsWithAnswers = z.infer<typeof questionWithAnswersValidation>;
+export type TQuestionWithAnswers = z.infer<typeof questionWithAnswersValidation>;
 
-export type TQuestionsWithAnswersNew = z.infer<typeof questionWithAnswersNewValidation>;
+export type TQuestionWithAnswersNew = z.infer<typeof questionWithAnswersNewValidation>;
 
-export type TQuestionsUpdate = z.infer<typeof questionUpdateValidation>;
+export type TQuestionUpdate = z.infer<typeof questionUpdateValidation>;
 
-export type TQuestionsWithAnswersForm = z.infer<typeof formQuestionWithAnswersValidation>;
+export type TQuestionWithAnswersForm = z.infer<typeof formQuestionWithAnswersValidation>;

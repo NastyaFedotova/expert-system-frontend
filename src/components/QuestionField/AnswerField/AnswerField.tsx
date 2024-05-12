@@ -3,7 +3,7 @@ import { Control, useController } from 'react-hook-form';
 
 import ErrorPopup from '@/components/ErrorPopup';
 import TrashIcon from '@/icons/TrashIcon';
-import { TQuestionsWithAnswersForm } from '@/types/questions';
+import { TQuestionWithAnswersForm } from '@/types/questions';
 import { classname } from '@/utils';
 
 import Input from '../../Input';
@@ -13,7 +13,7 @@ import classes from './AnswerField.module.scss';
 type AttrValueProps = {
   questionIndex: number;
   answerIndex: number;
-  control: Control<TQuestionsWithAnswersForm>;
+  control: Control<TQuestionWithAnswersForm>;
   onDeleteClick: () => void;
 };
 

@@ -18,7 +18,7 @@ import { ATTRIBUTES } from '@/constants';
 import AddIcon from '@/icons/AddIcon';
 import useUserStore from '@/store/userStore';
 import { TAttributeUpdate, TAttributeWithAttributeValues, TAttributeWithAttributeValuesNew } from '@/types/attributes';
-import { TAttributeValuesNew, TAttributeValuesUpdate } from '@/types/attributeValues';
+import { TAttributeValueNew, TAttributeValueUpdate } from '@/types/attributeValues';
 import { classname } from '@/utils';
 import { formAttrWithValuesValidation } from '@/validation/attributes';
 import { systemIdValidation } from '@/validation/searchParams';
@@ -47,7 +47,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
     control,
     handleSubmit,
     reset,
-    formState: { dirtyFields, isValid },
+    formState: { dirtyFields },
   } = useForm<{ formData: TAttributeWithAttributeValues[] }>({
     defaultValues: { formData: data },
     resolver: zodResolver(formAttrWithValuesValidation),
@@ -61,17 +61,23 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   const { fields, append, remove } = useFieldArray({ control, name: 'formData', keyName: 'arrayId' });
 
-  const isFormDirty = useMemo(
-    () => !!dirtyFields.formData?.length || !!toDelete.attrValues.length || !!toDelete.attributes.length,
-    [dirtyFields, toDelete],
-  );
+  const isFormDirty = useMemo(() => {
+    const isDirtyForm = dirtyFields.formData?.some((attribute) => {
+      if (attribute.id || attribute.name || attribute.system_id) {
+        return true;
+      }
+      return attribute.values?.some((value) => Object.values(value).some((val) => val));
+    });
+
+    return isDirtyForm || !!toDelete.attrValues.length || !!toDelete.attributes.length;
+  }, [dirtyFields, toDelete]);
 
   const handleFormSubmit = useCallback(
     (form: { formData: TAttributeWithAttributeValues[] }) => {
       const attrUpdate: TAttributeUpdate[] = [];
-      const attrValueUpdate: TAttributeValuesUpdate[] = [];
+      const attrValueUpdate: TAttributeValueUpdate[] = [];
       const attrNew: TAttributeWithAttributeValuesNew[] = [];
-      const attrValueNew: TAttributeValuesNew[] = [];
+      const attrValueNew: TAttributeValueNew[] = [];
       const attrValueDelete: number[] = [];
 
       form.formData.forEach((attribute, attrIndex) => {
@@ -143,10 +149,11 @@ const Page: React.FC<PageProps> = ({ params }) => {
     },
     [remove],
   );
-  const handleDeleteAttrValue = useCallback((attrValueId: number) => {
-    console.log(attrValueId);
-    setToDelete((prev) => ({ attributes: prev.attributes, attrValues: prev.attrValues.concat(attrValueId) }));
-  }, []);
+  const handleDeleteAttrValue = useCallback(
+    (attrValueId: number) =>
+      setToDelete((prev) => ({ attributes: prev.attributes, attrValues: prev.attrValues.concat(attrValueId) })),
+    [],
+  );
 
   useEffect(() => reset({ formData: data }), [data, reset]);
 
@@ -177,7 +184,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
         <div className={cnAttributes('loadingScreen', { enabled: isLoading || isPending })} />
         <Button
           className={cnAttributes('submitButton', { visible: isFormDirty })}
-          disabled={!isValid || isLoading || isPending}
+          disabled={isLoading || isPending}
           loading={isLoading || isPending}
         >
           Сохранить

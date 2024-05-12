@@ -1,15 +1,15 @@
-import { TAnswers, TAnswersNew, TAnswersUpdate } from '@/types/answers';
+import { TAnswer, TAnswerNew, TAnswerUpdate } from '@/types/answers';
 
 import { deleteApiRequest, patchApiRequest, postApiRequest } from '..';
 
-export const createAnswers = async (answers: TAnswersNew[]): Promise<TAnswers[]> => {
-  const { data } = await postApiRequest<TAnswers[], TAnswersNew[]>(`/answers`, answers);
+export const createAnswers = async (answers: TAnswerNew[]): Promise<TAnswer[]> => {
+  const { data } = await postApiRequest<TAnswer[], TAnswerNew[]>(`/answers`, answers);
 
   return data;
 };
 
-export const updateAnswers = async (answers: TAnswersUpdate[]): Promise<TAnswers[]> => {
-  const { data } = await patchApiRequest<TAnswers[], TAnswersUpdate[]>(`/answers/multiple_patch`, answers);
+export const updateAnswers = async (answers: TAnswerUpdate[]): Promise<TAnswer[]> => {
+  const { data } = await patchApiRequest<TAnswer[], TAnswerUpdate[]>(`/answers/multiple_patch`, answers);
 
   return data;
 };

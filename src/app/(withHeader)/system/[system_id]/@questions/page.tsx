@@ -17,8 +17,8 @@ import QuestionField from '@/components/QuestionField';
 import { QUESTIONS } from '@/constants';
 import AddIcon from '@/icons/AddIcon';
 import useUserStore from '@/store/userStore';
-import { TAnswersNew, TAnswersUpdate } from '@/types/answers';
-import { TQuestionsUpdate, TQuestionsWithAnswersForm, TQuestionsWithAnswersNew } from '@/types/questions';
+import { TAnswerNew, TAnswerUpdate } from '@/types/answers';
+import { TQuestionUpdate, TQuestionWithAnswersForm, TQuestionWithAnswersNew } from '@/types/questions';
 import { classname } from '@/utils';
 import { formQuestionWithAnswersValidation } from '@/validation/questions';
 import { systemIdValidation } from '@/validation/searchParams';
@@ -48,9 +48,8 @@ const Page: React.FC<PageProps> = ({ params }) => {
     control,
     handleSubmit,
     reset,
-    watch,
-    formState: { dirtyFields, isValid },
-  } = useForm<TQuestionsWithAnswersForm>({
+    formState: { dirtyFields },
+  } = useForm<TQuestionWithAnswersForm>({
     defaultValues: { formData: data },
     resolver: zodResolver(formQuestionWithAnswersValidation),
   });
@@ -62,20 +61,23 @@ const Page: React.FC<PageProps> = ({ params }) => {
   });
 
   const { fields, append, remove } = useFieldArray({ control, name: 'formData', keyName: 'arrayId' });
-  const formWatch = watch();
 
-  const isFormDirty = useMemo(
-    () => !!dirtyFields.formData?.length || !!toDelete.answers.length || !!toDelete.questions.length,
-    [dirtyFields.formData, toDelete],
-  );
-  console.log(formWatch, !!dirtyFields.formData?.length, isFormDirty);
+  const isFormDirty = useMemo(() => {
+    const isDirtyForm = dirtyFields.formData?.some((question) => {
+      if (question.id || question.body || question.system_id || question.with_chooses) {
+        return true;
+      }
+      return question.answers?.some((answer) => Object.values(answer).some((val) => val));
+    });
+    return isDirtyForm || !!toDelete.answers.length || !!toDelete.questions.length;
+  }, [dirtyFields.formData, toDelete]);
+
   const handleFormSubmit = useCallback(
-    (form: TQuestionsWithAnswersForm) => {
-      console.log(form);
-      const questionsUpdate: TQuestionsUpdate[] = [];
-      const answersUpdate: TAnswersUpdate[] = [];
-      const questionsNew: TQuestionsWithAnswersNew[] = [];
-      const answersNew: TAnswersNew[] = [];
+    (form: TQuestionWithAnswersForm) => {
+      const questionsUpdate: TQuestionUpdate[] = [];
+      const answersUpdate: TAnswerUpdate[] = [];
+      const questionsNew: TQuestionWithAnswersNew[] = [];
+      const answersNew: TAnswerNew[] = [];
       const questionsDelete: number[] = [];
       const answersDelete: number[] = [];
 
@@ -202,7 +204,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
         <div className={cnQuestions('loadingScreen', { enabled: isLoading || isPending })} />
         <Button
           className={cnQuestions('submitButton', { visible: isFormDirty })}
-          disabled={!isValid || isLoading || isPending}
+          disabled={isLoading || isPending}
           loading={isLoading || isPending}
         >
           Сохранить

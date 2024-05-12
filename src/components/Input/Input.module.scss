@@ -28,6 +28,10 @@
     color: $input-text-focus;
   }
 
+  &_viewOnly {
+    cursor: pointer;
+  }
+
   &-container {
     position: relative;
     display: flex !important;

@@ -1,0 +1,38 @@
+.fieldWithFields {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  padding: 14px;
+  max-width: 600px;
+  min-width: 360px;
+  width: 100%;
+  position: relative;
+
+  &-input {
+    width: 100%;
+  }
+
+  &-attributes {
+    display: flex;
+    flex-direction: column;
+    gap: $space-s;
+  }
+
+  &-line {
+    margin: $space-s -14px;
+    right: 0px;
+    border-top: 1px solid $border-color;
+  }
+
+  &-delete {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    color: $error;
+    cursor: pointer;
+    background-color: $project-bg;
+    border-radius: 50%;
+  }
+}

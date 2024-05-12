@@ -3,7 +3,7 @@ import { Control, useController, useFieldArray } from 'react-hook-form';
 
 import AddIcon from '@/icons/AddIcon';
 import CloseIcon from '@/icons/CloseIcon';
-import { TQuestionsWithAnswersForm } from '@/types/questions';
+import { TQuestionWithAnswersForm } from '@/types/questions';
 import { classname } from '@/utils';
 
 import CheckBox from '../CheckBox';
@@ -18,7 +18,7 @@ import classes from './QuestionField.module.scss';
 type QuestionFieldProps = {
   questionId: number;
   questionIndex: number;
-  control: Control<TQuestionsWithAnswersForm>;
+  control: Control<TQuestionWithAnswersForm>;
   onDelete: () => void;
   onAnswerDelete: (AnswerId: number) => void;
   deletedSubFieldIds: number[];
