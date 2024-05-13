@@ -3,10 +3,12 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Popup from 'reactjs-popup';
 import { zodResolver } from '@hookform/resolvers/zod';
+import dynamic from 'next/dynamic';
 
 import Button from '@/components/Button';
 import ErrorPopup from '@/components/ErrorPopup';
 import Input from '@/components/Input';
+import Loader from '@/components/Loader';
 import Text, { TEXT_VIEW, TEXT_WEIGHT } from '@/components/Text';
 import CloseIcon from '@/icons/CloseIcon';
 import useUserStore from '@/store/userStore';
@@ -18,7 +20,7 @@ import classes from './page.module.scss';
 
 const cnProfile = classname(classes, 'profile');
 
-const Profile: React.FC = () => {
+const Page: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const closePopup = useCallback(() => setIsOpen(false), []);
   const openPopup = useCallback(() => setIsOpen(true), []);
@@ -179,4 +181,4 @@ const Profile: React.FC = () => {
   );
 };
 
-export default memo(Profile);
+export default dynamic(() => Promise.resolve(memo(Page)), { ssr: false, loading: () => <Loader sizepx={116} /> });

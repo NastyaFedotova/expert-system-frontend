@@ -1,10 +1,12 @@
 'use client';
 import React, { memo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import dynamic from 'next/dynamic';
 
 import { getHistories } from '@/api/services/history';
 import { CardSkeleton } from '@/components/CardSkeleton';
 import HistoryCard from '@/components/HistoryCard';
+import Loader from '@/components/Loader';
 import { HISTORIES } from '@/constants';
 import useUserStore from '@/store/userStore';
 import { classname } from '@/utils';
@@ -13,7 +15,7 @@ import classes from './page.module.scss';
 
 const cnHistory = classname(classes, 'history');
 
-const HistoryContainer: React.FC = () => {
+const Page: React.FC = () => {
   const user = useUserStore((store) => store.user);
 
   const { data, isSuccess, isLoading } = useQuery({
@@ -32,4 +34,4 @@ const HistoryContainer: React.FC = () => {
   );
 };
 
-export default memo(HistoryContainer);
+export default dynamic(() => Promise.resolve(memo(Page)), { ssr: false, loading: () => <Loader sizepx={116} /> });

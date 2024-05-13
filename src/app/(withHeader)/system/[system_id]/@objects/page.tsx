@@ -3,6 +3,7 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import dynamic from 'next/dynamic';
 
 import { getAttributesWithValues } from '@/api/services/attributes';
 import {
@@ -17,6 +18,7 @@ import {
 } from '@/api/services/objects';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
+import Loader from '@/components/Loader';
 import ObjectField from '@/components/ObjectField';
 import { ATTRIBUTES, OBJECTS } from '@/constants';
 import AddIcon from '@/icons/AddIcon';
@@ -226,4 +228,4 @@ const Page: React.FC<PageProps> = ({ params }) => {
   );
 };
 
-export default memo(Page);
+export default dynamic(() => Promise.resolve(memo(Page)), { ssr: false, loading: () => <Loader sizepx={116} /> });

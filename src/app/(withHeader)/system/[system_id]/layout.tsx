@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { notFound, useRouter, useSearchParams } from 'next/navigation';
 
@@ -68,6 +68,24 @@ const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, obj
 
   const searchParams = useSearchParams();
   const [section, setSection] = useState<Section>(getSection(searchParams.get('section')));
+
+  useLayoutEffect(() => {
+    if (section !== Section.SYSTEM) {
+      router.prefetch(`/system/${system_id}?section=${Section.SYSTEM}`);
+    }
+    if (section !== Section.ATTRIBUTES) {
+      router.prefetch(`/system/${system_id}?section=${Section.ATTRIBUTES}`);
+    }
+    if (section !== Section.OBJECTS) {
+      router.prefetch(`/system/${system_id}?section=${Section.OBJECTS}`);
+    }
+    if (section !== Section.QUESTIONS) {
+      router.prefetch(`/system/${system_id}?section=${Section.QUESTIONS}`);
+    }
+    if (section !== Section.RULES) {
+      router.prefetch(`/system/${system_id}?section=${Section.RULES}`);
+    }
+  }, [router, section, system_id]);
 
   const sectionSelect = useCallback(
     (chptr: Section) => () => {

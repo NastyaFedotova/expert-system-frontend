@@ -3,6 +3,7 @@ import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import dynamic from 'next/dynamic';
 
 import { getImage } from '@/api/services/image';
 import { getSystemOne, updateSystem } from '@/api/services/systems';
@@ -11,6 +12,7 @@ import CheckBox from '@/components/CheckBox';
 import ErrorPopup from '@/components/ErrorPopup';
 import FileUpload from '@/components/FileUpload';
 import Input from '@/components/Input';
+import Loader from '@/components/Loader';
 import Text, { TEXT_VIEW } from '@/components/Text';
 import TextArea from '@/components/TextArea';
 import { SYSTEMS } from '@/constants';
@@ -193,4 +195,4 @@ const Page: React.FC<PageProps> = ({ params }) => {
   );
 };
 
-export default memo(Page);
+export default dynamic(() => Promise.resolve(memo(Page)), { ssr: false, loading: () => <Loader sizepx={116} /> });

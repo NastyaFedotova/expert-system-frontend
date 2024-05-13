@@ -15,7 +15,9 @@ export default function NotFound() {
       </Text>
       <h2>Not Found</h2>
       <p>Извините! Страница, которую Вы ищете, не может быть найдена</p>
-      <Link href="/">Вернуться на главную страницу</Link>
+      <Link href="/" className={cnNotFound('button-back')}>
+        Вернуться на главную страницу
+      </Link>
     </div>
   );
 }

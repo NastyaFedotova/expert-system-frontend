@@ -1,11 +1,13 @@
 'use client';
 import React, { memo, useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 
 import { deleteSystem, getSystems } from '@/api/services/systems';
 import { Card } from '@/components/Card';
 import { CardSkeleton } from '@/components/CardSkeleton';
+import Loader from '@/components/Loader';
 import { SYSTEMS } from '@/constants';
 import useSystemStore from '@/store/systemStore';
 import useUserStore from '@/store/userStore';
@@ -16,7 +18,7 @@ import classes from './page.module.scss';
 
 const cnUserProfile = classname(classes, 'user-systems');
 
-export const UserSystems: React.FC = () => {
+export const Page: React.FC = () => {
   const router = useRouter();
   const { user } = useUserStore((store) => store);
   const downloadSystemBackup = useSystemStore((store) => store.downloadSystemBackup);
@@ -89,4 +91,4 @@ export const UserSystems: React.FC = () => {
   );
 };
 
-export default memo(UserSystems);
+export default dynamic(() => Promise.resolve(memo(Page)), { ssr: false, loading: () => <Loader sizepx={116} /> });
