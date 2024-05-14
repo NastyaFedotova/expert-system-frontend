@@ -28,4 +28,17 @@ export enum OBJECTS {
   GET = 'objects-with-attributeValues-get',
 }
 
+export enum RULES {
+  GET = 'rules-with-clauses-get',
+}
+
 export const RUS_LETTERS_ONLY = new RegExp(/[^а-яА-Я]/);
+
+export enum OPERATOR {
+  EQUAL = 'EQUAL',
+  NOT_EQUAL = 'NOT_EQUAL',
+  BELOW = 'BELOW',
+  ABOVE = 'ABOVE',
+  NO_MORE_THEN = 'NO_MORE_THEN',
+  NO_LESS_THEN = 'NO_LESS_THEN',
+}

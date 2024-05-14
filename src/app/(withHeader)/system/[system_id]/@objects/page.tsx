@@ -7,8 +7,8 @@ import dynamic from 'next/dynamic';
 
 import { getAttributesWithValues } from '@/api/services/attributes';
 import {
-  createObjectAttributeAttributeValueValidation,
-  deleteObjectAttributeAttributeValueValidation,
+  createObjectAttributeAttributeValue,
+  deleteObjectAttributeAttributeValue,
 } from '@/api/services/objectAttributeAttributeValue';
 import {
   createObjectWithAttrValues,
@@ -23,7 +23,7 @@ import ObjectField from '@/components/ObjectField';
 import { ATTRIBUTES, OBJECTS } from '@/constants';
 import AddIcon from '@/icons/AddIcon';
 import useUserStore from '@/store/userStore';
-import { TObjectAttributeAttributeValueNewValidation } from '@/types/objectAttributeAttributeValue';
+import { TObjectAttributeAttributeValueNew } from '@/types/objectAttributeAttributeValue';
 import { TObjectUpdate, TObjectWithAttrValues, TObjectWithAttrValuesForm, TObjectWithIdsNew } from '@/types/objects';
 import { classname } from '@/utils';
 import { formObjectWithAttrValuesValidation } from '@/validation/objects';
@@ -66,7 +66,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
         name: object.name,
         attributesValues: [],
       };
-      object.attributes_ids.forEach((ids) => {
+      object.object_attribute_attributevalue_ids.forEach((ids) => {
         const attribute = attributesData.find((attribute) => attribute.id === ids.attribute_id);
         const attributeValue = attribute?.values.find((value) => value.id === ids.attribute_value_id);
         if (!!attribute && !!attributeValue) {
@@ -111,7 +111,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
     (form: TObjectWithAttrValuesForm) => {
       const objectNew: TObjectWithIdsNew[] = [];
       const objectUpdate: TObjectUpdate[] = [];
-      const idsNew: TObjectAttributeAttributeValueNewValidation[] = [];
+      const idsNew: TObjectAttributeAttributeValueNew[] = [];
       const idsDelete: number[] = [];
 
       form.formData.forEach((object, objectIndex) => {
@@ -121,7 +121,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
             (x) => !oldObject?.attributesValues.some((y) => x.id === y.id),
           );
 
-          const newIds: Omit<TObjectAttributeAttributeValueNewValidation, 'object_id'>[] = [];
+          const newIds: Omit<TObjectAttributeAttributeValueNew, 'object_id'>[] = [];
           newAttribute.forEach((val) => {
             if (object.id === -1) {
               newIds.push({ attribute_id: val.attribute_id, attribute_value_id: val.id });
@@ -137,7 +137,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
           deleteAttributeValues?.forEach((attrValue) => {
             const idsId = objectsData
               .find((obj) => obj.id === object.id)
-              ?.attributes_ids.find(
+              ?.object_attribute_attributevalue_ids.find(
                 (ids) => ids.attribute_value_id === attrValue.id && ids.attribute_id === attrValue.attribute_id,
               )?.id;
             if (idsId) {
@@ -145,7 +145,11 @@ const Page: React.FC<PageProps> = ({ params }) => {
             }
           });
           if (object.id === -1) {
-            objectNew.push({ system_id: object.system_id, name: object.name, attributes_ids: newIds });
+            objectNew.push({
+              system_id: object.system_id,
+              name: object.name,
+              object_attribute_attributevalue_ids: newIds,
+            });
           }
 
           if (!dirtyFields.formData?.[objectIndex]?.id && dirtyFields.formData?.[objectIndex]?.name) {
@@ -162,10 +166,10 @@ const Page: React.FC<PageProps> = ({ params }) => {
         responses.push(updateObjects(objectUpdate));
       }
       if (idsNew.length) {
-        responses.push(createObjectAttributeAttributeValueValidation(idsNew));
+        responses.push(createObjectAttributeAttributeValue(idsNew));
       }
       if (idsDelete.length) {
-        responses.push(deleteObjectAttributeAttributeValueValidation(idsDelete));
+        responses.push(deleteObjectAttributeAttributeValue(idsDelete));
       }
       if (toDelete.length) {
         responses.push(deleteObjects(toDelete));

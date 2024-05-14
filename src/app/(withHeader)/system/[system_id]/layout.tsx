@@ -43,10 +43,11 @@ type SystemEditorPageLayoutProps = {
   attributes: React.ReactNode;
   objects: React.ReactNode;
   questions: React.ReactNode;
+  rules: React.ReactNode;
   params: { system_id: number };
 };
 
-const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, objects, questions, params }) => {
+const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, objects, questions, rules, params }) => {
   const router = useRouter();
   const user = useUserStore((store) => store.user);
   const getSystem = useSystemStore((store) => store.getSystem);
@@ -104,11 +105,11 @@ const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, obj
       case Section.QUESTIONS:
         return questions;
       case Section.RULES:
-        return <>rules</>;
+        return rules;
       default:
         return system;
     }
-  }, [attributes, objects, questions, section, system]);
+  }, [attributes, objects, questions, rules, section, system]);
 
   return (
     <div className={cnMainLayout()}>

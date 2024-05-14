@@ -13,13 +13,13 @@ export const objectValidation = z.object({
 });
 
 export const objectWithIdsValidation = objectValidation.extend({
-  attributes_ids: z.array(objectAttributeAttributeValueValidation),
+  object_attribute_attributevalue_ids: z.array(objectAttributeAttributeValueValidation),
 });
 
 export const objectUpdateValidation = objectValidation.omit({ system_id: true });
 
 export const objectWithIdsNewValidation = objectValidation.omit({ id: true }).extend({
-  attributes_ids: z.array(objectAttributeAttributeValueNewValidation.omit({ object_id: true })),
+  object_attribute_attributevalue_ids: z.array(objectAttributeAttributeValueNewValidation.omit({ object_id: true })),
 });
 
 export const objectWithAttrValuesValidation = objectValidation.extend({

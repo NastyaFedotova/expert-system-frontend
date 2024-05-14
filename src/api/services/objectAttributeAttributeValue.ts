@@ -1,20 +1,18 @@
-import { TObjectAttributeAttributeValueNewValidation } from '@/types/objectAttributeAttributeValue';
+import { TObjectAttributeAttributeValueNew } from '@/types/objectAttributeAttributeValue';
 
 import { deleteApiRequest, postApiRequest } from '..';
 
-export const createObjectAttributeAttributeValueValidation = async (
-  ids: TObjectAttributeAttributeValueNewValidation[],
-) => {
-  const { data } = await postApiRequest<unknown, TObjectAttributeAttributeValueNewValidation[]>(
-    `/objects-attributevalues`,
+export const createObjectAttributeAttributeValue = async (ids: TObjectAttributeAttributeValueNew[]) => {
+  const { data } = await postApiRequest<unknown, TObjectAttributeAttributeValueNew[]>(
+    `/object-attribute-attributevalue`,
     ids,
   );
 
   return data;
 };
 
-export const deleteObjectAttributeAttributeValueValidation = async (idsIds: number[]) => {
-  const result = await deleteApiRequest(`/objects-attributevalues/multiple_delete`, idsIds);
+export const deleteObjectAttributeAttributeValue = async (idsIds: number[]) => {
+  const result = await deleteApiRequest(`/object-attribute-attributevalue/multiple_delete`, idsIds);
 
   return result;
 };

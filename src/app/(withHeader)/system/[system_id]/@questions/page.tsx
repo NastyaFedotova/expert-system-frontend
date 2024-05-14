@@ -172,8 +172,8 @@ const Page: React.FC<PageProps> = ({ params }) => {
     [remove],
   );
   const handleDeleteAnswer = useCallback(
-    (AnswerId: number) =>
-      setToDelete((prev) => ({ questions: prev.questions, answers: prev.answers.concat(AnswerId) })),
+    (answerId: number) =>
+      setToDelete((prev) => ({ questions: prev.questions, answers: prev.answers.concat(answerId) })),
     [],
   );
 

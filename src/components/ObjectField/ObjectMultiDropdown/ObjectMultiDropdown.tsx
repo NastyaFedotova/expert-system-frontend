@@ -62,12 +62,12 @@ const ObjectMultiDropdown: React.FC<ObjectMultiDropdownProps> = ({
   const choosenValues = useMemo(() => attributeValues.map((val) => val.id), [attributeValues]);
 
   const onValueClick = useCallback(
-    (option: TAttributeValue) => () => {
-      if (choosenValues.includes(option.id)) {
-        const optionIndex = fields.findIndex((value) => value.id === option.id);
-        remove(optionIndex);
+    (attrValue: TAttributeValue) => () => {
+      if (choosenValues.includes(attrValue.id)) {
+        const attrValueIndex = fields.findIndex((value) => value.id === attrValue.id);
+        remove(attrValueIndex);
       } else {
-        append(option);
+        append(attrValue);
       }
     },
     [append, choosenValues, fields, remove],
@@ -92,23 +92,23 @@ const ObjectMultiDropdown: React.FC<ObjectMultiDropdownProps> = ({
       />
       {popoverVisible && (
         <div className={cnObjectMultiDropdown('options')}>
-          {attrValues.map((option) => (
-            <span
-              key={option.id}
-              onClick={onValueClick(option)}
+          {attrValues.map((attrValue) => (
+            <div
+              key={attrValue.id}
+              onClick={onValueClick(attrValue)}
               className={cnObjectMultiDropdown('raw')}
-              title={option.value}
+              title={attrValue.value}
             >
-              <CheckBox checked={choosenValues.includes(option.id)} />
+              <CheckBox checked={choosenValues.includes(attrValue.id)} />
               <Text
                 tag={TEXT_TAG.div}
                 view={TEXT_VIEW.p16}
                 className={cnObjectMultiDropdown('option')}
-                color={choosenValues.includes(option.id) ? 'accent' : 'primary'}
+                color={choosenValues.includes(attrValue.id) ? 'accent' : 'primary'}
               >
-                {option.value}
+                {attrValue.value}
               </Text>
-            </span>
+            </div>
           ))}
         </div>
       )}

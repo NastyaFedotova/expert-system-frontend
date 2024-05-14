@@ -7,4 +7,4 @@ import {
 
 export type TObjectAttributeAttributeValueValidation = z.infer<typeof objectAttributeAttributeValueValidation>;
 
-export type TObjectAttributeAttributeValueNewValidation = z.infer<typeof objectAttributeAttributeValueNewValidation>;
+export type TObjectAttributeAttributeValueNew = z.infer<typeof objectAttributeAttributeValueNewValidation>;
