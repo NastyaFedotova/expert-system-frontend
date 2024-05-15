@@ -14,7 +14,7 @@ import { TErrorResponse } from '@/types/error';
 import { TUser, TUserLogin, TUserRegistration, TUserUpdate } from '@/types/user';
 import { errorParser } from '@/utils';
 
-type UserStates = {
+type TUserStates = {
   isLogin?: boolean;
   user?: TUser;
   fetchloading: boolean;
@@ -23,7 +23,7 @@ type UserStates = {
   searchParams?: ReadonlyURLSearchParams;
 };
 
-type UserActions = {
+type TUserActions = {
   loginUser: (params: TUserLogin) => void;
   registrationUser: (params: TUserRegistration) => void;
   updateUser: (params: TUserUpdate) => void;
@@ -34,16 +34,16 @@ type UserActions = {
   clearFetchError: () => void;
 };
 
-const initialState: UserStates = {
+const initialState: TUserStates = {
   isLogin: undefined,
   user: undefined,
   fetchloading: false,
   fetchError: undefined,
 };
 
-export type UserStore = UserStates & UserActions;
+export type TUserStore = TUserStates & TUserActions;
 
-const useUserStore = create<UserStore>((set, get) => ({
+const useUserStore = create<TUserStore>((set, get) => ({
   ...initialState,
   loginUser: async (params: TUserLogin) => {
     set({ fetchloading: true });

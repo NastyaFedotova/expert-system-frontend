@@ -82,10 +82,11 @@ const Page: React.FC<PageProps> = ({ params }) => {
     control,
     handleSubmit,
     reset,
-    formState: { dirtyFields },
+    formState: { dirtyFields, isValid },
   } = useForm<TObjectWithAttrValuesForm>({
     defaultValues: pageData,
     resolver: zodResolver(formObjectWithAttrValuesValidation),
+    mode: 'all',
   });
   const { mutate, isPending } = useMutation({
     mutationFn: (responseList: Promise<unknown>[]) => Promise.allSettled(responseList),
@@ -95,7 +96,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   const { fields, append, remove } = useFieldArray({ control, name: 'formData', keyName: 'arrayId' });
 
-  const isFormDirty = useMemo(() => {
+  const isFormDirty = useCallback(() => {
     const isDirtyForm = dirtyFields.formData?.some((object) => {
       if (object.id || object.name || object.system_id) {
         return true;
@@ -158,7 +159,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
         }
       });
       const responses = [];
-      console.log(objectNew, objectUpdate, idsNew, idsDelete, toDelete);
+
       if (objectNew.length) {
         responses.push(createObjectWithAttrValues(objectNew));
       }
@@ -221,8 +222,8 @@ const Page: React.FC<PageProps> = ({ params }) => {
         </div>
         <div className={cnObjects('loadingScreen', { enabled: isLoading || isPending })} />
         <Button
-          className={cnObjects('submitButton', { visible: isFormDirty })}
-          disabled={isLoading || isPending}
+          className={cnObjects('submitButton', { visible: isFormDirty() })}
+          disabled={isLoading || isPending || !isValid}
           loading={isLoading || isPending}
         >
           Сохранить

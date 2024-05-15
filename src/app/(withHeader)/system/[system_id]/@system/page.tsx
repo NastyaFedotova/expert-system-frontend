@@ -93,6 +93,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
   } = useForm<TSystemUpdate>({
     defaultValues: { ...data, image },
     resolver: zodResolver(systemUpdateValidation),
+    mode: 'all',
   });
 
   const formWatch = watch();
@@ -185,7 +186,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
         )}
         <Button
           className={cnSystem('button')}
-          disabled={!Object.keys(dirtyFields).length || !isValid}
+          disabled={isPending || !Object.keys(dirtyFields).length || !isValid}
           loading={isPending}
         >
           Сохранить изменения

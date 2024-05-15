@@ -104,10 +104,12 @@ const Page: React.FC<PageProps> = ({ params }) => {
     handleSubmit,
     reset,
     setValue,
-    formState: { dirtyFields },
+    watch,
+    formState: { dirtyFields, isValid },
   } = useForm<TRuleForm>({
     defaultValues: pageData,
     resolver: zodResolver(formRuleValidation),
+    mode: 'all',
   });
 
   const { mutate, isPending } = useMutation({
@@ -116,14 +118,13 @@ const Page: React.FC<PageProps> = ({ params }) => {
     onSettled: () => setToDelete({ rules: [], clauses: [] }),
   });
 
-  const { fields, append, remove } = useFieldArray({ control, name: 'formData', keyName: 'arrayId' });
+  const { fields, append, remove, update } = useFieldArray({ control, name: 'formData', keyName: 'arrayId' });
 
-  const isFormDirty = useMemo(() => {
+  const isFormDirty = useCallback(() => {
     const isDirtyForm = dirtyFields.formData?.some((rule) => {
       if (rule.id || rule.system_id || rule.attribute_rule) {
         return true;
       }
-
       return (
         rule.clauses?.some((clause) => Object.values(clause).some((val) => val)) ||
         rule.rule_question_answer_ids?.some((clause) => Object.values(clause).some((val) => val)) ||
@@ -151,18 +152,20 @@ const Page: React.FC<PageProps> = ({ params }) => {
   );
 
   const handleDeleteRule = useCallback(
-    (ruleId: number, ruleIndex: number) => () => {
-      if (ruleId === -1) {
+    (rule: TRuleForForm, ruleIndex: number) => () => {
+      if (rule.id === -1) {
         remove(ruleIndex);
       } else {
-        setValue(`formData.${ruleIndex}.deleted`, true);
+        update(ruleIndex, { ...rule, deleted: true });
       }
     },
-    [remove, setValue],
+    [remove, update],
   );
 
   useEffect(() => reset(pageData), [pageData, reset]);
 
+  const formWatch = watch();
+  console.log(formWatch);
   return (
     <main className={cnRules()}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className={cnRules('form')}>
@@ -178,7 +181,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
                 allAttributes={attributesData}
                 attributeRule={rule.attribute_rule}
                 setValue={setValue}
-                handleDeleteRule={handleDeleteRule(rule.id, ruleIndex)}
+                handleDeleteRule={handleDeleteRule(rule, ruleIndex)}
               />
             )}
           </>
@@ -189,8 +192,8 @@ const Page: React.FC<PageProps> = ({ params }) => {
         </div>
         <div className={cnRules('loadingScreen', { enabled: isLoading || isPending })} />
         <Button
-          className={cnRules('submitButton', { visible: isFormDirty })}
-          disabled={isLoading || isPending}
+          className={cnRules('submitButton', { visible: isFormDirty() })}
+          disabled={isLoading || isPending || !isValid}
           loading={isLoading || isPending}
         >
           Сохранить

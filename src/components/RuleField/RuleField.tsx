@@ -1,6 +1,8 @@
 import React, { memo, useCallback } from 'react';
 import { Control, useFieldArray, UseFormSetValue } from 'react-hook-form';
+import { v4 as uuidv4 } from 'uuid';
 
+import { OPERATOR } from '@/constants';
 import AddIcon from '@/icons/AddIcon';
 import CloseIcon from '@/icons/CloseIcon';
 import { TAttributeWithAttributeValues } from '@/types/attributes';
@@ -9,6 +11,7 @@ import { TRuleForm } from '@/types/rules';
 import { classname } from '@/utils';
 
 import Input from '../Input';
+import Text, { TEXT_VIEW } from '../Text';
 
 import ClausesGroup from './ClausesGroup/ClausesGroup';
 
@@ -53,30 +56,49 @@ const RuleField: React.FC<RuleFieldProps> = ({
     keyName: 'arrayId',
   });
 
-  const handleAddClauseGroup = useCallback(() => clausesGroupAppend([]), [clausesGroupAppend]);
+  const handleAddClauseGroup = useCallback(
+    () =>
+      clausesGroupAppend([
+        [
+          {
+            id: -1,
+            rule_id: ruleId,
+            compared_value: '',
+            logical_group: uuidv4(),
+            operator: OPERATOR.EQUAL,
+            question_id: -1,
+            deleted: false,
+          },
+        ],
+      ]),
+    [clausesGroupAppend, ruleId],
+  );
 
   return (
     <div className={cnFields()}>
       <CloseIcon width={30} height={30} className={cnFields('delete')} onClick={handleDeleteRule} />
-      <div className={cnFields('attrValues')}>
+      <Text view={TEXT_VIEW.p20} className={cnFields('title-up')}>
+        Если:
+      </Text>
+      <div className={cnFields('clausesGroups')}>
         {clausesGroupFields.map((clauseGroup, clauseGroupIndex) => (
           <ClausesGroup
             key={clauseGroup.arrayId}
             control={control}
             setValue={setValue}
             ruleIndex={ruleIndex}
-            clouseGroupIndex={clauseGroupIndex}
+            ruleId={ruleId}
+            clauseGroupIndex={clauseGroupIndex}
           />
         ))}
-        <div className={cnFields('newValue')} key="new-attrValue">
-          <AddIcon width={30} height={30} className={cnFields('newValue-addIcon')} onClick={handleAddClauseGroup} />
-          <Input
-            className={cnFields('newValue-input')}
-            placeholder="Добавить логическую группу"
-            onClick={handleAddClauseGroup}
-          />
+        <div className={cnFields('newClauseGroup')} key="new-newClauseGroup" onClick={handleAddClauseGroup}>
+          <AddIcon width={30} height={30} className={cnFields('newClauseGroup-addIcon')} />
+          <Text>Добавить логическую группу</Text>
         </div>
       </div>
+      <Text view={TEXT_VIEW.p20} className={cnFields('title-bottom')}>
+        То:
+      </Text>
     </div>
   );
 };

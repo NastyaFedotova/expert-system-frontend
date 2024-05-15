@@ -32,13 +32,14 @@ const Page: React.FC = () => {
     getValues,
     watch,
     handleSubmit,
-    trigger,
+    reset,
     resetField,
     formState: { dirtyFields, errors, isValid },
     clearErrors,
   } = useForm<TUserUpdate>({
     defaultValues: { ...user, new_password: '' },
     resolver: zodResolver(userUpdateValidation),
+    mode: 'all',
   });
 
   const handleFormSubmit = useCallback(() => {
@@ -63,25 +64,17 @@ const Page: React.FC = () => {
 
   const formWatch = watch();
 
-  const emptySubmit = useCallback(
-    (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      trigger();
-    },
-    [trigger],
-  );
-
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    reset({ ...user, new_password: '' });
+    return () => {
       clearFetchError();
       clearErrors();
-    },
-    [clearErrors, clearFetchError],
-  );
+    };
+  }, [clearErrors, clearFetchError, reset, user]);
 
   return (
     <div className={cnProfile()}>
-      <form className={cnProfile('form')} autoComplete="off" onChange={emptySubmit}>
+      <form className={cnProfile('form')} autoComplete="off">
         <div className={cnProfile('line')}>
           <Input
             {...register('first_name')}

@@ -32,7 +32,7 @@ export enum RULES {
   GET = 'rules-with-clauses-get',
 }
 
-export const RUS_LETTERS_ONLY = new RegExp(/[^а-яА-Я]/);
+export const RUS_LETTERS_ONLY = new RegExp(/[а-яА-Я]/);
 
 export enum OPERATOR {
   EQUAL = 'EQUAL',

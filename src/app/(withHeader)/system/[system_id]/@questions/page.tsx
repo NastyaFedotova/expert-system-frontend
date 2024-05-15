@@ -50,10 +50,12 @@ const Page: React.FC<PageProps> = ({ params }) => {
     control,
     handleSubmit,
     reset,
-    formState: { dirtyFields },
+    register,
+    formState: { dirtyFields, isValid },
   } = useForm<TQuestionWithAnswersForm>({
     defaultValues: { formData: data },
     resolver: zodResolver(formQuestionWithAnswersValidation),
+    mode: 'all',
   });
   const { mutate, isPending } = useMutation({
     mutationFn: (responseList: Promise<unknown>[]) => Promise.allSettled(responseList),
@@ -64,7 +66,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   const { fields, append, remove } = useFieldArray({ control, name: 'formData', keyName: 'arrayId' });
 
-  const isFormDirty = useMemo(() => {
+  const isFormDirty = useCallback(() => {
     const isDirtyForm = dirtyFields.formData?.some((question) => {
       if (question.id || question.body || question.system_id || question.with_chooses) {
         return true;
@@ -205,8 +207,8 @@ const Page: React.FC<PageProps> = ({ params }) => {
         </div>
         <div className={cnQuestions('loadingScreen', { enabled: isLoading || isPending })} />
         <Button
-          className={cnQuestions('submitButton', { visible: isFormDirty })}
-          disabled={isLoading || isPending}
+          className={cnQuestions('submitButton', { visible: isFormDirty() })}
+          disabled={isLoading || isPending || !isValid}
           loading={isLoading || isPending}
         >
           Сохранить

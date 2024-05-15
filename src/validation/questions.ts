@@ -1,10 +1,10 @@
-import { number, z } from 'zod';
+import { z } from 'zod';
 
 import { answerValidation } from './answers';
 
 export const questionValidation = z.object({
   id: z.number(),
-  system_id: number().positive(),
+  system_id: z.number(),
   body: z.string().min(1, 'Поле не может быть пустым').max(128, 'Максимальная длина - 128'),
   with_chooses: z.boolean(),
 });

@@ -23,7 +23,7 @@ const Page: React.FC = () => {
     watch,
     clearErrors,
     formState: { errors },
-  } = useForm<TUserRegistration>({ resolver: zodResolver(userRegistrationValidation) });
+  } = useForm<TUserRegistration>({ resolver: zodResolver(userRegistrationValidation), mode: 'all' });
   const { registrationUser, fetchloading, fetchError, clearFetchError } = useUserStore((store) => store);
   const handleRegistration = useCallback(
     (data: TUserRegistration) => {

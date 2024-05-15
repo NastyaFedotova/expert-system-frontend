@@ -49,10 +49,11 @@ const Page: React.FC<PageProps> = ({ params }) => {
     control,
     handleSubmit,
     reset,
-    formState: { dirtyFields },
+    formState: { isValid, dirtyFields },
   } = useForm<{ formData: TAttributeWithAttributeValues[] }>({
     defaultValues: { formData: data },
     resolver: zodResolver(formAttrWithValuesValidation),
+    mode: 'all',
   });
   const { mutate, isPending } = useMutation({
     mutationFn: (responseList: Promise<unknown>[]) => Promise.allSettled(responseList),
@@ -63,7 +64,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   const { fields, append, remove } = useFieldArray({ control, name: 'formData', keyName: 'arrayId' });
 
-  const isFormDirty = useMemo(() => {
+  const isFormDirty = useCallback(() => {
     const isDirtyForm = dirtyFields.formData?.some((attribute) => {
       if (attribute.id || attribute.name || attribute.system_id) {
         return true;
@@ -72,7 +73,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
     });
 
     return isDirtyForm || !!toDelete.attrValues.length || !!toDelete.attributes.length;
-  }, [dirtyFields, toDelete]);
+  }, [dirtyFields, toDelete.attrValues.length, toDelete.attributes.length]);
 
   const handleFormSubmit = useCallback(
     (form: { formData: TAttributeWithAttributeValues[] }) => {
@@ -185,8 +186,8 @@ const Page: React.FC<PageProps> = ({ params }) => {
         </div>
         <div className={cnAttributes('loadingScreen', { enabled: isLoading || isPending })} />
         <Button
-          className={cnAttributes('submitButton', { visible: isFormDirty })}
-          disabled={isLoading || isPending}
+          className={cnAttributes('submitButton', { visible: isFormDirty() })}
+          disabled={isLoading || isPending || !isValid}
           loading={isLoading || isPending}
         >
           Сохранить

@@ -18,7 +18,7 @@ type ErrorPopupProps = {
 
 const cnPopup = classname(classes, 'errorPopup');
 
-const ErrorPopup: React.FC<ErrorPopupProps> = ({ error, position = 'top center', arrow = false, offsetY }) => {
+const ErrorPopup: React.FC<ErrorPopupProps> = ({ error, position = 'top right', arrow = false, offsetY = 4 }) => {
   return (
     <>
       {error && (

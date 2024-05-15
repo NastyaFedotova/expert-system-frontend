@@ -1,11 +1,15 @@
 .clauseGroup {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   gap: $space-s;
   padding: $space-s 0 0 0;
   max-width: 1000px;
   width: 100%;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  padding: 12px;
+  position: relative;
 
   &-input {
     width: 100%;
@@ -14,5 +18,34 @@
   &-deleteIcon {
     color: $error;
     cursor: pointer;
+  }
+
+  &-newClause {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: $space-s;
+    max-width: 1000px;
+    width: 100%;
+    cursor: pointer;
+
+    &-input {
+      width: 100%;
+    }
+
+    &-addIcon {
+      color: $brand;
+    }
+  }
+
+  &-delete {
+    position: absolute;
+
+    top: -12px;
+    right: -12px;
+    color: $error;
+    cursor: pointer;
+    background-color: $project-bg;
+    border-radius: 50%;
   }
 }
