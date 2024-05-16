@@ -1,6 +1,11 @@
 import { z } from 'zod';
 
-import { systemNewValidation, systemUpdateValidation, systemValidation } from '@/validation/system';
+import {
+  systemNewValidation,
+  systemTestvalidation,
+  systemUpdateValidation,
+  systemValidation,
+} from '@/validation/system';
 
 export type TSystemRequestParams = {
   user_id?: number;
@@ -26,3 +31,5 @@ export type TSystemsWithPage = {
   systems: TSystem[];
   pages: number;
 };
+
+export type TSystemTest = z.infer<typeof systemTestvalidation>;

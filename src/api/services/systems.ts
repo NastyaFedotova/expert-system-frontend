@@ -6,6 +6,7 @@ import {
   TSystemNew,
   TSystemRequestParams,
   TSystemsWithPage,
+  TSystemTest,
   TSystemUpdate,
 } from '@/types/systems';
 
@@ -78,6 +79,12 @@ export const updateSystem = async (params: TSystemUpdate & { system_id: number }
   });
 
   const { data } = await patchApiRequest<TSystem, FormData>(`/systems/${system_id}`, formData);
+
+  return data;
+};
+
+export const getSystemTest = async (system_id: number): Promise<TSystemTest> => {
+  const { data } = await getApiRequest<TSystemTest>(`/systems/${system_id}/test`);
 
   return data;
 };

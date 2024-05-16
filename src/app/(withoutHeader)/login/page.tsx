@@ -74,7 +74,7 @@ const Page: React.FC = () => {
         </Button>
         <Link href="/registration">
           <Text view={TEXT_VIEW.p14} className={cnLoginPage('reg')}>
-            Регистрироваться
+            Регистрация
           </Text>
         </Link>
       </form>

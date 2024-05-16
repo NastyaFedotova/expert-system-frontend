@@ -3,6 +3,7 @@ export enum SYSTEMS {
   GET_USER = 'users-systems',
   RETRIEVE = 'systems-retrieve',
   POST = 'systems-post',
+  TEST = 'system-test',
 }
 
 export enum HISTORIES {

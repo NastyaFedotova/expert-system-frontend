@@ -1,6 +1,6 @@
 'use client';
 import React, { memo, useCallback } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 
@@ -23,10 +23,9 @@ export const Page: React.FC = () => {
   const router = useRouter();
   const { user } = useUserStore((store) => store);
   const downloadSystemBackup = useSystemStore((store) => store.downloadSystemBackup);
-  const { data, isSuccess, isLoading } = useQuery({
+  const { data, isSuccess, isLoading } = useSuspenseQuery({
     queryKey: [SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }],
     queryFn: async () => await getSystems({ user_id: user?.id, all_types: true }),
-    enabled: !!user,
   });
 
   const queryClient = useQueryClient();
@@ -71,7 +70,7 @@ export const Page: React.FC = () => {
   );
   return (
     <div className={cnUserProfile()}>
-      {!!data?.systems.length &&
+      {!!data.systems.length &&
         isSuccess &&
         data.systems.map((system) => (
           <Card
@@ -87,7 +86,7 @@ export const Page: React.FC = () => {
             onDownloadClick={handleDownload(system.id)}
           />
         ))}
-      {!isLoading && !data?.systems.length && <Text view={TEXT_VIEW.p20}>Нет созданных систем</Text>}
+      {!isLoading && !data.systems.length && <Text view={TEXT_VIEW.p20}>Нет созданных систем</Text>}
       {isLoading && [...Array(6).keys()].map((index) => <CardSkeleton key={index} />)}
     </div>
   );

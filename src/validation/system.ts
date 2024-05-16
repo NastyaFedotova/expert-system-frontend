@@ -3,6 +3,9 @@ import { z } from 'zod';
 
 import { RUS_LETTERS_ONLY } from '@/constants';
 
+import { questionWithAnswersValidation } from './questions';
+import { ruleValidation } from './rules';
+
 export const systemValidation = z.object({
   id: z.number().positive(),
   user_id: z.number().positive(),
@@ -26,3 +29,8 @@ export const systemUpdateValidation = systemValidation
   .partial();
 
 export const systemNewValidation = systemUpdateValidation.required({ name: true, private: true });
+
+export const systemTestvalidation = z.object({
+  questions: z.array(questionWithAnswersValidation),
+  rules: z.array(ruleValidation),
+});
