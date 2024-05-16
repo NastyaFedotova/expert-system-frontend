@@ -29,9 +29,15 @@ export const ruleForFormValidation = ruleValidation
     rule_question_answer_ids: z.array(ruleQuestionAnswerValidation.extend({ deleted: z.boolean() })),
     rule_attribute_attributevalue_ids: z.array(ruleAttributeAttributeValueValidation.extend({ deleted: z.boolean() })),
   })
-  .refine((val) => val.clauses.some((clauseGroup) => clauseGroup.some((clause) => !clause.deleted)))
   .refine((val) =>
-    val.attribute_rule ? val.rule_attribute_attributevalue_ids.length > 0 : val.rule_question_answer_ids.length > 0,
+    !val.deleted ? val.clauses.some((clauseGroup) => clauseGroup.some((clause) => !clause.deleted)) : true,
+  )
+  .refine((val) =>
+    !val.deleted
+      ? val.attribute_rule
+        ? val.rule_attribute_attributevalue_ids.length > 0
+        : val.rule_question_answer_ids.length > 0
+      : true,
   );
 
 export const formRuleValidation = z.object({

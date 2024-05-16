@@ -110,13 +110,13 @@ const Page: React.FC<PageProps> = ({ params }) => {
     control,
     handleSubmit,
     reset,
-    formState: { dirtyFields, isValid },
+    formState: { dirtyFields, isValid, errors },
   } = useForm<TRuleForm>({
     defaultValues: pageData,
     resolver: zodResolver(formRuleValidation),
     mode: 'all',
   });
-
+  console.log(errors);
   const { isPending } = useMutation({
     mutationFn: (responseList: Promise<unknown>[]) => Promise.allSettled(responseList),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [RULES.GET, { user: user?.id, system: system_id }] }),
@@ -136,7 +136,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
         rule.rule_attribute_attributevalue_ids?.some((clause) => Object.values(clause).some((val) => val))
       );
     });
-
+    console.log(isDirtyForm);
     return isDirtyForm || !!toDelete.rules.length || !!toDelete.clauses.length;
   }, [dirtyFields, toDelete]);
 
@@ -218,7 +218,9 @@ const Page: React.FC<PageProps> = ({ params }) => {
               ?.map((attr) => attr.id) ?? [];
           deleteRuleAttributeAttributeValueIds.push(...deleteAttributes);
 
-          newRules.push(newRule);
+          if (rule.id === -1) {
+            newRules.push(newRule);
+          }
         }
       });
 
