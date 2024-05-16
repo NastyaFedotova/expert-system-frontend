@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 
-import { classname } from '@/utils';
+import { classname } from '@/types/utils';
 
 import classes from './Loader.module.scss';
 

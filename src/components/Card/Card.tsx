@@ -10,7 +10,7 @@ import DownloadIcon from '@/icons/DownloadIcon';
 import EditIcon from '@/icons/EditIcon';
 import TrashIcon from '@/icons/TrashIcon';
 import defaultImage from '@/public/default-image.png';
-import { classname, imageUrl } from '@/utils';
+import { classname, imageUrl } from '@/types/utils';
 
 import Button from '../Button';
 import Input from '../Input';

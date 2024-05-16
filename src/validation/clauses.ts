@@ -15,6 +15,10 @@ export const clauseNewValidation = clauseValidation.omit({
   id: true,
 });
 
+export const clauseWithoutRuleNewValidation = clauseNewValidation.omit({
+  rule_id: true,
+});
+
 export const clauseUpdateValidation = clauseValidation.omit({ rule_id: true });
 
 export const clauseForFormValidation = clauseValidation.extend({ deleted: z.boolean().default(false) });

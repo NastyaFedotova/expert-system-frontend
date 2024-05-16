@@ -4,8 +4,8 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { ArrowLeftIcon } from '@/icons';
 import useSystemsSearchParamsStore from '@/store/systemsSearchParamsStore';
-import { classname } from '@/utils';
-import { mainPageSearchParamsParse } from '@/utils/searchParams';
+import { classname } from '@/types/utils';
+import { mainPageSearchParamsParse } from '@/types/utils/searchParams';
 
 import Text, { TEXT_VIEW } from '../Text';
 

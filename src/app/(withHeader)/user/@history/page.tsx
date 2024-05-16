@@ -9,7 +9,7 @@ import HistoryCard from '@/components/HistoryCard';
 import Loader from '@/components/Loader';
 import { HISTORIES } from '@/constants';
 import useUserStore from '@/store/userStore';
-import { classname } from '@/utils';
+import { classname } from '@/types/utils';
 
 import classes from './page.module.scss';
 

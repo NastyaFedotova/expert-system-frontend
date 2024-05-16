@@ -10,3 +10,7 @@ export const ruleQuestionAnswerValidation = z.object({
 export const ruleQuestionAnswerNewValidation = ruleQuestionAnswerValidation.omit({
   id: true,
 });
+
+export const ruleQuestionAnswerWithoutRuleNewValidation = ruleQuestionAnswerNewValidation.omit({
+  rule_id: true,
+});

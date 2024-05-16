@@ -9,7 +9,7 @@ import Input from '@/components/Input';
 import Text, { TEXT_VIEW } from '@/components/Text';
 import useUserStore from '@/store/userStore';
 import { TUserRegistration } from '@/types/user';
-import { classname } from '@/utils';
+import { classname } from '@/types/utils';
 import { userRegistrationValidation } from '@/validation/user';
 
 import classes from './page.module.scss';

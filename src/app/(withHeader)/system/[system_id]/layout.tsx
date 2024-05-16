@@ -8,7 +8,7 @@ import { SYSTEMS } from '@/constants';
 import useSystemStore from '@/store/systemStore';
 import useUserStore from '@/store/userStore';
 import { TSystemsWithPage } from '@/types/systems';
-import { classname } from '@/utils';
+import { classname } from '@/types/utils';
 import { systemIdValidation } from '@/validation/searchParams';
 
 import classes from './layout.module.scss';

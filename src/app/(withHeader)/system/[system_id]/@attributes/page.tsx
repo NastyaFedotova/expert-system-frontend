@@ -21,7 +21,7 @@ import AddIcon from '@/icons/AddIcon';
 import useUserStore from '@/store/userStore';
 import { TAttributeUpdate, TAttributeWithAttributeValues, TAttributeWithAttributeValuesNew } from '@/types/attributes';
 import { TAttributeValueNew, TAttributeValueUpdate } from '@/types/attributeValues';
-import { classname } from '@/utils';
+import { classname } from '@/types/utils';
 import { formAttrWithValuesValidation } from '@/validation/attributes';
 import { systemIdValidation } from '@/validation/searchParams';
 

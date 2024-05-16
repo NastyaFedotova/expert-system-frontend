@@ -7,8 +7,14 @@ import dynamic from 'next/dynamic';
 import { v4 as uuidv4 } from 'uuid';
 
 import { getAttributesWithValues } from '@/api/services/attributes';
+import { createClauses, deleteClauses, updateClauses } from '@/api/services/clauses';
 import { getQuestionsWithAnswers } from '@/api/services/questions';
-import { getRulesWithClausesAndEffects } from '@/api/services/rules';
+import {
+  createRuleAttributeAttributeValue,
+  deleteRuleAttributeAttributeValue,
+} from '@/api/services/ruleAttributeAttributeValue';
+import { createRuleQuestionAnswer, deleteRuleQuestionAnswer } from '@/api/services/ruleQuestionAnswer';
+import { createRulesWithClausesAndEffects, deleteRules, getRulesWithClausesAndEffects } from '@/api/services/rules';
 import Button from '@/components/Button';
 import Loader from '@/components/Loader';
 import RuleField from '@/components/RuleField';
@@ -18,10 +24,10 @@ import AddIcon from '@/icons/AddIcon';
 import useRulePageStore from '@/store/rulePageStore';
 import useUserStore from '@/store/userStore';
 import { TClauseForForm, TClauseNew, TClauseUpdate } from '@/types/clauses';
-import { TRuleAttributeAttributeValue } from '@/types/ruleAttributeAttributeValue';
+import { TRuleAttributeAttributeValueNew } from '@/types/ruleAttributeAttributeValue';
 import { TRuleQuestionAnswerNew } from '@/types/ruleQuestionAnswer';
 import { TRuleForForm, TRuleForm, TRuleNew } from '@/types/rules';
-import { classname } from '@/utils';
+import { classname } from '@/types/utils';
 import { formRuleValidation } from '@/validation/rules';
 import { systemIdValidation } from '@/validation/searchParams';
 
@@ -95,21 +101,6 @@ const Page: React.FC<PageProps> = ({ params }) => {
         }
       });
       newRule.clauses = Array.from(clausesMap, ([, clausesArray]) => clausesArray);
-      // rule.rule_question_answer_ids.forEach((ids) => {
-      //   const question = questionsData.find((question) => question.id === ids.question_id);
-      //   const answer = question?.answers.find((answer) => answer.id === ids.answer_id);
-      //   if (!!question && !!answer) {
-      //     newObject.rule_question_answer_ids = newObject.rule_question_answer_ids.concat(answer);
-      //   }
-      // });
-      // rule.rule_attribute_attributevalue_ids.forEach((ids) => {
-      //   const attribute = attributesData.find((attribute) => attribute.id === ids.attribute_id);
-      //   const attributeValue = attribute?.values.find((value) => value.id === ids.attribute_value_id);
-      //   if (!!attribute && !!attributeValue) {
-      //     newObject.rule_attribute_attributevalue_ids =
-      //       newObject.rule_attribute_attributevalue_ids.concat(attributeValue);
-      //   }
-      // });
       res.formData.push(newRule);
     });
     return res;
@@ -153,18 +144,18 @@ const Page: React.FC<PageProps> = ({ params }) => {
     (form: TRuleForm) => {
       console.log(form);
       const newRules: TRuleNew[] = [];
-      const deleteRules: number[] = [];
-      // const newClauses: TClauseNew[] = [];
-      // const updateClauses: TClauseUpdate[] = [];
-      // const deleteClauses: number[];
-      // const newRuleQuestionAnsweIds: TRuleQuestionAnswerNew[] = [];
-      // const deleteRuleQuestionAnsweIds: number[] = [];
-      // const ruleAttributeAttributeValueIds: TRuleAttributeAttributeValue[] = [];
-      // const deleteRuleAttributeAttributeValueIds: number[] = [];
+      const deleteRulesList: number[] = [];
+      const newClausesList: TClauseNew[] = [];
+      const updateClausesList: TClauseUpdate[] = [];
+      const deleteClausesList: number[] = [];
+      const newRuleQuestionAnsweIds: TRuleQuestionAnswerNew[] = [];
+      const deleteRuleQuestionAnsweIds: number[] = [];
+      const newRuleAttributeAttributeValueIds: TRuleAttributeAttributeValueNew[] = [];
+      const deleteRuleAttributeAttributeValueIds: number[] = [];
 
-      form.formData.forEach((rule) => {
+      form.formData.forEach((rule, ruleIndex) => {
         if (rule.deleted) {
-          deleteRules.push(rule.id);
+          deleteRulesList.push(rule.id);
         } else {
           const newRule: TRuleNew = {
             system_id: rule.system_id,
@@ -173,28 +164,94 @@ const Page: React.FC<PageProps> = ({ params }) => {
             rule_question_answer_ids: [],
             rule_attribute_attributevalue_ids: [],
           };
-          const oldRule = pageData.formData.find((oldRule) => oldRule.id === rule.id);
-          const newAttributes = rule.rule_attribute_attributevalue_ids.filter(
-            (x) => !oldRule?.rule_attribute_attributevalue_ids.some((y) => x.id === y.id),
+          //-----------------CLAUSES------------------
+
+          rule.clauses.forEach((clauseGroup, clauseGroupIndex) =>
+            clauseGroup.forEach((clause, clauseIndex) => {
+              if (clause.id === -1) {
+                newClausesList.push(clause);
+                return;
+              }
+              if (clause.deleted) {
+                deleteClausesList.push(clause.id);
+                return;
+              }
+              const dirtyFieldClause = dirtyFields.formData?.[ruleIndex].clauses?.[clauseGroupIndex]?.[clauseIndex];
+              if (
+                !dirtyFieldClause?.id &&
+                (dirtyFieldClause?.compared_value || dirtyFieldClause?.operator || dirtyFieldClause?.question_id)
+              ) {
+                updateClausesList.push(clause);
+              }
+            }),
           );
-          newRule.rule_attribute_attributevalue_ids = newAttributes.map((attr) => ({
-            attribute_id: attr.attribute_id,
-            rule_id: attr.rule_id,
-            attribute_value_id: attr.attribute_value_id,
-          }));
+
+          //-----------------ATTRIBUTE------------------
+          const oldRule = pageData.formData.find((oldRule) => oldRule.id === rule.id);
+
           const newQuestions = rule.rule_question_answer_ids.filter(
             (x) => !oldRule?.rule_question_answer_ids.some((y) => x.id === y.id),
           );
-          newRule.rule_question_answer_ids = newQuestions.map((question) => ({
-            question_id: question.question_id,
-            rule_id: question.rule_id,
-            answer_id: question.answer_id,
-          }));
+          if (rule.id === -1) {
+            newRule.rule_question_answer_ids = newQuestions;
+          } else {
+            newRuleQuestionAnsweIds.push(...newQuestions);
+          }
+          const deleteQuestions =
+            oldRule?.rule_question_answer_ids
+              .filter((x) => !rule.rule_question_answer_ids.some((y) => x.id === y.id))
+              ?.map((question) => question.id) ?? [];
+          deleteRuleQuestionAnsweIds.push(...deleteQuestions);
+
+          //-----------------QUESTIONS------------------
+          const newAttributes = rule.rule_attribute_attributevalue_ids.filter(
+            (x) => !oldRule?.rule_attribute_attributevalue_ids.some((y) => x.id === y.id),
+          );
+          if (rule.id === -1) {
+            newRule.rule_attribute_attributevalue_ids = newAttributes;
+          } else {
+            newRuleAttributeAttributeValueIds.push(...newAttributes);
+          }
+          const deleteAttributes =
+            oldRule?.rule_attribute_attributevalue_ids
+              .filter((x) => !rule.rule_attribute_attributevalue_ids.some((y) => x.id === y.id))
+              ?.map((attr) => attr.id) ?? [];
+          deleteRuleAttributeAttributeValueIds.push(...deleteAttributes);
+
           newRules.push(newRule);
         }
       });
+
+      const responses = [];
+      if (newRules.length) {
+        responses.push(createRulesWithClausesAndEffects(newRules));
+      }
+      if (deleteRulesList.length) {
+        responses.push(deleteRules(deleteRulesList));
+      }
+      if (newClausesList.length) {
+        responses.push(createClauses(newClausesList));
+      }
+      if (updateClausesList.length) {
+        responses.push(updateClauses(updateClausesList));
+      }
+      if (deleteClausesList.length) {
+        responses.push(deleteClauses(deleteClausesList));
+      }
+      if (newRuleQuestionAnsweIds.length) {
+        responses.push(createRuleQuestionAnswer(newRuleQuestionAnsweIds));
+      }
+      if (deleteRuleQuestionAnsweIds.length) {
+        responses.push(deleteRuleQuestionAnswer(deleteRuleQuestionAnsweIds));
+      }
+      if (newRuleAttributeAttributeValueIds.length) {
+        responses.push(createRuleAttributeAttributeValue(newRuleAttributeAttributeValueIds));
+      }
+      if (deleteRuleAttributeAttributeValueIds.length) {
+        responses.push(deleteRuleAttributeAttributeValue(deleteRuleAttributeAttributeValueIds));
+      }
     },
-    [pageData.formData],
+    [dirtyFields.formData, pageData.formData],
   );
 
   const handleAddRule = useCallback(

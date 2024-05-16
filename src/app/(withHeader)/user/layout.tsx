@@ -3,7 +3,7 @@ import React, { memo, useCallback, useLayoutEffect, useMemo, useState } from 're
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import Text, { TEXT_VIEW } from '@/components/Text';
-import { classname } from '@/utils';
+import { classname } from '@/types/utils';
 
 import classes from './layout.module.scss';
 

@@ -9,8 +9,8 @@ import { CardSkeleton } from '@/components/CardSkeleton';
 import Text, { TEXT_VIEW } from '@/components/Text';
 import { SYSTEMS } from '@/constants';
 import useSystemsSearchParamsStore from '@/store/systemsSearchParamsStore';
-import { classname } from '@/utils';
-import { mainPageSearchParamsParse } from '@/utils/searchParams';
+import { classname } from '@/types/utils';
+import { mainPageSearchParamsParse } from '@/types/utils/searchParams';
 
 import classes from './SystemsContainer.module.scss';
 

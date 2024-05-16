@@ -1,6 +1,6 @@
 import React, { memo, ReactHTML } from 'react';
 
-import { classname } from '@/utils';
+import { classname } from '@/types/utils';
 
 import { TEXT_TAG, TEXT_VIEW, TEXT_WEIGHT } from './Text.types';
 

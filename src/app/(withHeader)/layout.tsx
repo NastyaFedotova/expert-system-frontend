@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Header } from '@/components/Header';
-import { classname } from '@/utils';
+import { classname } from '@/types/utils';
 
 import classes from './layout.module.scss';
 

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import Text, { TEXT_VIEW } from '@/components/Text';
-import classname from '@/utils/classname';
+import classname from '@/types/utils/classname';
 
 import classes from './not-found.module.scss';
 

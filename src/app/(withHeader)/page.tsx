@@ -6,7 +6,7 @@ import { PageStepper } from '@/components/PageStepper';
 import { SYSTEMS } from '@/constants';
 import { SearchSystemContainer } from '@/containers/SearchSystemContainer';
 import { ReposContainer } from '@/containers/SystemsContainer';
-import { classname } from '@/utils';
+import { classname } from '@/types/utils';
 
 import classes from './page.module.scss';
 

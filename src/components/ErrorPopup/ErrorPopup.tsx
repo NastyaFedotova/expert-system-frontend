@@ -3,7 +3,7 @@ import Popup from 'reactjs-popup';
 import { PopupPosition } from 'reactjs-popup/dist/types';
 
 import ErrorIcon from '@/icons/ErrorIcon';
-import { classname } from '@/utils';
+import { classname } from '@/types/utils';
 
 import Text from '../Text';
 

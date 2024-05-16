@@ -1,6 +1,6 @@
 import React, { memo, useCallback } from 'react';
 
-import { classname } from '@/utils';
+import { classname } from '@/types/utils';
 
 import Loader from '../Loader';
 import Text, { TEXT_TAG, TEXT_VIEW } from '../Text';

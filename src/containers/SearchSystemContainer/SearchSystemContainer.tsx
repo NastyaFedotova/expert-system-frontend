@@ -7,8 +7,8 @@ import Button from '@/components/Button';
 import Input from '@/components/Input';
 import useSystemsSearchParamsStore from '@/store/systemsSearchParamsStore';
 import { TSystemRequestParams } from '@/types/systems';
-import { classname } from '@/utils';
-import { mainPageSearchParamsParse } from '@/utils/searchParams';
+import { classname } from '@/types/utils';
+import { mainPageSearchParamsParse } from '@/types/utils/searchParams';
 
 import classes from './SearchSystemContainer.module.scss';
 

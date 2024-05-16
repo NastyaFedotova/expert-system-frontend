@@ -6,7 +6,7 @@ import moment from 'moment';
 import Text, { TEXT_TAG, TEXT_VIEW, TEXT_WEIGHT } from '@/components/Text';
 import CloseIcon from '@/icons/CloseIcon';
 import { THistoryResult } from '@/types/history';
-import { classname } from '@/utils';
+import { classname } from '@/types/utils';
 
 import classes from './HistoryCard.module.scss';
 

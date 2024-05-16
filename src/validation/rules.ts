@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
-import { clauseForFormValidation, clauseNewValidation, clauseValidation } from './clauses';
+import { clauseForFormValidation, clauseValidation, clauseWithoutRuleNewValidation } from './clauses';
 import {
-  ruleAttributeAttributeValueNewValidation,
   ruleAttributeAttributeValueValidation,
+  ruleAttributeAttributeValueWithoutRuleNewValidation,
 } from './ruleAttributeAttributeValue';
-import { ruleQuestionAnswerNewValidation, ruleQuestionAnswerValidation } from './ruleQuestionAnswer';
+import { ruleQuestionAnswerValidation, ruleQuestionAnswerWithoutRuleNewValidation } from './ruleQuestionAnswer';
 
 export const ruleValidation = z.object({
   id: z.number(),
@@ -17,9 +17,9 @@ export const ruleValidation = z.object({
 });
 
 export const ruleNewValidation = ruleValidation.omit({ id: true }).extend({
-  clauses: z.array(clauseNewValidation),
-  rule_question_answer_ids: z.array(ruleQuestionAnswerNewValidation),
-  rule_attribute_attributevalue_ids: z.array(ruleAttributeAttributeValueNewValidation),
+  clauses: z.array(clauseWithoutRuleNewValidation),
+  rule_question_answer_ids: z.array(ruleQuestionAnswerWithoutRuleNewValidation),
+  rule_attribute_attributevalue_ids: z.array(ruleAttributeAttributeValueWithoutRuleNewValidation),
 });
 
 export const ruleForFormValidation = ruleValidation

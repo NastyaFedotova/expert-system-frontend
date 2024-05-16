@@ -10,3 +10,6 @@ export const ruleAttributeAttributeValueValidation = z.object({
 export const ruleAttributeAttributeValueNewValidation = ruleAttributeAttributeValueValidation.omit({
   id: true,
 });
+export const ruleAttributeAttributeValueWithoutRuleNewValidation = ruleAttributeAttributeValueNewValidation.omit({
+  rule_id: true,
+});

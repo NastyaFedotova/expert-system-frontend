@@ -13,7 +13,7 @@ import Text, { TEXT_VIEW, TEXT_WEIGHT } from '@/components/Text';
 import CloseIcon from '@/icons/CloseIcon';
 import useUserStore from '@/store/userStore';
 import { TUserUpdate } from '@/types/user';
-import { classname } from '@/utils';
+import { classname } from '@/types/utils';
 import { userUpdateValidation } from '@/validation/user';
 
 import classes from './page.module.scss';
