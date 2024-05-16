@@ -1,7 +1,7 @@
 'use client';
-import React, { memo, useLayoutEffect, useMemo } from 'react';
+import React, { memo, useCallback, useLayoutEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { getSystems } from '@/api/services/systems';
 import { Card } from '@/components/Card';
@@ -17,6 +17,7 @@ import classes from './SystemsContainer.module.scss';
 const cnSystemsContainer = classname(classes, 'systemsContainer');
 
 const SystemsContainer: React.FC = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { currentPage, pagesCount, name, username, setSystemsSearchParams } = useSystemsSearchParamsStore(
     (store) => store,
@@ -41,6 +42,8 @@ const SystemsContainer: React.FC = () => {
       }),
   });
 
+  const handleClick = useCallback((id: number) => () => router.push(`/system/${id}/test`), [router]);
+
   useLayoutEffect(
     () => setSystemsSearchParams({ ...validateParams, pagesCount: data?.pages, currentPage: validateParams.page }),
     [setSystemsSearchParams, data, validateParams],
@@ -51,7 +54,14 @@ const SystemsContainer: React.FC = () => {
       {!!data?.systems.length &&
         isSuccess &&
         data.systems.map((system) => (
-          <Card id={system.id} key={system.id} image={system.image_uri} title={system.name} subtitle={system.about} />
+          <Card
+            id={system.id}
+            key={system.id}
+            image={system.image_uri}
+            title={system.name}
+            subtitle={system.about}
+            onClick={handleClick(system.id)}
+          />
         ))}
       {!isLoading && currentPage > pagesCount && <Text view={TEXT_VIEW.p20}>Страница не найдена</Text>}
       {isLoading && [...Array(20).keys()].map((index) => <CardSkeleton key={index} />)}

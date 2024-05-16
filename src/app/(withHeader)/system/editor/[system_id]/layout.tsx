@@ -72,25 +72,25 @@ const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, obj
 
   useLayoutEffect(() => {
     if (section !== Section.SYSTEM) {
-      router.prefetch(`/system/${system_id}?section=${Section.SYSTEM}`);
+      router.prefetch(`/system/editor/${system_id}?section=${Section.SYSTEM}`);
     }
     if (section !== Section.ATTRIBUTES) {
-      router.prefetch(`/system/${system_id}?section=${Section.ATTRIBUTES}`);
+      router.prefetch(`/system/editor/${system_id}?section=${Section.ATTRIBUTES}`);
     }
     if (section !== Section.OBJECTS) {
-      router.prefetch(`/system/${system_id}?section=${Section.OBJECTS}`);
+      router.prefetch(`/system/editor/${system_id}?section=${Section.OBJECTS}`);
     }
     if (section !== Section.QUESTIONS) {
-      router.prefetch(`/system/${system_id}?section=${Section.QUESTIONS}`);
+      router.prefetch(`/system/editor/${system_id}?section=${Section.QUESTIONS}`);
     }
     if (section !== Section.RULES) {
-      router.prefetch(`/system/${system_id}?section=${Section.RULES}`);
+      router.prefetch(`/system/editor/${system_id}?section=${Section.RULES}`);
     }
   }, [router, section, system_id]);
 
   const sectionSelect = useCallback(
     (chptr: Section) => () => {
-      router.replace(`/system/${system_id}?section=${chptr}`);
+      router.replace(`/system/editor/${system_id}?section=${chptr}`);
       setSection(chptr);
     },
     [router, system_id],
@@ -112,46 +112,48 @@ const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, obj
   }, [attributes, objects, questions, rules, section, system]);
 
   return (
-    <div className={cnMainLayout()}>
-      <header className={cnMainLayout('header')}>
-        <Text
-          onClick={sectionSelect(Section.SYSTEM)}
-          view={TEXT_VIEW.p18}
-          className={cnMainLayout('section', { selected: section === Section.SYSTEM })}
-        >
-          О системе
-        </Text>
-        <Text
-          onClick={sectionSelect(Section.ATTRIBUTES)}
-          view={TEXT_VIEW.p18}
-          className={cnMainLayout('section', { selected: section === Section.ATTRIBUTES })}
-        >
-          Атрибуты
-        </Text>
-        <Text
-          onClick={sectionSelect(Section.OBJECTS)}
-          view={TEXT_VIEW.p18}
-          className={cnMainLayout('section', { selected: section === Section.OBJECTS })}
-        >
-          Обьекты
-        </Text>
-        <Text
-          onClick={sectionSelect(Section.QUESTIONS)}
-          view={TEXT_VIEW.p18}
-          className={cnMainLayout('section', { selected: section === Section.QUESTIONS })}
-        >
-          Вопросы
-        </Text>
-        <Text
-          onClick={sectionSelect(Section.RULES)}
-          view={TEXT_VIEW.p18}
-          className={cnMainLayout('section', { selected: section === Section.RULES })}
-        >
-          Правила
-        </Text>
-      </header>
-      {memoSectoion}
-    </div>
+    <>
+      <div className={cnMainLayout()}>
+        <header className={cnMainLayout('header')}>
+          <Text
+            onClick={sectionSelect(Section.SYSTEM)}
+            view={TEXT_VIEW.p18}
+            className={cnMainLayout('section', { selected: section === Section.SYSTEM })}
+          >
+            О системе
+          </Text>
+          <Text
+            onClick={sectionSelect(Section.ATTRIBUTES)}
+            view={TEXT_VIEW.p18}
+            className={cnMainLayout('section', { selected: section === Section.ATTRIBUTES })}
+          >
+            Атрибуты
+          </Text>
+          <Text
+            onClick={sectionSelect(Section.OBJECTS)}
+            view={TEXT_VIEW.p18}
+            className={cnMainLayout('section', { selected: section === Section.OBJECTS })}
+          >
+            Обьекты
+          </Text>
+          <Text
+            onClick={sectionSelect(Section.QUESTIONS)}
+            view={TEXT_VIEW.p18}
+            className={cnMainLayout('section', { selected: section === Section.QUESTIONS })}
+          >
+            Вопросы
+          </Text>
+          <Text
+            onClick={sectionSelect(Section.RULES)}
+            view={TEXT_VIEW.p18}
+            className={cnMainLayout('section', { selected: section === Section.RULES })}
+          >
+            Правила
+          </Text>
+        </header>
+        {memoSectoion}
+      </div>
+    </>
   );
 };
 

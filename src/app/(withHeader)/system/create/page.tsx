@@ -60,7 +60,7 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     if (status === 'success') {
-      router.push(`/system/${data.id}`);
+      router.push(`/system/editor/${data.id}`);
     }
   }, [data, isPending, router, status]);
 

@@ -95,7 +95,6 @@ const RuleField: React.FC<RuleFieldProps> = ({ attributeRule, control, ruleIndex
 
   const handleDeleteAttribute = useCallback(
     (attribute: TRuleAttributeAttributeValue, attributeIndex: number) => () => {
-      console.log('click');
       if (attribute.id === -1) {
         attributeRemove(attributeIndex);
       } else {
@@ -110,7 +109,6 @@ const RuleField: React.FC<RuleFieldProps> = ({ attributeRule, control, ruleIndex
 
   const handleDeleteQuestion = useCallback(
     (question: TRuleQuestionAnswer, questionIndex: number) => () => {
-      console.log('click');
       if (question.id === -1) {
         questionRemove(questionIndex);
       } else {

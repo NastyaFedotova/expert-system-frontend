@@ -65,7 +65,6 @@ const ClausesGroup: React.FC<ClausesGroupProps> = ({
 
   const handleDeleteClause = useCallback(
     (clause: TClause, clauseIndex: number) => () => {
-      console.log('click');
       if (clause.id === -1) {
         remove(clauseIndex);
       } else {

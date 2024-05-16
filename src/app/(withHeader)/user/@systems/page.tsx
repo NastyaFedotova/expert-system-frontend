@@ -8,6 +8,7 @@ import { deleteSystem, getSystems } from '@/api/services/systems';
 import { Card } from '@/components/Card';
 import { CardSkeleton } from '@/components/CardSkeleton';
 import Loader from '@/components/Loader';
+import Text, { TEXT_VIEW } from '@/components/Text';
 import { SYSTEMS } from '@/constants';
 import useSystemStore from '@/store/systemStore';
 import useUserStore from '@/store/userStore';
@@ -58,8 +59,8 @@ export const Page: React.FC = () => {
     },
   });
 
-  const handleEdit = useCallback((id: number) => () => router.push(`/system/${id}`), [router]);
-  const handleClick = useCallback((id: number) => () => console.log('system to click: ', id), []);
+  const handleEdit = useCallback((id: number) => () => router.push(`/system/editor/${id}`), [router]);
+  const handleClick = useCallback((id: number) => () => router.push(`/system/test/${id}`), [router]);
   const handleDelete = useCallback(
     (id: number, password: string) => mutate.mutate({ system_id: id, password }),
     [mutate],
@@ -70,7 +71,7 @@ export const Page: React.FC = () => {
   );
   return (
     <div className={cnUserProfile()}>
-      {data?.systems.length &&
+      {!!data?.systems.length &&
         isSuccess &&
         data.systems.map((system) => (
           <Card
@@ -86,6 +87,7 @@ export const Page: React.FC = () => {
             onDownloadClick={handleDownload(system.id)}
           />
         ))}
+      {!isLoading && !data?.systems.length && <Text view={TEXT_VIEW.p20}>Нет созданных систем</Text>}
       {isLoading && [...Array(6).keys()].map((index) => <CardSkeleton key={index} />)}
     </div>
   );

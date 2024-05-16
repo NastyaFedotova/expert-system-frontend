@@ -63,7 +63,7 @@ const User: React.FC = () => {
               Личный кабинет
             </Text>
           </Link>
-          <Link href="/system" className={cnUser('options')}>
+          <Link href="/system/create" className={cnUser('options')}>
             <AddIcon />
             <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
               Новая система
