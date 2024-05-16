@@ -6,7 +6,6 @@ import Image from 'next/image';
 import Text, { TEXT_TAG, TEXT_VIEW, TEXT_WEIGHT } from '@/components/Text';
 import CloseIcon from '@/icons/CloseIcon';
 import DotsIcon from '@/icons/DotsIcon';
-import DownloadIcon from '@/icons/DownloadIcon';
 import EditIcon from '@/icons/EditIcon';
 import TrashIcon from '@/icons/TrashIcon';
 import defaultImage from '@/public/default-image.png';
@@ -143,12 +142,12 @@ const Card: React.FC<CardProps> = ({
                   Редактировать
                 </Text>
               </div>
-              <a className={cnCard('options')} onClick={undefined} download="backup.txt">
+              {/* <a className={cnCard('options')} onClick={undefined} download="backup.txt">
                 <DownloadIcon />
                 <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
                   Скачать копию
                 </Text>
-              </a>
+              </a> */}
             </div>
           </Popup>
         </>

@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 import { LogoutIcon, UserIcon } from '@/icons';
 import AddIcon from '@/icons/AddIcon';
+import BookIcon from '@/icons/BookIcon';
 import LoginIcon from '@/icons/LoginIcon';
 import useUserStore from '@/store/userStore';
 import { classname } from '@/utils';
@@ -67,6 +68,12 @@ const User: React.FC = () => {
             <AddIcon />
             <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
               Новая система
+            </Text>
+          </Link>
+          <Link href="/system/instruction" className={cnUser('options')}>
+            <BookIcon />
+            <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
+              Инструкция
             </Text>
           </Link>
           <div className={cnUser('options', { isLogin })} onClick={handlelogout}>

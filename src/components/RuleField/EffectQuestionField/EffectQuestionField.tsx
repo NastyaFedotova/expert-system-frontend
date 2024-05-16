@@ -36,7 +36,10 @@ const EffectQuestionField: React.FC<EffectQuestionFieldProps> = ({
   });
 
   const questionOptions = useMemo<Option[]>(
-    () => questions.map((question) => ({ value: question.id, label: question.body })),
+    () =>
+      questions
+        .filter((question) => question.with_chooses)
+        .map((question) => ({ value: question.id, label: question.body })),
     [questions],
   );
   const questionValue = useMemo<Option>(
