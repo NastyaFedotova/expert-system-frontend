@@ -31,7 +31,6 @@ const ClausesGroup: React.FC<ClausesGroupProps> = ({ control, ruleIndex, ruleId,
   });
 
   const handleDeleteClauseGroup = useCallback(() => {
-    console.log('click');
     let offset = 0;
     fields.forEach((clause, clauseIndex) => {
       if (clause.id === -1) {
@@ -42,7 +41,7 @@ const ClausesGroup: React.FC<ClausesGroupProps> = ({ control, ruleIndex, ruleId,
       }
     });
   }, [fields, remove, update]);
-  console.log(fields);
+
   const handleAddClause = useCallback(
     () =>
       append({
@@ -70,7 +69,6 @@ const ClausesGroup: React.FC<ClausesGroupProps> = ({ control, ruleIndex, ruleId,
   );
 
   const allDeleted = useMemo(() => fields.every((field) => field.deleted), [fields]);
-  console.log(clauseGroupIndex, allDeleted);
 
   return (
     <>
