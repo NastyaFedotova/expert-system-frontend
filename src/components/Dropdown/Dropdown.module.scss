@@ -63,6 +63,7 @@
   &-option {
     margin: $space-s $space-xs;
     cursor: pointer;
+    text-align: start;
 
     &:hover {
       color: $text-secondary;

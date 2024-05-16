@@ -120,7 +120,8 @@ const ClauseField: React.FC<ClauseFieldProps> = ({
         disabled={questionIdField.value === -1}
         placeholder="Выберите вариант ответа"
         onlyInput={openQuestion}
-        label="Ответ для сравнения"
+        inputType={openQuestion ? 'number' : undefined}
+        label="Ответ"
       />
     </div>
   );

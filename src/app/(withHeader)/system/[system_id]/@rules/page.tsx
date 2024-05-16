@@ -17,8 +17,8 @@ import { ATTRIBUTES, OPERATOR, QUESTIONS, RULES } from '@/constants';
 import AddIcon from '@/icons/AddIcon';
 import useRulePageStore from '@/store/rulePageStore';
 import useUserStore from '@/store/userStore';
-import { TClauseForForm } from '@/types/clauses';
-import { TRuleForForm, TRuleForm } from '@/types/rules';
+import { TClauseForForm, TClauseNew, TClauseUpdate } from '@/types/clauses';
+import { TRuleForForm, TRuleForm, TRuleNew } from '@/types/rules';
 import { classname } from '@/utils';
 import { formRuleValidation } from '@/validation/rules';
 import { systemIdValidation } from '@/validation/searchParams';
@@ -117,7 +117,6 @@ const Page: React.FC<PageProps> = ({ params }) => {
     control,
     handleSubmit,
     reset,
-    watch,
     formState: { dirtyFields, isValid },
   } = useForm<TRuleForm>({
     defaultValues: pageData,
@@ -148,7 +147,14 @@ const Page: React.FC<PageProps> = ({ params }) => {
     return isDirtyForm || !!toDelete.rules.length || !!toDelete.clauses.length;
   }, [dirtyFields, toDelete]);
 
-  const handleFormSubmit = useCallback((form: TRuleForm) => console.log(form), []);
+  const handleFormSubmit = useCallback((form: TRuleForm) => {
+    console.log(form);
+    // const newRule: TRuleNew[] = [];
+    // const deleteRule: number[];
+    // const newClause: TClauseNew[] = [];
+    // const updateClause: TClauseUpdate[] = [];
+    // const deleteClause: number[];
+  }, []);
 
   const handleAddRule = useCallback(
     (attributeRule: boolean) => () =>
@@ -189,8 +195,6 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   useEffect(() => reset(pageData), [pageData, reset]);
 
-  const formWatch = watch();
-  console.log(formWatch);
   return (
     <main className={cnRules()}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className={cnRules('form')}>
@@ -211,12 +215,12 @@ const Page: React.FC<PageProps> = ({ params }) => {
           </>
         ))}
         <div className={cnRules('newRule')}>
-          <div className={cnRules('newRule-button')}>
-            <AddIcon width={30} height={30} className={cnRules('newRule-addIcon')} onClick={handleAddRule(false)} />
+          <div className={cnRules('newRule-button')} onClick={handleAddRule(false)}>
+            <AddIcon width={30} height={30} className={cnRules('newRule-addIcon')} />
             <Text>{'"Вопрос - Вопрос"'}</Text>
           </div>
-          <div className={cnRules('newRule-button')}>
-            <AddIcon width={30} height={30} className={cnRules('newRule-addIcon')} onClick={handleAddRule(true)} />
+          <div className={cnRules('newRule-button')} onClick={handleAddRule(true)}>
+            <AddIcon width={30} height={30} className={cnRules('newRule-addIcon')} />
             <Text>{'"Вопрос - Атрибут"'}</Text>
           </div>
         </div>

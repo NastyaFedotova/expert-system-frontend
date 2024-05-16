@@ -18,12 +18,19 @@ type ClausesGroupProps = {
   ruleIndex: number;
   ruleId: number;
   clauseGroupIndex: number;
+  lastClauseGroup: boolean;
   control: Control<TRuleForm>;
 };
 
 const cnClausesGroup = classname(classes, 'clauseGroup');
 
-const ClausesGroup: React.FC<ClausesGroupProps> = ({ control, ruleIndex, ruleId, clauseGroupIndex }) => {
+const ClausesGroup: React.FC<ClausesGroupProps> = ({
+  control,
+  ruleIndex,
+  ruleId,
+  lastClauseGroup,
+  clauseGroupIndex,
+}) => {
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: `formData.${ruleIndex}.clauses.${clauseGroupIndex}`,
@@ -72,33 +79,36 @@ const ClausesGroup: React.FC<ClausesGroupProps> = ({ control, ruleIndex, ruleId,
 
   return (
     <>
-      {!!clauseGroupIndex && (
-        <Text view={TEXT_VIEW.p20} className={cnClausesGroup('or')}>
-          Или:
-        </Text>
-      )}
       {!allDeleted && (
-        <div className={cnClausesGroup()}>
-          <CloseIcon width={30} height={30} className={cnClausesGroup('delete')} onClick={handleDeleteClauseGroup} />
-          {fields.map((clause, clauseIndex) => (
-            <>
-              {!clause.deleted && (
-                <ClauseField
-                  key={clause.arrayId}
-                  control={control}
-                  ruleIndex={ruleIndex}
-                  clauseGroupIndex={clauseGroupIndex}
-                  clauseIndex={clauseIndex}
-                  deleteClause={handleDeleteClause(clause, clauseIndex)}
-                />
-              )}
-            </>
-          ))}
-          <div className={cnClausesGroup('newClause')} key="newClause" onClick={handleAddClause}>
-            <AddIcon width={30} height={30} className={cnClausesGroup('newClause-addIcon')} />
-            <Text>Добавить условие</Text>
-          </div>
-        </div>
+        <>
+          <div className={cnClausesGroup()}>
+            <CloseIcon width={30} height={30} className={cnClausesGroup('delete')} onClick={handleDeleteClauseGroup} />
+            {fields.map((clause, clauseIndex) => (
+              <>
+                {!clause.deleted && (
+                  <ClauseField
+                    key={clause.arrayId}
+                    control={control}
+                    ruleIndex={ruleIndex}
+                    clauseGroupIndex={clauseGroupIndex}
+                    clauseIndex={clauseIndex}
+                    deleteClause={handleDeleteClause(clause, clauseIndex)}
+                  />
+                )}
+              </>
+            ))}
+
+            <div className={cnClausesGroup('newClause')} key="newClause" onClick={handleAddClause}>
+              <AddIcon width={30} height={30} className={cnClausesGroup('newClause-addIcon')} />
+              <Text>Добавить условие</Text>
+            </div>
+          </div>{' '}
+          {!lastClauseGroup && (
+            <Text view={TEXT_VIEW.p20} className={cnClausesGroup('or')}>
+              Или:
+            </Text>
+          )}
+        </>
       )}
     </>
   );

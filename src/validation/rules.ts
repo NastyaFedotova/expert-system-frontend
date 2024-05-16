@@ -22,12 +22,17 @@ export const ruleNewValidation = ruleValidation.extend({
   rule_attribute_attributevalue_ids: z.array(ruleAttributeAttributeValueNewValidation),
 });
 
-export const ruleForFormValidation = ruleValidation.extend({
-  deleted: z.boolean(),
-  clauses: z.array(z.array(clauseForFormValidation)),
-  rule_question_answer_ids: z.array(ruleQuestionAnswerValidation.extend({ deleted: z.boolean() })),
-  rule_attribute_attributevalue_ids: z.array(ruleAttributeAttributeValueValidation.extend({ deleted: z.boolean() })),
-});
+export const ruleForFormValidation = ruleValidation
+  .extend({
+    deleted: z.boolean(),
+    clauses: z.array(z.array(clauseForFormValidation).min(1)),
+    rule_question_answer_ids: z.array(ruleQuestionAnswerValidation.extend({ deleted: z.boolean() })),
+    rule_attribute_attributevalue_ids: z.array(ruleAttributeAttributeValueValidation.extend({ deleted: z.boolean() })),
+  })
+  .refine((val) => val.clauses.some((clauseGroup) => clauseGroup.some((clause) => !clause.deleted)))
+  .refine((val) =>
+    val.attribute_rule ? val.rule_attribute_attributevalue_ids.length > 0 : val.rule_question_answer_ids.length > 0,
+  );
 
 export const formRuleValidation = z.object({
   formData: z.array(ruleForFormValidation),

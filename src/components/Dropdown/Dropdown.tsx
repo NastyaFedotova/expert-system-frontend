@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { HTMLInputTypeAttribute, memo, useCallback, useEffect, useRef, useState } from 'react';
 
 import { ArrowDownIcon } from '@/icons';
 import { classname } from '@/utils';
@@ -34,6 +34,7 @@ export type DropdownProps = {
   withInput?: boolean;
 
   label?: string;
+  inputType?: HTMLInputTypeAttribute;
 };
 
 const cnDropdown = classname(classes, 'dropdown');
@@ -47,6 +48,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   placeholder,
   onlyInput,
   withInput,
+  inputType,
   label,
 }) => {
   const [popoverVisible, setPopoverVisible] = useState(false);
@@ -110,6 +112,7 @@ const Dropdown: React.FC<DropdownProps> = ({
           onClick={handleOnClickInput}
           onChange={handleOnChange}
           className={cnDropdown('inputSlot', { textCursor: onlyInput || withInput })}
+          type={inputType}
         />
       ) : (
         <div

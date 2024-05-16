@@ -92,8 +92,8 @@ const EffectAttributeField: React.FC<EffectAttributeFieldProps> = ({
         value={attrValueValue}
         onChange={handleAttrValueChoose}
         disabled={attributeField.value === -1}
-        placeholder="Выберите значение атрибута"
-        label="Зависимое значение атрибута"
+        placeholder="Значение атрибута"
+        label="Значение атрибута"
       />
     </div>
   );
