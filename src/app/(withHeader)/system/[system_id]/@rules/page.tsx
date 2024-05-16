@@ -117,7 +117,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
     mode: 'all',
   });
   console.log(errors);
-  const { isPending } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (responseList: Promise<unknown>[]) => Promise.allSettled(responseList),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [RULES.GET, { user: user?.id, system: system_id }] }),
     onSettled: () => setToDelete({ rules: [], clauses: [] }),
@@ -168,6 +168,10 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
           rule.clauses.forEach((clauseGroup, clauseGroupIndex) =>
             clauseGroup.forEach((clause, clauseIndex) => {
+              if (clause.rule_id === -1) {
+                newRule.clauses.push(clause);
+                return;
+              }
               if (clause.id === -1) {
                 newClausesList.push(clause);
                 return;
@@ -252,8 +256,9 @@ const Page: React.FC<PageProps> = ({ params }) => {
       if (deleteRuleAttributeAttributeValueIds.length) {
         responses.push(deleteRuleAttributeAttributeValue(deleteRuleAttributeAttributeValueIds));
       }
+      mutate(responses);
     },
-    [dirtyFields.formData, pageData.formData],
+    [dirtyFields.formData, mutate, pageData.formData],
   );
 
   const handleAddRule = useCallback(

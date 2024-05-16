@@ -7,6 +7,7 @@ import { getHistories } from '@/api/services/history';
 import { CardSkeleton } from '@/components/CardSkeleton';
 import HistoryCard from '@/components/HistoryCard';
 import Loader from '@/components/Loader';
+import Text, { TEXT_VIEW } from '@/components/Text';
 import { HISTORIES } from '@/constants';
 import useUserStore from '@/store/userStore';
 import { classname } from '@/utils';
@@ -29,6 +30,7 @@ const Page: React.FC = () => {
       {!!data?.length &&
         isSuccess &&
         data.map((system, index) => <HistoryCard key={index} {...system} title={system.system.name} />)}
+      {!isLoading && !data?.length && <Text view={TEXT_VIEW.p20}>Нет пройденных систем</Text>}
       {isLoading && [...Array(6).keys()].map((index) => <CardSkeleton key={index} />)}
     </div>
   );
