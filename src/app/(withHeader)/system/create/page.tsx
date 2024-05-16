@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useEffect } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -17,7 +17,7 @@ import { SYSTEMS } from '@/constants';
 import useUserStore from '@/store/userStore';
 import { TErrorResponse } from '@/types/error';
 import { TSystem, TSystemNew, TSystemsWithPage } from '@/types/systems';
-import { classname } from '@/utils';
+import { classname, errorParser } from '@/utils';
 import { systemNewValidation } from '@/validation/system';
 
 import classes from './page.module.scss';
@@ -36,6 +36,7 @@ const Page: React.FC = () => {
   } = useForm<TSystemNew>({
     defaultValues: { private: true },
     resolver: zodResolver(systemNewValidation),
+    mode: 'all',
   });
 
   const queryClient = useQueryClient();
@@ -44,15 +45,23 @@ const Page: React.FC = () => {
     mutationFn: createSystem,
     onSuccess: (data) => {
       queryClient.setQueryData([SYSTEMS.RETRIEVE, { user_id: user?.id, system_id: data.id }], data);
-      queryClient.setQueryData<TSystemsWithPage>(
-        [SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }],
-        (old?: TSystemsWithPage) => ({
-          pages: old?.pages ?? 1,
-          systems: [data].concat(old?.systems ?? []),
-        }),
-      );
+      const user_systems = queryClient.getQueryData<TSystemsWithPage>([
+        SYSTEMS.GET_USER,
+        { user_id: user?.id, all_types: true },
+      ]);
+      if (user_systems?.systems.length) {
+        queryClient.setQueryData<TSystemsWithPage>(
+          [SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }],
+          (old?: TSystemsWithPage) => ({
+            pages: old?.pages ?? 1,
+            systems: [data].concat(old?.systems ?? []),
+          }),
+        );
+      }
     },
   });
+
+  const createError = useMemo(() => (error ? errorParser(error) : undefined), [error]);
 
   const handleFormSubmit = useCallback((data: TSystemNew) => mutate(data), [mutate]);
 
@@ -107,9 +116,9 @@ const Page: React.FC = () => {
               afterSlot={<ErrorPopup error={errors.about?.message} />}
             />
           </div>
-          {!!error && (
+          {!!createError && (
             <Text view={TEXT_VIEW.p14} className={cnSystemCreatePage('err')}>
-              {error.extra ?? error.error}
+              {createError.extra ?? createError.error}
             </Text>
           )}
           <Button className={cnSystemCreatePage('button')} disabled={!isValid} loading={isPending}>

@@ -1,8 +1,6 @@
 'use client';
 import { z } from 'zod';
 
-import { RUS_LETTERS_ONLY } from '@/constants';
-
 import { questionWithAnswersValidation } from './questions';
 import { ruleValidation } from './rules';
 
@@ -12,7 +10,7 @@ export const systemValidation = z.object({
   about: z.string().max(1024, 'Максимальная длина - 1024').nullish(),
   created_at: z.string().datetime({ offset: true }),
   updated_at: z.string().datetime({ offset: true }),
-  name: z.string().max(128, 'Максимальная длина - 128').regex(RUS_LETTERS_ONLY, 'Только русские буквы'),
+  name: z.string().max(128, 'Максимальная длина - 128'),
   private: z.boolean(),
   image_uri: z.string(),
 });

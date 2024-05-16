@@ -8,7 +8,6 @@ import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Text, { TEXT_VIEW } from '@/components/Text';
 import { SYSTEMS } from '@/constants';
-import useUserStore from '@/store/userStore';
 import { classname } from '@/utils';
 import { systemIdValidation } from '@/validation/searchParams';
 
@@ -35,6 +34,7 @@ const Page: React.FC<SystemTestPageProps> = ({ params }) => {
   const currentQuestion = useMemo(() => data.questions[currentQuestionNumber], [currentQuestionNumber, data.questions]);
 
   console.log(router, system_id);
+  console.log(collectedAnswers, setCollectedAnswers, isSuccess, isLoading);
 
   const handleNextQuestion = useCallback(() => setCurrentQuestionNumber((prev) => prev + 1), []);
 

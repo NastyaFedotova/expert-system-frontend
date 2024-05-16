@@ -22,6 +22,8 @@ export type TSystemNew = z.infer<typeof systemNewValidation>;
 
 export type TSystemUpdate = z.infer<typeof systemUpdateValidation>;
 
+export type TSystemUpdateBefore = z.input<typeof systemUpdateValidation>;
+
 export type TSystemDeleteResponseParams = {
   system_id: number;
   password: string;

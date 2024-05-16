@@ -18,7 +18,7 @@ import TextArea from '@/components/TextArea';
 import { SYSTEMS } from '@/constants';
 import useUserStore from '@/store/userStore';
 import { TErrorResponse } from '@/types/error';
-import { TSystem, TSystemsWithPage, TSystemUpdate } from '@/types/systems';
+import { TSystem, TSystemsWithPage, TSystemUpdate, TSystemUpdateBefore } from '@/types/systems';
 import { classname } from '@/utils';
 import { systemIdValidation } from '@/validation/searchParams';
 import { systemUpdateValidation } from '@/validation/system';
@@ -50,7 +50,10 @@ const Page: React.FC<PageProps> = ({ params }) => {
     queryKey: ['image', data.image_uri],
     queryFn: async () => {
       if (data.image_uri) {
-        return await getImage(data.image_uri);
+        const img = await getImage(data.image_uri);
+        const dt = new DataTransfer();
+        dt.items.add(img);
+        return dt.files;
       }
     },
     gcTime: 0,
@@ -90,7 +93,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
     clearErrors,
     reset,
     setValue,
-  } = useForm<TSystemUpdate>({
+  } = useForm<TSystemUpdateBefore>({
     defaultValues: { ...data, image },
     resolver: zodResolver(systemUpdateValidation),
     mode: 'all',
@@ -99,27 +102,28 @@ const Page: React.FC<PageProps> = ({ params }) => {
   const formWatch = watch();
 
   const handleFormSubmit = useCallback(
-    (formData: TSystemUpdate) => {
+    (formData: TSystemUpdateBefore) => {
+      const formDataWithFile = formData as TSystemUpdate;
       type formType = keyof Omit<TSystemUpdate, 'is_image_removed'>;
       const changedFields = Object.keys(dirtyFields).reduce((fields, field) => {
         const formField = field as formType;
         switch (formField) {
           case 'name':
-            fields.name = formData.name;
+            fields.name = formDataWithFile.name;
             return fields;
           case 'private':
-            fields.private = formData.private;
+            fields.private = formDataWithFile.private;
             return fields;
           case 'image':
-            fields.image = formData.image;
+            fields.image = formDataWithFile.image;
             return fields;
           default:
-            fields[formField] = formData[formField];
+            fields[formField] = formDataWithFile[formField];
             return fields;
         }
       }, {} as TSystemUpdate);
 
-      if (formData.image === undefined) {
+      if (formDataWithFile.image === undefined) {
         changedFields.is_image_removed = true;
       }
       mutate({ ...changedFields, system_id: system_id });
