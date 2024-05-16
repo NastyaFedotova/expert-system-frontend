@@ -40,8 +40,8 @@ export enum OPERATOR {
   NOT_EQUAL = 'NotEqual',
   BELOW = 'Below',
   ABOVE = 'Above',
-  NO_MORE_THEN = 'NoMoreThen',
-  NO_LESS_THEN = 'NoLessThen',
+  NO_MORE_THAN = 'NoMoreThan',
+  NO_LESS_THAN = 'NoLessThan',
 }
 
 type Option = { value: OPERATOR; label: string };
@@ -51,6 +51,6 @@ export const operatorOptions: Option[] = [
   { value: OPERATOR.NOT_EQUAL, label: '!=' },
   { value: OPERATOR.BELOW, label: '<' },
   { value: OPERATOR.ABOVE, label: '>' },
-  { value: OPERATOR.NO_MORE_THEN, label: '<=' },
-  { value: OPERATOR.NO_LESS_THEN, label: '>=' },
+  { value: OPERATOR.NO_MORE_THAN, label: '<=' },
+  { value: OPERATOR.NO_LESS_THAN, label: '>=' },
 ];

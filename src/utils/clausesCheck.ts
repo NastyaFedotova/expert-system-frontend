@@ -26,18 +26,22 @@ export const clausesCheck = ({
         switch (clause.operator) {
           case OPERATOR.EQUAL:
             comparisonResult = question.answer === clause.compared_value;
-            return;
+            break;
           case OPERATOR.NOT_EQUAL:
             comparisonResult = question.answer !== clause.compared_value;
-
-            return;
+            break;
           case OPERATOR.ABOVE:
-            if (mapValue) {
-              clausesGroupMatch.set(clause.logical_group, mapValue && question.answer === clause.compared_value);
-            } else {
-              clausesGroupMatch.set(clause.logical_group, question.answer === clause.compared_value);
-            }
-            return;
+            comparisonResult = Number(question.answer) > Number(clause.compared_value);
+            break;
+          case OPERATOR.BELOW:
+            comparisonResult = Number(question.answer) < Number(clause.compared_value);
+            break;
+          case OPERATOR.NO_LESS_THAN:
+            comparisonResult = Number(question.answer) >= Number(clause.compared_value);
+            break;
+          case OPERATOR.NO_MORE_THAN:
+            comparisonResult = Number(question.answer) <= Number(clause.compared_value);
+            break;
         }
         if (mapValue) {
           clausesGroupMatch.set(clause.logical_group, mapValue && comparisonResult);
