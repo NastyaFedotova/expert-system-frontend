@@ -16,7 +16,7 @@ export const ruleValidation = z.object({
   rule_attribute_attributevalue_ids: z.array(ruleAttributeAttributeValueValidation),
 });
 
-export const ruleNewValidation = ruleValidation.extend({
+export const ruleNewValidation = ruleValidation.omit({ id: true }).extend({
   clauses: z.array(clauseNewValidation),
   rule_question_answer_ids: z.array(ruleQuestionAnswerNewValidation),
   rule_attribute_attributevalue_ids: z.array(ruleAttributeAttributeValueNewValidation),

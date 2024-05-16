@@ -18,6 +18,8 @@ import AddIcon from '@/icons/AddIcon';
 import useRulePageStore from '@/store/rulePageStore';
 import useUserStore from '@/store/userStore';
 import { TClauseForForm, TClauseNew, TClauseUpdate } from '@/types/clauses';
+import { TRuleAttributeAttributeValue } from '@/types/ruleAttributeAttributeValue';
+import { TRuleQuestionAnswerNew } from '@/types/ruleQuestionAnswer';
 import { TRuleForForm, TRuleForm, TRuleNew } from '@/types/rules';
 import { classname } from '@/utils';
 import { formRuleValidation } from '@/validation/rules';
@@ -147,14 +149,53 @@ const Page: React.FC<PageProps> = ({ params }) => {
     return isDirtyForm || !!toDelete.rules.length || !!toDelete.clauses.length;
   }, [dirtyFields, toDelete]);
 
-  const handleFormSubmit = useCallback((form: TRuleForm) => {
-    console.log(form);
-    // const newRule: TRuleNew[] = [];
-    // const deleteRule: number[];
-    // const newClause: TClauseNew[] = [];
-    // const updateClause: TClauseUpdate[] = [];
-    // const deleteClause: number[];
-  }, []);
+  const handleFormSubmit = useCallback(
+    (form: TRuleForm) => {
+      console.log(form);
+      const newRules: TRuleNew[] = [];
+      const deleteRules: number[] = [];
+      // const newClauses: TClauseNew[] = [];
+      // const updateClauses: TClauseUpdate[] = [];
+      // const deleteClauses: number[];
+      // const newRuleQuestionAnsweIds: TRuleQuestionAnswerNew[] = [];
+      // const deleteRuleQuestionAnsweIds: number[] = [];
+      // const ruleAttributeAttributeValueIds: TRuleAttributeAttributeValue[] = [];
+      // const deleteRuleAttributeAttributeValueIds: number[] = [];
+
+      form.formData.forEach((rule) => {
+        if (rule.deleted) {
+          deleteRules.push(rule.id);
+        } else {
+          const newRule: TRuleNew = {
+            system_id: rule.system_id,
+            attribute_rule: rule.attribute_rule,
+            clauses: [],
+            rule_question_answer_ids: [],
+            rule_attribute_attributevalue_ids: [],
+          };
+          const oldRule = pageData.formData.find((oldRule) => oldRule.id === rule.id);
+          const newAttributes = rule.rule_attribute_attributevalue_ids.filter(
+            (x) => !oldRule?.rule_attribute_attributevalue_ids.some((y) => x.id === y.id),
+          );
+          newRule.rule_attribute_attributevalue_ids = newAttributes.map((attr) => ({
+            attribute_id: attr.attribute_id,
+            rule_id: attr.rule_id,
+            attribute_value_id: attr.attribute_value_id,
+          }));
+          const newQuestions = rule.rule_question_answer_ids.filter(
+            (x) => !oldRule?.rule_question_answer_ids.some((y) => x.id === y.id),
+          );
+          newRule.rule_question_answer_ids = newQuestions.map((question) => ({
+            question_id: question.question_id,
+            rule_id: question.rule_id,
+            answer_id: question.answer_id,
+          }));
+          newRules.push(newRule);
+        }
+      });
+    },
+    [pageData.formData],
+  );
 
   const handleAddRule = useCallback(
     (attributeRule: boolean) => () =>
