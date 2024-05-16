@@ -4,7 +4,7 @@ import { Control, useController, useFieldArray } from 'react-hook-form';
 import AddIcon from '@/icons/AddIcon';
 import CloseIcon from '@/icons/CloseIcon';
 import { TAttributeWithAttributeValues } from '@/types/attributes';
-import { classname } from '@/types/utils';
+import { classname } from '@/utils';
 
 import ErrorPopup from '../ErrorPopup';
 import Input from '../Input';

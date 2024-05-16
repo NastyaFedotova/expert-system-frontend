@@ -10,7 +10,7 @@ import { TQuestionWithAnswers } from '@/types/questions';
 import { TRuleAttributeAttributeValue } from '@/types/ruleAttributeAttributeValue';
 import { TRuleQuestionAnswer } from '@/types/ruleQuestionAnswer';
 import { TRuleForm } from '@/types/rules';
-import { classname } from '@/types/utils';
+import { classname } from '@/utils';
 
 import Text, { TEXT_VIEW } from '../Text';
 

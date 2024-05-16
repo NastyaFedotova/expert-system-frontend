@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 
-import { classname } from '@/types/utils';
+import { classname } from '@/utils';
 
 import classes from './Icon.module.scss';
 

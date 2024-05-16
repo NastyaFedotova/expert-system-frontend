@@ -5,7 +5,7 @@ import Dropdown, { Option } from '@/components/Dropdown';
 import TrashIcon from '@/icons/TrashIcon';
 import useRulePageStore from '@/store/rulePageStore';
 import { TRuleForm } from '@/types/rules';
-import { classname } from '@/types/utils';
+import { classname } from '@/utils';
 
 import classes from './EffectAttributeField.module.scss';
 

@@ -21,7 +21,7 @@ import AddIcon from '@/icons/AddIcon';
 import useUserStore from '@/store/userStore';
 import { TAnswerNew, TAnswerUpdate } from '@/types/answers';
 import { TQuestionUpdate, TQuestionWithAnswersForm, TQuestionWithAnswersNew } from '@/types/questions';
-import { classname } from '@/types/utils';
+import { classname } from '@/utils';
 import { formQuestionWithAnswersValidation } from '@/validation/questions';
 import { systemIdValidation } from '@/validation/searchParams';
 

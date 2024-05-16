@@ -12,7 +12,7 @@ import {
 } from '@/api/services/user';
 import { TErrorResponse } from '@/types/error';
 import { TUser, TUserLogin, TUserRegistration, TUserUpdate } from '@/types/user';
-import { errorParser } from '@/types/utils';
+import { errorParser } from '@/utils';
 
 type TUserStates = {
   isLogin?: boolean;

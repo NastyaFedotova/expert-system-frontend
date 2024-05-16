@@ -10,7 +10,7 @@ import Input from '@/components/Input';
 import Text, { TEXT_VIEW } from '@/components/Text';
 import useUserStore from '@/store/userStore';
 import { TUserLogin } from '@/types/user';
-import { classname } from '@/types/utils';
+import { classname } from '@/utils';
 import { userLoginValidation } from '@/validation/user';
 
 import classes from './page.module.scss';

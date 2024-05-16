@@ -27,7 +27,7 @@ import { TClauseForForm, TClauseNew, TClauseUpdate } from '@/types/clauses';
 import { TRuleAttributeAttributeValueNew } from '@/types/ruleAttributeAttributeValue';
 import { TRuleQuestionAnswerNew } from '@/types/ruleQuestionAnswer';
 import { TRuleForForm, TRuleForm, TRuleNew } from '@/types/rules';
-import { classname } from '@/types/utils';
+import { classname } from '@/utils';
 import { formRuleValidation } from '@/validation/rules';
 import { systemIdValidation } from '@/validation/searchParams';
 

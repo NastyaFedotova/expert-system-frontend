@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 import { Providers } from '@/providers';
-import { classname } from '@/types/utils';
+import { classname } from '@/utils';
 
 import './global.scss';
 import classes from './layout.module.scss';

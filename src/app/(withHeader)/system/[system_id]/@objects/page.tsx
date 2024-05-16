@@ -25,7 +25,7 @@ import AddIcon from '@/icons/AddIcon';
 import useUserStore from '@/store/userStore';
 import { TObjectAttributeAttributeValueNew } from '@/types/objectAttributeAttributeValue';
 import { TObjectUpdate, TObjectWithAttrValues, TObjectWithAttrValuesForm, TObjectWithIdsNew } from '@/types/objects';
-import { classname } from '@/types/utils';
+import { classname } from '@/utils';
 import { formObjectWithAttrValuesValidation } from '@/validation/objects';
 import { systemIdValidation } from '@/validation/searchParams';
 

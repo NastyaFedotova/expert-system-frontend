@@ -19,7 +19,7 @@ import { SYSTEMS } from '@/constants';
 import useUserStore from '@/store/userStore';
 import { TErrorResponse } from '@/types/error';
 import { TSystem, TSystemsWithPage, TSystemUpdate } from '@/types/systems';
-import { classname } from '@/types/utils';
+import { classname } from '@/utils';
 import { systemIdValidation } from '@/validation/searchParams';
 import { systemUpdateValidation } from '@/validation/system';
 

@@ -7,7 +7,7 @@ import { LogoutIcon, UserIcon } from '@/icons';
 import AddIcon from '@/icons/AddIcon';
 import LoginIcon from '@/icons/LoginIcon';
 import useUserStore from '@/store/userStore';
-import { classname } from '@/types/utils';
+import { classname } from '@/utils';
 
 import Loader from '../Loader';
 import Text, { TEXT_TAG, TEXT_VIEW } from '../Text';

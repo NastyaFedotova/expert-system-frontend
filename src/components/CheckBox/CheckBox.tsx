@@ -1,7 +1,7 @@
 import React from 'react';
 
 import CheckIcon from '@/icons/CheckIcon';
-import { classname } from '@/types/utils';
+import { classname } from '@/utils';
 
 import classes from './CheckBox.module.scss';
 

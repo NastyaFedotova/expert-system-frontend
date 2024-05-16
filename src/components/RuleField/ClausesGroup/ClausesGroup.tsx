@@ -8,7 +8,7 @@ import AddIcon from '@/icons/AddIcon';
 import CloseIcon from '@/icons/CloseIcon';
 import { TClause } from '@/types/clauses';
 import { TRuleForm } from '@/types/rules';
-import { classname } from '@/types/utils';
+import { classname } from '@/utils';
 
 import ClauseField from './ClauseField';
 

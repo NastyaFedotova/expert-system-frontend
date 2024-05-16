@@ -5,7 +5,7 @@ import CheckBox from '@/components/CheckBox';
 import { ArrowDownIcon } from '@/icons';
 import { TAttributeValue } from '@/types/attributeValues';
 import { TObjectWithAttrValuesForm } from '@/types/objects';
-import { classname } from '@/types/utils';
+import { classname } from '@/utils';
 
 import { useClickOutside } from '../../../hooks/useClickOutside';
 import Input from '../../Input';
