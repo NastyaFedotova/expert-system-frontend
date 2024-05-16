@@ -15,18 +15,13 @@
     width: 100%;
   }
 
-  &-deleteIcon {
-    color: $error;
-    cursor: pointer;
-  }
-
   &-newClause {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: $space-s;
     max-width: 1000px;
-    width: 100%;
+    //width: 100%;
     cursor: pointer;
 
     &-input {
@@ -47,5 +42,10 @@
     cursor: pointer;
     background-color: $project-bg;
     border-radius: 50%;
+  }
+
+  &-or {
+    align-self: flex-start;
+    margin: 0;
   }
 }

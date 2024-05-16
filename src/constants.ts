@@ -35,10 +35,21 @@ export enum RULES {
 export const RUS_LETTERS_ONLY = new RegExp(/[а-яА-Я]/);
 
 export enum OPERATOR {
-  EQUAL = 'EQUAL',
-  NOT_EQUAL = 'NOT_EQUAL',
-  BELOW = 'BELOW',
-  ABOVE = 'ABOVE',
-  NO_MORE_THEN = 'NO_MORE_THEN',
-  NO_LESS_THEN = 'NO_LESS_THEN',
+  EQUAL = 'Equal',
+  NOT_EQUAL = 'NotEqual',
+  BELOW = 'Below',
+  ABOVE = 'Above',
+  NO_MORE_THEN = 'NoMoreThen',
+  NO_LESS_THEN = 'NoLessThen',
 }
+
+type Option = { value: OPERATOR; label: string };
+
+export const operatorOptions: Option[] = [
+  { value: OPERATOR.EQUAL, label: '=' },
+  { value: OPERATOR.NOT_EQUAL, label: '!=' },
+  { value: OPERATOR.BELOW, label: '<' },
+  { value: OPERATOR.ABOVE, label: '>' },
+  { value: OPERATOR.NO_MORE_THEN, label: '<=' },
+  { value: OPERATOR.NO_LESS_THEN, label: '>=' },
+];

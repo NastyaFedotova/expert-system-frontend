@@ -43,7 +43,7 @@ const ObjectMultiDropdown: React.FC<ObjectMultiDropdownProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleOnClickInput = useCallback(() => {
-    setPopoverVisible(true);
+    setPopoverVisible((prev) => !prev);
   }, []);
 
   const handleOnClickOutside = useCallback(() => {

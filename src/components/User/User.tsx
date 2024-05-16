@@ -66,7 +66,7 @@ const User: React.FC = () => {
           <Link href="/system" className={cnUser('options')}>
             <AddIcon />
             <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
-              Создать
+              Новая система
             </Text>
           </Link>
           <div className={cnUser('options', { isLogin })} onClick={handlelogout}>

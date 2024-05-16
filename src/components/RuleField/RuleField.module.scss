@@ -16,7 +16,7 @@
   &-clausesGroups {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
     width: 100%;
   }
 
@@ -24,8 +24,6 @@
     &-up {
       margin-top: 0;
       margin-bottom: 8px;
-    }
-    &-bottom {
     }
   }
 
@@ -35,8 +33,9 @@
     align-items: center;
     gap: $space-s;
     max-width: 1000px;
-    width: 100%;
     cursor: pointer;
+    align-self: flex-start;
+
     &-input {
       width: 100%;
     }

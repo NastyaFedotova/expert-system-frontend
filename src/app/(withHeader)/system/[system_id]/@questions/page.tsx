@@ -50,7 +50,6 @@ const Page: React.FC<PageProps> = ({ params }) => {
     control,
     handleSubmit,
     reset,
-    register,
     formState: { dirtyFields, isValid },
   } = useForm<TQuestionWithAnswersForm>({
     defaultValues: { formData: data },

@@ -1,13 +1,12 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import { Control, useFieldArray, UseFormSetValue } from 'react-hook-form';
+import { Control, useFieldArray } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 
-import Input from '@/components/Input';
-import Text from '@/components/Text';
+import Text, { TEXT_VIEW } from '@/components/Text';
 import { OPERATOR } from '@/constants';
 import AddIcon from '@/icons/AddIcon';
 import CloseIcon from '@/icons/CloseIcon';
-import TrashIcon from '@/icons/TrashIcon';
+import { TClause } from '@/types/clauses';
 import { TRuleForm } from '@/types/rules';
 import { classname } from '@/utils';
 
@@ -20,12 +19,11 @@ type ClausesGroupProps = {
   ruleId: number;
   clauseGroupIndex: number;
   control: Control<TRuleForm>;
-  setValue: UseFormSetValue<TRuleForm>;
 };
 
 const cnClausesGroup = classname(classes, 'clauseGroup');
 
-const ClausesGroup: React.FC<ClausesGroupProps> = ({ control, ruleIndex, ruleId, clauseGroupIndex, setValue }) => {
+const ClausesGroup: React.FC<ClausesGroupProps> = ({ control, ruleIndex, ruleId, clauseGroupIndex }) => {
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: `formData.${ruleIndex}.clauses.${clauseGroupIndex}`,
@@ -33,7 +31,7 @@ const ClausesGroup: React.FC<ClausesGroupProps> = ({ control, ruleIndex, ruleId,
   });
 
   const handleDeleteClauseGroup = useCallback(() => {
-    console.log('ckick');
+    console.log('click');
     let offset = 0;
     fields.forEach((clause, clauseIndex) => {
       if (clause.id === -1) {
@@ -59,21 +57,44 @@ const ClausesGroup: React.FC<ClausesGroupProps> = ({ control, ruleIndex, ruleId,
     [append, fields, ruleId],
   );
 
+  const handleDeleteClause = useCallback(
+    (clause: TClause, clauseIndex: number) => () => {
+      console.log('click');
+      if (clause.id === -1) {
+        remove(clauseIndex);
+      } else {
+        update(clauseIndex, { ...clause, deleted: true });
+      }
+    },
+    [remove, update],
+  );
+
   const allDeleted = useMemo(() => fields.every((field) => field.deleted), [fields]);
   console.log(clauseGroupIndex, allDeleted);
+
   return (
     <>
+      {!!clauseGroupIndex && (
+        <Text view={TEXT_VIEW.p20} className={cnClausesGroup('or')}>
+          Или:
+        </Text>
+      )}
       {!allDeleted && (
         <div className={cnClausesGroup()}>
           <CloseIcon width={30} height={30} className={cnClausesGroup('delete')} onClick={handleDeleteClauseGroup} />
-          <TrashIcon
-            width={30}
-            height={30}
-            className={cnClausesGroup('deleteIcon')}
-            onClick={handleDeleteClauseGroup}
-          />
-          {fields.map((clause) => (
-            <>{!clause.deleted && <ClauseField key={clause.arrayId} />}</>
+          {fields.map((clause, clauseIndex) => (
+            <>
+              {!clause.deleted && (
+                <ClauseField
+                  key={clause.arrayId}
+                  control={control}
+                  ruleIndex={ruleIndex}
+                  clauseGroupIndex={clauseGroupIndex}
+                  clauseIndex={clauseIndex}
+                  deleteClause={handleDeleteClause(clause, clauseIndex)}
+                />
+              )}
+            </>
           ))}
           <div className={cnClausesGroup('newClause')} key="newClause" onClick={handleAddClause}>
             <AddIcon width={30} height={30} className={cnClausesGroup('newClause-addIcon')} />

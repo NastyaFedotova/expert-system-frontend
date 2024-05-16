@@ -1,14 +1,14 @@
-.attrValue {
+.effectAttribute {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: $space-s;
-  padding: $space-s 0 0 0;
-  max-width: 1000px;
-  width: 100%;
+  gap: $space-m;
 
-  &-input {
-    width: 100%;
+  &-dropdown {
+    width: 200px;
+    &-operator {
+      width: 80px;
+    }
   }
 
   &-deleteIcon {

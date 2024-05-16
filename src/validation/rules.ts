@@ -1,7 +1,5 @@
 import { z } from 'zod';
 
-import { answerValidation } from './answers';
-import { attributeValueValidation } from './attributeValues';
 import { clauseForFormValidation, clauseNewValidation, clauseValidation } from './clauses';
 import {
   ruleAttributeAttributeValueNewValidation,
@@ -25,10 +23,10 @@ export const ruleNewValidation = ruleValidation.extend({
 });
 
 export const ruleForFormValidation = ruleValidation.extend({
-  deleted: z.boolean().default(true),
+  deleted: z.boolean(),
   clauses: z.array(z.array(clauseForFormValidation)),
-  rule_question_answer_ids: z.array(answerValidation),
-  rule_attribute_attributevalue_ids: z.array(attributeValueValidation),
+  rule_question_answer_ids: z.array(ruleQuestionAnswerValidation.extend({ deleted: z.boolean() })),
+  rule_attribute_attributevalue_ids: z.array(ruleAttributeAttributeValueValidation.extend({ deleted: z.boolean() })),
 });
 
 export const formRuleValidation = z.object({
