@@ -116,14 +116,14 @@ const Dropdown: React.FC<DropdownProps> = ({
         />
       ) : (
         <div
-          className={cnDropdown('input', { disabled, placeholder: !value.label?.length })}
+          className={cnDropdown('input', { disabled, placeholder: !value.label.length })}
           onClick={handleOnClickInput}
         >
           <div className={cnDropdown('label', { visible: !!label })} title={label}>
             {label ? (label?.length > 32 ? label.slice(0, 29).concat('...') : label) : ''}
           </div>
           <Text className={cnDropdown('input-value')} maxLines={1}>
-            {value.label?.length ? value.label : placeholder}
+            {value.label.length ? value.label : placeholder}
           </Text>
           <ArrowDownIcon color="secondary" className={cnDropdown('arrow', { popoverVisible })} />
         </div>
