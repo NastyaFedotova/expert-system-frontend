@@ -16,6 +16,7 @@ import { classname } from '@/utils';
 import { systemIdValidation } from '@/validation/searchParams';
 
 import classes from './page.module.scss';
+import { clausesCheck } from '@/utils/clausesCheck';
 
 const cnSystemCreatePage = classname(classes, 'systemTestPage');
 
@@ -75,9 +76,9 @@ const Page: React.FC<SystemTestPageProps> = ({ params }) => {
       setCurrentQuestionNumber((prev) => prev + 1);
       setCurrentOption(undefined);
 
-      
+      const matchedRules = clausesCheck({ collectedAnswers, rules: rules ?? [] });
     }
-  }, [currentOption]);
+  }, [collectedAnswers, currentOption, rules]);
 
   return (
     <div className={cnSystemCreatePage()}>

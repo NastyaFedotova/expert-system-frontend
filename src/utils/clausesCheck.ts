@@ -1,6 +1,4 @@
 import { OPERATOR } from '@/constants';
-import { TRuleAttributeAttributeValue } from '@/types/ruleAttributeAttributeValue';
-import { TRuleQuestionAnswer } from '@/types/ruleQuestionAnswer';
 import { TRule } from '@/types/rules';
 
 export const clausesCheck = ({
@@ -9,12 +7,8 @@ export const clausesCheck = ({
 }: {
   collectedAnswers: { question_id: number; answer: string }[];
   rules: TRule[];
-}): {
-  rule_id?: number;
-  isMatchFound: boolean;
-  ruleAttributeAttributevalueIds: TRuleAttributeAttributeValue[];
-  ruleQuestionAnswer: TRuleQuestionAnswer[];
-} => {
+}): TRule[] => {
+  const result: TRule[] = [];
   rules.forEach((rule) => {
     const clausesGroupMatch: Map<string, boolean> = new Map();
 
@@ -50,6 +44,13 @@ export const clausesCheck = ({
         }
       }
     });
+
+    const matched = Array.from(clausesGroupMatch, ([, clauseMatch]) => clauseMatch).some((clauseGroup) => clauseGroup);
+
+    if (matched) {
+      result.push(rule);
+    }
   });
-  return { rule_id: -1, isMatchFound: true, ruleAttributeAttributevalueIds: [], ruleQuestionAnswer: [] };
+
+  return result;
 };

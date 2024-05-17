@@ -10,9 +10,9 @@ const operatorToSymbol = (oparator: OPERATOR) => {
       return '=';
     case OPERATOR.NOT_EQUAL:
       return '!=';
-    case OPERATOR.NO_LESS_THEN:
+    case OPERATOR.NO_LESS_THAN:
       return '>=';
-    case OPERATOR.NO_MORE_THEN:
+    case OPERATOR.NO_MORE_THAN:
       return '<=';
   }
 };
