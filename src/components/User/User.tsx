@@ -70,7 +70,7 @@ const User: React.FC = () => {
               Новая система
             </Text>
           </Link>
-          <Link href="/system/instruction" className={cnUser('options')}>
+          <Link href="/instruction" className={cnUser('options')}>
             <BookIcon />
             <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
               Инструкция

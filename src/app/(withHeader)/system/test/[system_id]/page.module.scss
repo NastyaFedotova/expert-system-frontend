@@ -25,6 +25,11 @@
     text-align: start;
     margin-bottom: 0;
     text-decoration: underline;
+
+    &_nothing {
+      text-align: center;
+      text-decoration: none;
+    }
   }
 
   &-main {

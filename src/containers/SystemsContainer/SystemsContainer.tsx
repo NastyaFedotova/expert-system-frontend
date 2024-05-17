@@ -42,7 +42,7 @@ const SystemsContainer: React.FC = () => {
       }),
   });
 
-  const handleClick = useCallback((id: number) => () => router.push(`/system/${id}/test`), [router]);
+  const handleClick = useCallback((id: number) => () => router.push(`/system/test/${id}`), [router]);
 
   useLayoutEffect(
     () => setSystemsSearchParams({ ...validateParams, pagesCount: data?.pages, currentPage: validateParams.page }),

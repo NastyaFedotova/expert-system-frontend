@@ -13,10 +13,10 @@ import { OBJECTS, SYSTEMS } from '@/constants';
 import { TAnswer } from '@/types/answers';
 import { TRule } from '@/types/rules';
 import { classname } from '@/utils';
+import { clausesCheck } from '@/utils/clausesCheck';
 import { systemIdValidation } from '@/validation/searchParams';
 
 import classes from './page.module.scss';
-import { clausesCheck } from '@/utils/clausesCheck';
 
 const cnSystemCreatePage = classname(classes, 'systemTestPage');
 
@@ -31,7 +31,7 @@ const Page: React.FC<SystemTestPageProps> = ({ params }) => {
   const [currentQuestionNumber, setCurrentQuestionNumber] = useState(0);
   const [collectedAnswers, setCollectedAnswers] = useState<{ question_id: number; answer: string }[]>([]);
   const [currentOption, setCurrentOption] = useState<TAnswer | undefined>();
-  const [rules, setRules] = useState<TRule[]>();
+  const [rules, setRules] = useState<TRule[]>([]);
 
   const { data: systemTestData } = useSuspenseQuery({
     queryKey: [SYSTEMS.TEST, { system_id: system_id }],
@@ -76,7 +76,7 @@ const Page: React.FC<SystemTestPageProps> = ({ params }) => {
       setCurrentQuestionNumber((prev) => prev + 1);
       setCurrentOption(undefined);
 
-      const matchedRules = clausesCheck({ collectedAnswers, rules: rules ?? [] });
+      const matchedRules = clausesCheck({ collectedAnswers, rules: rules });
     }
   }, [collectedAnswers, currentOption, rules]);
 
@@ -86,40 +86,48 @@ const Page: React.FC<SystemTestPageProps> = ({ params }) => {
         <Text view={TEXT_VIEW.title} className={cnSystemCreatePage('title')}>
           Прохождение системы
         </Text>
-        <Text view={TEXT_VIEW.p20} className={cnSystemCreatePage('subtitle')}>
-          {`Вопрос ${currentQuestionNumber + 1} из ${systemTestData.questions.length}`}
-        </Text>
-      </header>
-      <main className={cnSystemCreatePage('main')}>
-        <div className={cnSystemCreatePage('answersField')}>
-          <Text view={TEXT_VIEW.p20} className={cnSystemCreatePage('questionTitle')}>
-            {currentQuestion?.body}
+        {systemTestData.questions.length ? (
+          <Text view={TEXT_VIEW.p20} className={cnSystemCreatePage('subtitle')}>
+            {`Вопрос ${currentQuestionNumber + 1} из ${systemTestData.questions.length}`}
           </Text>
-          {currentQuestion?.with_chooses ? (
-            currentQuestion.answers.map((answer) => (
-              <div key={answer.id} className={cnSystemCreatePage('option')} onClick={handleOptionClick(answer)}>
-                <CheckBox value={answer.body} checked={currentOption?.id === answer.id} />
-                <Text>{answer.body}</Text>
-              </div>
-            ))
-          ) : (
-            <Input type="number" placeholder="Введите ответ" onChange={handleInputChange(currentQuestion.id)} />
-          )}
-        </div>
-        <div className={cnSystemCreatePage('buttons')}>
-          <Button className={cnSystemCreatePage('button-abort')}>Завершить тестирование</Button>
-          <Button onClick={handleNextQuestion} className={cnSystemCreatePage('button-pass')}>
-            Пропустить вопрос
-          </Button>
-          <Button
-            onClick={handleAccept}
-            disabled={!currentOption}
-            className={cnSystemCreatePage('button-accept', { disabled: !currentOption })}
-          >
-            Далее
-          </Button>
-        </div>
-      </main>
+        ) : (
+          <Text view={TEXT_VIEW.p20} className={cnSystemCreatePage('subtitle', { nothing: true })}>
+            Вопросов нет
+          </Text>
+        )}
+      </header>
+      {!!systemTestData.questions.length && (
+        <main className={cnSystemCreatePage('main')}>
+          <div className={cnSystemCreatePage('answersField')}>
+            <Text view={TEXT_VIEW.p20} className={cnSystemCreatePage('questionTitle')}>
+              {currentQuestion?.body}
+            </Text>
+            {currentQuestion?.with_chooses ? (
+              currentQuestion.answers.map((answer) => (
+                <div key={answer.id} className={cnSystemCreatePage('option')} onClick={handleOptionClick(answer)}>
+                  <CheckBox value={answer.body} checked={currentOption?.id === answer.id} />
+                  <Text>{answer.body}</Text>
+                </div>
+              ))
+            ) : (
+              <Input type="number" placeholder="Введите ответ" onChange={handleInputChange(currentQuestion.id)} />
+            )}
+          </div>
+          <div className={cnSystemCreatePage('buttons')}>
+            <Button className={cnSystemCreatePage('button-abort')}>Завершить тестирование</Button>
+            <Button onClick={handleNextQuestion} className={cnSystemCreatePage('button-pass')}>
+              Пропустить вопрос
+            </Button>
+            <Button
+              onClick={handleAccept}
+              disabled={!currentOption}
+              className={cnSystemCreatePage('button-accept', { disabled: !currentOption })}
+            >
+              Далее
+            </Button>
+          </div>
+        </main>
+      )}
     </div>
   );
 };
