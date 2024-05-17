@@ -1,3 +1,12 @@
-.instruction {
-  opacity: 0;
+.instruсtion {
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 100%;
+
+  p {
+    text-indent: 25px;
+    text-align: justify;
+  }
 }
