@@ -181,7 +181,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
                 deleteClausesList.push(clause.id);
                 return;
               }
-              const dirtyFieldClause = dirtyFields.formData?.[ruleIndex].clauses?.[clauseGroupIndex]?.[clauseIndex];
+              const dirtyFieldClause = dirtyFields.formData?.[ruleIndex]?.clauses?.[clauseGroupIndex]?.[clauseIndex];
               if (
                 !dirtyFieldClause?.id &&
                 (dirtyFieldClause?.compared_value || dirtyFieldClause?.operator || dirtyFieldClause?.question_id)

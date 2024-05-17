@@ -1,7 +1,7 @@
 'use client';
-import { THistory, THistoryNormilize, THistoryResponseParams } from '@/types/history';
+import { THistory, THistoryNew, THistoryNormilize, THistoryResponseParams } from '@/types/history';
 
-import { getApiRequest } from '..';
+import { getApiRequest, postApiRequest } from '..';
 
 const getHistoriesNormilize = (data: THistory[]): THistoryNormilize[] =>
   data.map((history) => ({
@@ -16,4 +16,9 @@ export const getHistories = async (params?: THistoryResponseParams): Promise<THi
     params,
   });
   return getHistoriesNormilize(data);
+};
+
+export const createHistory = async (history: THistoryNew): Promise<THistory> => {
+  const { data } = await postApiRequest<THistory, THistoryNew>(`/histories`, history);
+  return data;
 };

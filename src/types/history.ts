@@ -26,3 +26,10 @@ export type THistoryNormilize = {
   started_at: string;
   finished_at: string;
 };
+
+export type THistoryNew = {
+  system_id: number;
+  user_id: number;
+  results: { [key: string]: number };
+  answered_questions: string;
+};
