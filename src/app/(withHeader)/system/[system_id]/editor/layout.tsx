@@ -72,25 +72,25 @@ const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, obj
 
   useLayoutEffect(() => {
     if (section !== Section.SYSTEM) {
-      router.prefetch(`/system/editor/${system_id}?section=${Section.SYSTEM}`);
+      router.prefetch(`/system/${system_id}/editor?section=${Section.SYSTEM}`);
     }
     if (section !== Section.ATTRIBUTES) {
-      router.prefetch(`/system/editor/${system_id}?section=${Section.ATTRIBUTES}`);
+      router.prefetch(`/system/${system_id}/editor?section=${Section.ATTRIBUTES}`);
     }
     if (section !== Section.OBJECTS) {
-      router.prefetch(`/system/editor/${system_id}?section=${Section.OBJECTS}`);
+      router.prefetch(`/system/${system_id}/editor?section=${Section.OBJECTS}`);
     }
     if (section !== Section.QUESTIONS) {
-      router.prefetch(`/system/editor/${system_id}?section=${Section.QUESTIONS}`);
+      router.prefetch(`/system/${system_id}/editor?section=${Section.QUESTIONS}`);
     }
     if (section !== Section.RULES) {
-      router.prefetch(`/system/editor/${system_id}?section=${Section.RULES}`);
+      router.prefetch(`/system/${system_id}/editor?section=${Section.RULES}`);
     }
   }, [router, section, system_id]);
 
   const sectionSelect = useCallback(
     (chptr: Section) => () => {
-      router.replace(`/system/editor/${system_id}?section=${chptr}`);
+      router.replace(`/system/${system_id}/editor?section=${chptr}`);
       setSection(chptr);
     },
     [router, system_id],

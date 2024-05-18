@@ -58,8 +58,8 @@ export const Page: React.FC = () => {
     },
   });
 
-  const handleEdit = useCallback((id: number) => () => router.push(`/system/editor/${id}`), [router]);
-  const handleClick = useCallback((id: number) => () => router.push(`/system/test/${id}`), [router]);
+  const handleEdit = useCallback((id: number) => () => router.push(`/system/${id}/editor`), [router]);
+  const handleClick = useCallback((id: number) => () => router.push(`/system/${id}/test`), [router]);
   const handleDelete = useCallback(
     (id: number, password: string) => mutate.mutate({ system_id: id, password }),
     [mutate],
