@@ -90,12 +90,8 @@
   &-button {
     background-color: $error;
 
-    @media (hover: hover) {
-      opacity: 0.5;
-
-      &:hover {
-        background-color: rgba($error, 0.75);
-      }
+    &:hover:enabled {
+      background-color: rgba($error, 0.75);
     }
   }
 

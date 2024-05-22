@@ -29,10 +29,16 @@ export const getSystemOne = async (system_id: number): Promise<TSystem> => {
   return data;
 };
 
-export const getSystemBackupUrl = async (system_id: number): Promise<string> => {
+export const getSystemBackupUrl = async (system_id: number, systemName?: string): Promise<string> => {
   const { data } = await getApiRequest<number[]>(`/systems/${system_id}/backup`);
-  const file = new File([data.join(' ')], 'backup.isbes', { type: 'text/plain' });
+  const name = systemName ? systemName + '.isbes' : 'backup.isbes';
+  const file = new File([data.join(' ')], name, { type: 'text/plain' });
   return URL.createObjectURL(file);
+};
+
+export const postSystemRestore = async (systemVec: number[]) => {
+  const { data } = await postApiRequest<TSystem, number[]>(`/systems/restore`, systemVec);
+  return data;
 };
 
 export const deleteSystem = async (params: TSystemDeleteResponseParams) => {

@@ -27,7 +27,7 @@ export type CardProps = {
   modifiable?: boolean;
   onDeleteClick?: (id: number, password: string) => void;
   onEditClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
-  onDownloadClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  onDownloadClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
 };
 
 const cnCard = classname(classes, 'card');
@@ -144,12 +144,12 @@ const Card: React.FC<CardProps> = ({
                   Редактировать
                 </Text>
               </div>
-              <a className={cnCard('options')} onClick={onDownloadClick} download="backup.isbes">
+              <div className={cnCard('options')} onClick={onDownloadClick}>
                 <DownloadIcon />
                 <Text tag={TEXT_TAG.span} view={TEXT_VIEW.p18}>
                   Скачать копию
                 </Text>
-              </a>
+              </div>
             </div>
           </Popup>
         </>
