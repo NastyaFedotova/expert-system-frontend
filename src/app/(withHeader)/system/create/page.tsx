@@ -65,7 +65,7 @@ const Page: React.FC = () => {
 
   const handleFormSubmit = useCallback((data: TSystemNew) => mutate(data), [mutate]);
 
-  const formWatch = watch();
+  const formWatch = useMemo(()=>watch(),[watch]);
 
   useEffect(() => {
     if (status === 'success') {

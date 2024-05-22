@@ -21,7 +21,6 @@
     align-items: center;
     gap: $space-s;
     max-width: 1000px;
-    //width: 100%;
     cursor: pointer;
 
     &-input {
@@ -47,5 +46,9 @@
   &-or {
     align-self: flex-start;
     margin: 0;
+
+    &:nth-last-of-type(-n + 1) {
+      display: none;
+    }
   }
 }

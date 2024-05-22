@@ -63,7 +63,6 @@ const Page: React.FC<SystemTestPageProps> = ({ params }) => {
       totalScore += objScore;
       result.push({ key: object.name, value: objScore });
     });
-    console.log(result);
 
     setTestResults(result.map((res) => ({ key: res.key, value: res.value ? (res.value / totalScore) * 100 : 0 })));
   }, [checkedAttrValues, objectsData]);

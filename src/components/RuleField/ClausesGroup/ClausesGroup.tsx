@@ -18,19 +18,12 @@ type ClausesGroupProps = {
   ruleIndex: number;
   ruleId: number;
   clauseGroupIndex: number;
-  lastClauseGroup: boolean;
   control: Control<TRuleForm>;
 };
 
 const cnClausesGroup = classname(classes, 'clauseGroup');
 
-const ClausesGroup: React.FC<ClausesGroupProps> = ({
-  control,
-  ruleIndex,
-  ruleId,
-  lastClauseGroup,
-  clauseGroupIndex,
-}) => {
+const ClausesGroup: React.FC<ClausesGroupProps> = ({ control, ruleIndex, ruleId, clauseGroupIndex }) => {
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: `formData.${ruleIndex}.clauses.${clauseGroupIndex}`,
@@ -101,12 +94,10 @@ const ClausesGroup: React.FC<ClausesGroupProps> = ({
               <AddIcon width={30} height={30} className={cnClausesGroup('newClause-addIcon')} />
               <Text>Добавить условие</Text>
             </div>
-          </div>{' '}
-          {!lastClauseGroup && (
-            <Text view={TEXT_VIEW.p20} className={cnClausesGroup('or')}>
-              Или:
-            </Text>
-          )}
+          </div>
+          <Text view={TEXT_VIEW.p20} className={cnClausesGroup('or')}>
+            Или:
+          </Text>
         </>
       )}
     </>

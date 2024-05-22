@@ -1,7 +1,8 @@
 .history-card {
   display: flex;
   flex-direction: column;
-  max-width: 300px;
+  max-width: 280px;
+  width: 100%;
   height: auto;
   background-color: $card-bg;
   border-radius: $border-radius;

@@ -110,13 +110,13 @@ const Page: React.FC<PageProps> = ({ params }) => {
     control,
     handleSubmit,
     reset,
-    formState: { dirtyFields, isValid, errors },
+    formState: { dirtyFields, isValid },
   } = useForm<TRuleForm>({
     defaultValues: pageData,
     resolver: zodResolver(formRuleValidation),
     mode: 'all',
   });
-  console.log(dirtyFields, errors);
+
   const { mutate, isPending } = useMutation({
     mutationFn: (responseList: Promise<unknown>[]) => Promise.allSettled(responseList),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [RULES.GET, { user: user?.id, system: system_id }] }),
@@ -127,20 +127,17 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   const isFormDirty = useCallback(() => {
     const isDirtyForm = dirtyFields.formData?.some((rule) => {
-      console.log(1, rule.id || rule.system_id || rule.attribute_rule);
       if (rule.id || rule.system_id || rule.attribute_rule) {
         return true;
       }
-
       return (
-        rule.clauses?.some((clause) => Object.values(clause).some((val) => val)) ||
+        rule.clauses?.some((clauseGroup) => clauseGroup.some((val) => Object.values(val).some((val) => val))) ||
         rule.rule_question_answer_ids?.some((clause) => Object.values(clause).some((val) => val)) ||
         rule.rule_attribute_attributevalue_ids?.some((clause) => Object.values(clause).some((val) => val))
       );
     });
-
     return isDirtyForm || !!toDelete.rules.length || !!toDelete.clauses.length;
-  }, [dirtyFields, toDelete]);
+  }, [dirtyFields.formData, toDelete.clauses.length, toDelete.rules.length]);
 
   const handleFormSubmit = useCallback(
     (form: TRuleForm) => {

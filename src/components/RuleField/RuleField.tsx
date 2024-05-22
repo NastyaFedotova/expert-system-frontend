@@ -135,7 +135,6 @@ const RuleField: React.FC<RuleFieldProps> = ({ attributeRule, control, ruleIndex
             ruleIndex={ruleIndex}
             ruleId={ruleId}
             clauseGroupIndex={clauseGroupIndex}
-            lastClauseGroup={clausesGroupFields.length === clauseGroupIndex + 1}
           />
         ))}
         <div className={cnFields('newClauseGroup')} key="new-newClauseGroup" onClick={handleAddClauseGroup}>

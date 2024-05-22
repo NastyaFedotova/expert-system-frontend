@@ -16,12 +16,6 @@ export const createRulesWithClausesAndEffects = async (answers: TRuleNew[]): Pro
   return data;
 };
 
-// export const updateRules = async (answers: TRuleUpdate[]): Promise<TRule[]> => {
-//   const { data } = await patchApiRequest<TRule[], TRuleUpdate[]>(`/rules/multiple_patch`, answers);
-
-//   return data;
-// };
-
 export const deleteRules = async (answersIds: number[]) => {
   const result = await deleteApiRequest(`/rules/multiple_delete`, answersIds);
 
