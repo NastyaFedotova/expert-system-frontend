@@ -4,13 +4,12 @@ import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 
 import { createHistory } from '@/api/services/history';
-import { getObjectsWithAttrValues } from '@/api/services/objects';
 import { getSystemTest } from '@/api/services/systems';
 import Button from '@/components/Button';
 import CheckBox from '@/components/CheckBox';
 import Input from '@/components/Input';
 import Text, { TEXT_VIEW } from '@/components/Text';
-import { HISTORIES, OBJECTS, SYSTEMS } from '@/constants';
+import { HISTORIES, SYSTEMS } from '@/constants';
 import useUserStore from '@/store/userStore';
 import { TAnswer } from '@/types/answers';
 import { TRule } from '@/types/rules';
@@ -27,7 +26,7 @@ type SystemTestPageProps = {
 };
 
 const Page: React.FC<SystemTestPageProps> = ({ params }) => {
-  const user = useUserStore((store) => store.user);
+  const { user, isLogin } = useUserStore((store) => store);
   const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
   const [currentQuestionNumber, setCurrentQuestionNumber] = useState(0);
   const [currentOption, setCurrentOption] = useState<TAnswer | undefined>();
@@ -36,24 +35,19 @@ const Page: React.FC<SystemTestPageProps> = ({ params }) => {
   const [answers, setAnswers] = useState<Map<number, TAnswer>>(new Map());
   const [testResults, setTestResults] = useState<{ key: string; value: number }[]>([]);
 
-  const { data: systemTestData } = useSuspenseQuery({
+  const { data: testData } = useSuspenseQuery({
     queryKey: [SYSTEMS.TEST, { system_id: system_id }],
-    queryFn: async () => await getSystemTest(system_id),
+    queryFn: () => getSystemTest(system_id),
   });
 
-  useEffect(() => setRules(systemTestData.rules), [systemTestData.rules]);
-
-  const { data: objectsData } = useSuspenseQuery({
-    queryKey: [OBJECTS.GET, { system_id: system_id }],
-    queryFn: async () => await getObjectsWithAttrValues(system_id),
-  });
+  useEffect(() => setRules(testData.rules), [testData.rules]);
 
   const { mutate } = useMutation({ mutationFn: createHistory, mutationKey: [HISTORIES.RETRIEVE, { user: user?.id }] });
 
   useEffect(() => {
     const result: { key: string; value: number }[] = [];
     let totalScore = 0;
-    objectsData.forEach((object) => {
+    testData.objects.forEach((object) => {
       let objScore = 0;
       object.object_attribute_attributevalue_ids.forEach((ids) => {
         if (checkedAttrValues.has(ids.attribute_value_id)) {
@@ -65,18 +59,18 @@ const Page: React.FC<SystemTestPageProps> = ({ params }) => {
     });
 
     setTestResults(result.map((res) => ({ key: res.key, value: res.value ? (res.value / totalScore) * 100 : 0 })));
-  }, [checkedAttrValues, objectsData]);
+  }, [checkedAttrValues, testData.objects]);
 
   const currentQuestion = useMemo(
-    () => systemTestData.questions[currentQuestionNumber],
-    [currentQuestionNumber, systemTestData.questions],
+    () => testData.questions[currentQuestionNumber],
+    [currentQuestionNumber, testData.questions],
   );
 
   // const handleNextQuestion = useCallback(() => setCurrentQuestionNumber((prev) => prev + 1), []);
 
   const handleFinishClick = useCallback(() => {
-    setCurrentQuestionNumber(systemTestData.questions.length);
-  }, [systemTestData.questions.length]);
+    setCurrentQuestionNumber(testData.questions.length);
+  }, [testData.questions.length]);
 
   const handleOptionClick = useCallback(
     (option: TAnswer) => () => {
@@ -112,7 +106,7 @@ const Page: React.FC<SystemTestPageProps> = ({ params }) => {
               setCheckedAttrValues((prev) => new Set([...ids, ...prev]));
             } else {
               rule.rule_question_answer_ids.forEach((ids) => {
-                const question = systemTestData.questions.find((question) => question.id === ids.question_id);
+                const question = testData.questions.find((question) => question.id === ids.question_id);
                 const answer = question?.answers.find((answer) => answer.id === ids.answer_id);
                 if (!!question && !!answer) {
                   setAnswers((prev) => new Map(prev).set(question.id, answer));
@@ -123,12 +117,12 @@ const Page: React.FC<SystemTestPageProps> = ({ params }) => {
         }
       }
     },
-    [answers, rules, systemTestData.questions],
+    [answers, rules, testData.questions],
   );
 
   const testIsEnd = useMemo(
-    () => currentQuestionNumber >= systemTestData.questions.length,
-    [currentQuestionNumber, systemTestData.questions.length],
+    () => currentQuestionNumber >= testData.questions.length,
+    [currentQuestionNumber, testData.questions.length],
   );
 
   useEffect(() => {
@@ -139,29 +133,31 @@ const Page: React.FC<SystemTestPageProps> = ({ params }) => {
   }, [answers, currentQuestion?.id, handleAccept]);
 
   const handleHistoryCreate = useCallback(() => {
-    const res = testResults.reduce(
-      (pre, type) => ({
-        ...pre,
-        [type.key]: type.value,
-      }),
-      {} as { [key: string]: number },
-    );
-    mutate({
-      user_id: user?.id ?? -1,
-      system_id,
-      results: res,
-      answered_questions: `${systemTestData.questions.length - 2}/${systemTestData.questions.length}`,
-    });
-  }, [mutate, systemTestData.questions.length, system_id, testResults, user?.id]);
+    if (isLogin) {
+      const res = testResults.reduce(
+        (pre, type) => ({
+          ...pre,
+          [type.key]: type.value,
+        }),
+        {} as { [key: string]: number },
+      );
+      mutate({
+        user_id: user?.id ?? -1,
+        system_id,
+        results: res,
+        answered_questions: `${testData.questions.length - 2}/${testData.questions.length}`,
+      });
+    }
+  }, [isLogin, testResults, mutate, user?.id, system_id, testData.questions.length]);
   return (
     <div className={cnSystemCreatePage()}>
       <header className={cnSystemCreatePage('header')}>
         <Text view={TEXT_VIEW.title} className={cnSystemCreatePage('title')}>
           Прохождение системы
         </Text>
-        {systemTestData.questions.length ? (
+        {testData.questions.length ? (
           <Text view={TEXT_VIEW.p20} className={cnSystemCreatePage('subtitle', { testIsEnd })}>
-            {`Вопрос ${currentQuestionNumber + 1} из ${systemTestData.questions.length}`}
+            {`Вопрос ${currentQuestionNumber + 1} из ${testData.questions.length}`}
           </Text>
         ) : (
           <Text view={TEXT_VIEW.p20} className={cnSystemCreatePage('subtitle', { nothing: true })}>
@@ -170,7 +166,7 @@ const Page: React.FC<SystemTestPageProps> = ({ params }) => {
         )}
       </header>
 
-      {!!systemTestData.questions.length && (
+      {!!testData.questions.length && (
         <>
           <main className={cnSystemCreatePage('main', { testIsEnd })}>
             {!testIsEnd && (

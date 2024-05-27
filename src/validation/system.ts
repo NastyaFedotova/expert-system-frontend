@@ -1,6 +1,7 @@
 'use client';
 import { z } from 'zod';
 
+import { objectWithIdsValidation } from './objects';
 import { questionWithAnswersValidation } from './questions';
 import { ruleValidation } from './rules';
 
@@ -31,4 +32,5 @@ export const systemNewValidation = systemUpdateValidation.required({ name: true,
 export const systemTestvalidation = z.object({
   questions: z.array(questionWithAnswersValidation),
   rules: z.array(ruleValidation),
+  objects: z.array(objectWithIdsValidation),
 });

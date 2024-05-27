@@ -7,7 +7,7 @@ import { redirect, usePathname, useSearchParams } from 'next/navigation';
 import { USER } from '@/constants';
 import useUserStore from '@/store/userStore';
 
-const allowURL = ['/', '/login', '/registration'];
+const allowURL = [/^\/$/, /^\/login$/, /^\/registration$/, /^\/systems\/\d+\/test$/];
 
 export const PrivateRouterProvider = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
@@ -18,7 +18,7 @@ export const PrivateRouterProvider = ({ children }: { children: ReactNode }) => 
   useQuery({ queryKey: [USER.COOKIE], queryFn: loginUserByCookie, staleTime: 0, gcTime: 0 });
 
   useLayoutEffect(() => {
-    if (!Cookies.get('session_id') && !allowURL.includes(pathname)) {
+    if (!Cookies.get('session_id') && !allowURL.find((url) => new RegExp(url, 'm').test(pathname))) {
       redirect(`/login?back_uri=${pathname}?${searchParams.toString()}`);
     }
   }, [pathname, searchParams]);
