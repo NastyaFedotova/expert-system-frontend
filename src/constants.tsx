@@ -24,6 +24,7 @@ export enum HISTORIES {
 
 export enum USER {
   COOKIE = 'user-by-cookie-login',
+  EMAILVERIFY = 'user-email-varify',
 }
 
 export enum ATTRIBUTES {

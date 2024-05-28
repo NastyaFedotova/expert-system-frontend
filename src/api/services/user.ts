@@ -28,3 +28,8 @@ export const userResponse = async (): Promise<TUser> => {
   const { data } = await getApiRequest<TUser>(`/user`);
   return data;
 };
+
+export const emailVerifyPost = async (verify_code: string) => {
+  const { data } = await postApiRequest<TUser, void>(`/user/verifyemail/${verify_code}`);
+  return data;
+};

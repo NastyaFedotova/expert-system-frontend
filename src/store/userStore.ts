@@ -17,6 +17,7 @@ import { errorParser } from '@/utils';
 type TUserStates = {
   isLogin?: boolean;
   user?: TUser;
+  successfulRegistration?: boolean;
   fetchloading: boolean;
   fetchError?: TErrorResponse;
   router?: AppRouterInstance;
@@ -30,6 +31,7 @@ type TUserActions = {
   loginUserByCookie: () => Promise<TUser | undefined>;
   logoutUser: () => void;
   setHooks: ({ router, searchParams }: { router?: AppRouterInstance; searchParams: ReadonlyURLSearchParams }) => void;
+  setLogin: (user: TUser) => void;
   reset: () => void;
   clearFetchError: () => void;
 };
@@ -86,21 +88,12 @@ const useUserStore = create<TUserStore>((set, get) => ({
     set({ fetchloading: true });
     Cookies.remove('session_id');
     try {
-      const result = await registrationUserResponse(params);
-
-      const session_key = Cookies.get('session_id');
-      if (!session_key) {
-        const err: TErrorResponse = {
-          error: 'Не удалось авторизоваться',
-          status: 'Not HTTP error',
-        };
-        throw JSON.stringify(err);
-      }
-
-      set({ isLogin: true, user: result });
+      await registrationUserResponse(params);
       get().router?.push('/');
+      set({ successfulRegistration: true });
     } catch (error) {
       set({ fetchError: errorParser(error) });
+      set({ successfulRegistration: false });
     } finally {
       set({ fetchloading: false });
     }
@@ -129,6 +122,7 @@ const useUserStore = create<TUserStore>((set, get) => ({
   setHooks: ({ router, searchParams }) => {
     set({ router, searchParams });
   },
+  setLogin: (user) => set({ user, isLogin: true }),
   reset: () => set({ user: undefined, fetchError: undefined, isLogin: false }),
   clearFetchError: () => set({ fetchError: undefined }),
 }));

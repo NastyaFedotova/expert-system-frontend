@@ -42,7 +42,7 @@ const useSystemStore = create<SystemStore>((set) => ({
       return data;
     } catch (error) {
       console.log(error);
-      throw error
+      throw error;
       //return errorParser(error);
     }
   },

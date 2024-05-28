@@ -1,0 +1,12 @@
+.verifyEmailPage {
+  width: 100%;
+  min-height: 100%;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  overflow: auto;
+
+  display: grid;
+  grid-template-columns: max-content;
+  grid-template-rows: max-content;
+}

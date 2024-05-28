@@ -99,12 +99,7 @@ export const Page: React.FC = () => {
   return (
     <div className={cnUserProfile()}>
       <label className={cnUserProfile('importSystem', { isUpload: !!systemFile })}>
-        <input
-          type="file"
-          accept=".ipopes"
-          className={cnUserProfile('input')}
-          onChange={handleFileUpload}
-        />
+        <input type="file" accept=".ipopes" className={cnUserProfile('input')} onChange={handleFileUpload} />
         {!systemFile && !addMutate.isPending ? (
           <>
             <AddIcon width={30} height={30} />
