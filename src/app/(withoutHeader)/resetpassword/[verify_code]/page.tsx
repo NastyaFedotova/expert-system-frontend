@@ -37,7 +37,7 @@ const Page: React.FC<ResetPasswordPageLayoutProps> = ({ params }) => {
     mode: 'all',
   });
 
-  const { mutate, error, isPending } = useMutation({
+  const { mutate, error, isPending, isSuccess } = useMutation({
     mutationKey: [USER.FORGOTPASSWORD],
     mutationFn: resetPasswordPost,
     onSuccess: () => {
@@ -92,9 +92,11 @@ const Page: React.FC<ResetPasswordPageLayoutProps> = ({ params }) => {
             {parseError.extra ?? parseError.error}
           </Text>
         )}
-        <Button className={cnLoginPage('button')} loading={isPending}>
-          Сохранить пароль
-        </Button>
+        {!isSuccess && !parseError && (
+          <Button className={cnLoginPage('button')} loading={isPending}>
+            Сохранить пароль
+          </Button>
+        )}
       </form>
     </main>
   );
