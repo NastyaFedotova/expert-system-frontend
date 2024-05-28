@@ -44,3 +44,17 @@ export const userUpdateValidation = userResponseUpdateValidation
     message: 'Минимальная длина - 8',
     path: ['new_password'],
   });
+
+export const forgotPasswordValidation = z.object({
+  email: z.string().email('Некорректный формат почты'),
+});
+
+export const resetPasswordValidation = z
+  .object({
+    password: z.string().min(8, 'Минимальная длина - 8').max(24, 'Максимальная длина - 24'),
+    password_submit: z.string(),
+  })
+  .refine((val) => val.password === val.password_submit, {
+    message: 'Пароли должны совпадать',
+    path: ['password_submit'],
+  });

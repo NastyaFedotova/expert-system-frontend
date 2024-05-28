@@ -7,7 +7,15 @@ import { redirect, usePathname, useSearchParams } from 'next/navigation';
 import { USER } from '@/constants';
 import useUserStore from '@/store/userStore';
 
-const allowURL = [/^\/$/, /^\/login$/, /^\/registration$/, /^\/systems\/\d+\/test$/, /^\/verifyemail\/[a-zA-Z0-9]+$/];
+const allowURL = [
+  /^\/$/,
+  /^\/login$/,
+  /^\/registration$/,
+  /^\/systems\/\d+\/test$/,
+  /^\/verifyemail\/[a-zA-Z0-9]+$/,
+  /^\/forgotpassword/,
+  /^\/resetpassword\/[a-zA-Z0-9]+$/,
+];
 
 export const PrivateRouterProvider = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();

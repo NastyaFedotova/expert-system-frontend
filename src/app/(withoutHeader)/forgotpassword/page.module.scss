@@ -9,7 +9,7 @@
   margin: 24px;
   background-color: #fff;
   border-radius: $border-radius;
-  max-width: 300px;
+  max-width: 320px;
   @include shadow;
 
   &-wrapper {
@@ -37,25 +37,12 @@
     width: 100%;
   }
 
-  &-reg {
-    margin: 4px;
-    text-decoration: underline;
-  }
-
-  &-forgot {
-    margin: 4px;
-    text-decoration: underline;
-  }
-
   &-err {
     color: $error;
     margin: 0;
   }
 
-  &-links {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
+  &-ok {
+    margin: 0;
   }
 }

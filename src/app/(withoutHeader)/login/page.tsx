@@ -72,11 +72,18 @@ const Page: React.FC = () => {
         <Button className={cnLoginPage('button')} loading={fetchloading}>
           Войти
         </Button>
-        <Link href="/registration">
-          <Text view={TEXT_VIEW.p14} className={cnLoginPage('reg')}>
-            Регистрация
-          </Text>
-        </Link>
+        <div className={cnLoginPage('links')}>
+          <Link href="/registration">
+            <Text view={TEXT_VIEW.p14} className={cnLoginPage('reg')}>
+              Регистрация
+            </Text>
+          </Link>
+          <Link href="/forgotpassword">
+            <Text view={TEXT_VIEW.p14} className={cnLoginPage('forgot')}>
+              Забыли пароль?
+            </Text>
+          </Link>
+        </div>
       </form>
     </main>
   );

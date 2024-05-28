@@ -1,4 +1,6 @@
-import { TUser, TUserLogin, TUserRegistration, TUserUpdate } from '@/types/user';
+import Cookies from 'js-cookie';
+
+import { ForgotPassword, ResetPassword, TUser, TUserLogin, TUserRegistration, TUserUpdate } from '@/types/user';
 
 import { getApiRequest, patchApiRequest, postApiRequest } from '..';
 
@@ -9,6 +11,7 @@ export const loginUserResponse = async (loginData: TUserLogin): Promise<TUser> =
 };
 
 export const registrationUserResponse = async (registrationData: TUserRegistration): Promise<TUser> => {
+  Cookies.remove('session_id');
   const { data } = await postApiRequest<TUser, TUserRegistration>(`/user/registration`, registrationData);
 
   return data;
@@ -31,5 +34,18 @@ export const userResponse = async (): Promise<TUser> => {
 
 export const emailVerifyPost = async (verify_code: string) => {
   const { data } = await postApiRequest<TUser, void>(`/user/verifyemail/${verify_code}`);
+  return data;
+};
+
+export const forgotPasswordPost = async (params: ForgotPassword) => {
+  Cookies.remove('session_id');
+  const { data } = await postApiRequest<unknown, ForgotPassword>(`/user/forgotpassword`, params);
+  return data;
+};
+
+export const resetPasswordPost = async (params: ResetPassword & { verify_code: string }) => {
+  Cookies.remove('session_id');
+  const { verify_code, ...passwords } = params;
+  const { data } = await postApiRequest<unknown, ResetPassword>(`/user/resetpassword/${verify_code}`, passwords);
   return data;
 };
