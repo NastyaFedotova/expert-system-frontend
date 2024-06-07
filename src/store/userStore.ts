@@ -3,15 +3,9 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.share
 import { ReadonlyURLSearchParams } from 'next/navigation';
 import { create } from 'zustand';
 
-import {
-  loginUserResponse,
-  logoutUserResponse,
-  registrationUserResponse,
-  updateUserResponse,
-  userResponse,
-} from '@/api/services/user';
+import { loginUserResponse, logoutUserResponse, updateUserResponse, userResponse } from '@/api/services/user';
 import { TErrorResponse } from '@/types/error';
-import { TUser, TUserLogin, TUserRegistration, TUserUpdate } from '@/types/user';
+import { TUser, TUserLogin, TUserUpdate } from '@/types/user';
 import { errorParser } from '@/utils';
 
 type TUserStates = {
@@ -26,7 +20,6 @@ type TUserStates = {
 
 type TUserActions = {
   loginUser: (params: TUserLogin) => void;
-  registrationUser: (params: TUserRegistration) => void;
   updateUser: (params: TUserUpdate) => void;
   loginUserByCookie: () => Promise<TUser | undefined>;
   logoutUser: () => void;
@@ -83,20 +76,6 @@ const useUserStore = create<TUserStore>((set, get) => ({
       set({ fetchloading: false });
     }
     return result;
-  },
-  registrationUser: async (params) => {
-    set({ fetchloading: true });
-    Cookies.remove('session_id');
-    try {
-      await registrationUserResponse(params);
-      get().router?.push('/');
-      set({ successfulRegistration: true });
-    } catch (error) {
-      set({ fetchError: errorParser(error) });
-      set({ successfulRegistration: false });
-    } finally {
-      set({ fetchloading: false });
-    }
   },
   updateUser: async (params: TUserUpdate) => {
     set({ fetchloading: true });

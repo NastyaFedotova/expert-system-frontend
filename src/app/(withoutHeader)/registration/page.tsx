@@ -1,15 +1,17 @@
 'use client';
-import React, { memo, useCallback, useEffect } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 
+import { registrationUserResponse } from '@/api/services/user';
 import Button from '@/components/Button';
 import ErrorPopup from '@/components/ErrorPopup';
 import Input from '@/components/Input';
 import Text, { TEXT_VIEW } from '@/components/Text';
-import useUserStore from '@/store/userStore';
+import { USER } from '@/constants';
 import { TUserRegistration } from '@/types/user';
-import { classname } from '@/utils';
+import { classname, errorParser } from '@/utils';
 import { userRegistrationValidation } from '@/validation/user';
 
 import classes from './page.module.scss';
@@ -25,29 +27,34 @@ const Page: React.FC = () => {
     getValues,
     formState: { errors },
   } = useForm<TUserRegistration>({ resolver: zodResolver(userRegistrationValidation), mode: 'all' });
-  const { registrationUser, fetchloading, successfulRegistration, fetchError, clearFetchError } = useUserStore(
-    (store) => store,
-  );
+
+  const { mutate, error, isPending, isSuccess } = useMutation({
+    mutationKey: [USER.REGISTRATION],
+    mutationFn: registrationUserResponse,
+    gcTime: 0,
+  });
+
+  const parseError = useMemo(() => error && errorParser(error), [error]);
+
   const handleRegistration = useCallback(
     (data: TUserRegistration) => {
-      registrationUser(data);
+      mutate(data);
     },
-    [registrationUser],
+    [mutate],
   );
 
   const formWatch = watch();
 
   useEffect(
     () => () => {
-      clearFetchError();
       clearErrors();
     },
-    [clearErrors, clearFetchError],
+    [clearErrors],
   );
 
   return (
     <main className={cnRegistrationPage('wrapper')}>
-      {successfulRegistration ? (
+      {isSuccess ? (
         <Text view={TEXT_VIEW.p20} className={cnRegistrationPage('verified')}>
           {`На почту ${getValues('email')} отправлено письмо для подтверждения аккаунта`}
         </Text>
@@ -106,12 +113,12 @@ const Page: React.FC = () => {
             type="password"
             error={!!errors.password_submit}
           />
-          {!!fetchError && (
+          {!!parseError && (
             <Text view={TEXT_VIEW.p14} className={cnRegistrationPage('err')}>
-              {fetchError.extra ?? fetchError.error}
+              {parseError.extra ?? parseError.error}
             </Text>
           )}
-          <Button className={cnRegistrationPage('button')} loading={fetchloading}>
+          <Button className={cnRegistrationPage('button')} loading={isPending}>
             Зарегистрироваться
           </Button>
         </form>
