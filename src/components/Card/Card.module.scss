@@ -8,7 +8,15 @@
   overflow: hidden;
   cursor: pointer;
   position: relative;
+
   @include shadow-hover;
+  transition:
+    scale 200ms,
+    box-shadow 200ms;
+
+  &:hover {
+    scale: 1.01;
+  }
 
   &-image {
     background-color: $card-image-bg;

@@ -10,6 +10,13 @@
   cursor: pointer;
   position: relative;
   @include shadow-hover;
+  transition:
+    scale 200ms,
+    box-shadow 200ms;
+
+  &:hover {
+    scale: 1.01;
+  }
 
   &-info {
     display: flex;
