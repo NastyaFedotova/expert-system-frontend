@@ -5,8 +5,33 @@
   gap: 24px;
   height: 100%;
 
+  &-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: $space-m;
+    width: 100%;
+  }
+
+  &-title {
+    width: 100%;
+    margin: 14px 0;
+    font-size: 30px;
+  }
+
   p {
     text-indent: 25px;
     text-align: justify;
+
+    &:has(img) {
+      text-indent: 0;
+    }
+  }
+
+  img {
+    max-width: max-content;
+    width: 100%;
+    height: auto;
   }
 }
