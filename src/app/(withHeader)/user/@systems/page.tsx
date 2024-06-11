@@ -115,25 +115,26 @@ export const Page: React.FC = () => {
           </>
         )}
       </label>
-
-      {!!data.systems.length &&
-        isSuccess &&
-        data.systems.map((system) => (
-          <Card
-            key={system.id}
-            id={system.id}
-            image={system.image_uri}
-            title={system.name}
-            subtitle={system.about}
-            modifiable
-            onEditClick={handleEdit(system.id)}
-            onDeleteClick={handleDelete}
-            onClick={handleClick(system.id)}
-            onDownloadClick={handleDownload(system.id, system.name)}
-          />
-        ))}
-      {!isLoading && !data.systems.length && <Text view={TEXT_VIEW.p20}>Нет созданных систем</Text>}
-      {isLoading && [...Array(6).keys()].map((index) => <CardSkeleton key={index} />)}
+      <div className={cnUserProfile('cardList')}>
+        {!!data.systems.length &&
+          isSuccess &&
+          data.systems.map((system) => (
+            <Card
+              key={system.id}
+              id={system.id}
+              image={system.image_uri}
+              title={system.name}
+              subtitle={system.about}
+              modifiable
+              onEditClick={handleEdit(system.id)}
+              onDeleteClick={handleDelete}
+              onClick={handleClick(system.id)}
+              onDownloadClick={handleDownload(system.id, system.name)}
+            />
+          ))}
+        {!isLoading && !data.systems.length && <Text view={TEXT_VIEW.p20}>Нет созданных систем</Text>}
+        {isLoading && [...Array(6).keys()].map((index) => <CardSkeleton key={index} />)}
+      </div>
     </div>
   );
 };

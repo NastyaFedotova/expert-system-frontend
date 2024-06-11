@@ -8,6 +8,14 @@
   width: 100%;
   //margin-top: 24px;
 
+  &-cardList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 280px);
+    justify-content: space-evenly;
+    gap: 40px;
+    width: 100%;
+  }
+
   &-importSystem {
     width: 100%;
     height: 60px;
