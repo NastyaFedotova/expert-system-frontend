@@ -51,7 +51,7 @@ const Page: React.FC = () => {
     <main className={cnLoginPage('wrapper')}>
       <form className={cnLoginPage()} onSubmit={handleSubmit(handleLogin)}>
         <Text view={TEXT_VIEW.p20} className={cnLoginPage('title')}>
-          Востановление пароля
+          Восстановление пароля
         </Text>
         <Input
           {...register('email')}

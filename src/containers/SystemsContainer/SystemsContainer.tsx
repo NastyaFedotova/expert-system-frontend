@@ -38,7 +38,7 @@ const SystemsContainer: React.FC = () => {
         page: currentPage,
         name,
         username,
-        per_page: 12,
+        per_page: 15,
       }),
   });
 
