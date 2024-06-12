@@ -44,7 +44,7 @@ export const forgotPasswordPost = async (params: ForgotPassword) => {
 };
 
 export const resetPasswordPost = async (params: ResetPassword & { verify_code: string }) => {
-  Cookies.remove('session_id');
+  Cookies.remove('session_id'); //добавить на этапе загрузки страницы
   const { verify_code, ...passwords } = params;
   const { data } = await postApiRequest<unknown, ResetPassword>(`/user/resetpassword/${verify_code}`, passwords);
   return data;
