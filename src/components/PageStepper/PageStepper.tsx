@@ -1,6 +1,7 @@
 'use client';
 import React, { memo, useCallback } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useShallow } from 'zustand/react/shallow';
 
 import { ArrowLeftIcon } from '@/icons';
 import useSystemsSearchParamsStore from '@/store/systemsSearchParamsStore';
@@ -23,7 +24,13 @@ const PageStepper: React.FC<PageStepperProps> = ({ classname }) => {
   const pathname = usePathname();
   const router = useRouter();
   const validateParams = mainPageSearchParamsParse(searchParams);
-  const { currentPage, pagesCount, setSystemsSearchParams } = useSystemsSearchParamsStore((store) => store);
+  const { currentPage, pagesCount, setSystemsSearchParams } = useSystemsSearchParamsStore(
+    useShallow((store) => ({
+      currentPage: store.currentPage,
+      pagesCount: store.pagesCount,
+      setSystemsSearchParams: store.setSystemsSearchParams,
+    })),
+  );
   const getPageHandle = useCallback(
     (page: number) => () => {
       const newSearchParams = new URLSearchParams();

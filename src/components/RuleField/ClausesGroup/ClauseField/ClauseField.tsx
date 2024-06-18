@@ -28,7 +28,7 @@ const ClauseField: React.FC<ClauseFieldProps> = ({
   clauseIndex,
   deleteClause,
 }) => {
-  const { questions } = useRulePageStore((store) => store);
+  const questions = useRulePageStore((store) => store.questions);
 
   const [openQuestion, setOpenQuestion] = useState(false);
 

@@ -24,7 +24,7 @@ const EffectQuestionField: React.FC<EffectQuestionFieldProps> = ({
   effectFieldIndex,
   handleDeleteQuestion,
 }) => {
-  const { questions } = useRulePageStore((store) => store);
+  const questions = useRulePageStore((store) => store.questions);
 
   const { field: questionField } = useController({
     name: `formData.${ruleIndex}.rule_question_answer_ids.${effectFieldIndex}.question_id`,

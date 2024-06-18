@@ -5,6 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useShallow } from 'zustand/react/shallow';
 
 import { logoutUserResponse } from '@/api/services/user';
 import { USER } from '@/constants';
@@ -25,7 +26,11 @@ const cnUser = classname(classes, 'user');
 const User: React.FC = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const { isLogin, reset: userStoreReset, user } = useUserStore((store) => store);
+  const {
+    isLogin,
+    reset: userStoreReset,
+    user,
+  } = useUserStore(useShallow((store) => ({ isLogin: store.isLogin, reset: store.reset, user: store.user })));
 
   const { mutate, isPending } = useMutation({
     mutationKey: [USER.LOGOUT],
