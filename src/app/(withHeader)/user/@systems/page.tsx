@@ -24,7 +24,7 @@ const cnUserProfile = classname(classes, 'user-systems');
 
 export const Page: React.FC = () => {
   const router = useRouter();
-  const { user } = useUserStore((store) => store);
+  const user = useUserStore((store) => store.user);
   const { downloadSystemBackup, importSystem } = useSystemStore((store) => store);
   const queryClient = useQueryClient();
 

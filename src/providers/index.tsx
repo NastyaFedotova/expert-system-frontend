@@ -1,6 +1,5 @@
 'use client';
-import { ReactNode, useLayoutEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { ReactNode } from 'react';
 
 import Loader from '@/components/Loader';
 import useSystemStore from '@/store/systemStore';
@@ -10,15 +9,8 @@ import { PrivateRouterProvider } from './privateRouteProvider';
 import { ReactQueryProvider } from './reactQuery';
 
 export const Providers = ({ children }: { children: ReactNode }) => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const { setHooks, isLogin } = useUserStore((store) => store);
+  const isLogin = useUserStore((store) => store.isLogin);
   const isLoading = useSystemStore((store) => store.isLoading);
-
-  useLayoutEffect(() => {
-    setHooks({ router, searchParams });
-  }, [router, searchParams, setHooks]);
 
   return (
     <ReactQueryProvider>

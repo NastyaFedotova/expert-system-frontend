@@ -1,16 +1,20 @@
 'use client';
-import React, { memo, useCallback, useEffect } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 
+import { loginUserResponse } from '@/api/services/user';
 import Button from '@/components/Button';
 import ErrorPopup from '@/components/ErrorPopup';
 import Input from '@/components/Input';
 import Text, { TEXT_VIEW } from '@/components/Text';
+import { USER } from '@/constants';
 import useUserStore from '@/store/userStore';
 import { TUserLogin } from '@/types/user';
-import { classname } from '@/utils';
+import { classname, errorParser } from '@/utils';
 import { userLoginValidation } from '@/validation/user';
 
 import classes from './page.module.scss';
@@ -18,6 +22,10 @@ import classes from './page.module.scss';
 const cnLoginPage = classname(classes, 'loginPage');
 
 const Page: React.FC = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const setStates = useUserStore((store) => store.setStates);
+
   const {
     register,
     handleSubmit,
@@ -28,17 +36,28 @@ const Page: React.FC = () => {
     resolver: zodResolver(userLoginValidation),
     mode: 'all',
   });
-  const { loginUser, fetchloading, fetchError, clearFetchError } = useUserStore((store) => store);
-  const handleLogin = useCallback((data: TUserLogin) => loginUser(data), [loginUser]);
+
+  const { mutate, error, isPending } = useMutation({
+    mutationKey: [USER.LOGIN],
+    mutationFn: loginUserResponse,
+    onSuccess: (user) => {
+      setStates({ user, isLogin: true });
+      router.replace(searchParams?.get('back_uri') ?? '/');
+    },
+    gcTime: 0,
+  });
+
+  const parseError = useMemo(() => error && errorParser(error), [error]);
+
+  const handleLogin = useCallback((data: TUserLogin) => mutate(data), [mutate]);
 
   const formWatch = watch();
 
   useEffect(
     () => () => {
-      clearFetchError();
       clearErrors();
     },
-    [clearErrors, clearFetchError],
+    [clearErrors],
   );
 
   return (
@@ -53,7 +72,7 @@ const Page: React.FC = () => {
           placeholder="Почта"
           label={formWatch.email?.length ? 'Почта' : undefined}
           type="email"
-          error={!!fetchError}
+          error={!!parseError}
           afterSlot={<ErrorPopup error={errors.email?.message} />}
         />
         <Input
@@ -62,14 +81,14 @@ const Page: React.FC = () => {
           placeholder="Пароль"
           label={formWatch.password?.length ? 'Пароль' : undefined}
           type="password"
-          error={!!fetchError}
+          error={!!parseError}
         />
-        {!!fetchError && (
+        {!!parseError && (
           <Text view={TEXT_VIEW.p14} className={cnLoginPage('err')}>
-            {fetchError.extra ?? fetchError.error}
+            {parseError.extra ?? parseError.error}
           </Text>
         )}
-        <Button className={cnLoginPage('button')} loading={fetchloading}>
+        <Button className={cnLoginPage('button')} loading={isPending}>
           Войти
         </Button>
         <div className={cnLoginPage('links')}>

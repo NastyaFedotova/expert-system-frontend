@@ -1,11 +1,21 @@
 import Cookies from 'js-cookie';
 
+import { TErrorResponse } from '@/types/error';
 import { ForgotPassword, ResetPassword, TUser, TUserLogin, TUserRegistration, TUserUpdate } from '@/types/user';
 
 import { getApiRequest, patchApiRequest, postApiRequest } from '..';
 
 export const loginUserResponse = async (loginData: TUserLogin): Promise<TUser> => {
   const { data } = await postApiRequest<TUser, TUserLogin>(`/user/login`, loginData);
+
+  const session_key = Cookies.get('session_id');
+  if (!session_key) {
+    const err: TErrorResponse = {
+      error: 'Не удалось авторизоваться',
+      status: 'Not HTTP error',
+    };
+    throw JSON.stringify(err);
+  }
 
   return data;
 };

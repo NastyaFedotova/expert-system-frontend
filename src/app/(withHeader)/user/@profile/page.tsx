@@ -1,19 +1,23 @@
 'use client';
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Popup from 'reactjs-popup';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
+import { useShallow } from 'zustand/react/shallow';
 
+import { updateUserResponse } from '@/api/services/user';
 import Button from '@/components/Button';
 import ErrorPopup from '@/components/ErrorPopup';
 import Input from '@/components/Input';
 import Loader from '@/components/Loader';
 import Text, { TEXT_VIEW, TEXT_WEIGHT } from '@/components/Text';
+import { USER } from '@/constants';
 import CloseIcon from '@/icons/CloseIcon';
 import useUserStore from '@/store/userStore';
 import { TUserUpdate } from '@/types/user';
-import { classname } from '@/utils';
+import { classname, errorParser } from '@/utils';
 import { userUpdateValidation } from '@/validation/user';
 
 import classes from './page.module.scss';
@@ -25,7 +29,16 @@ const Page: React.FC = () => {
   const closePopup = useCallback(() => setIsOpen(false), []);
   const openPopup = useCallback(() => setIsOpen(true), []);
 
-  const { user, fetchloading, clearFetchError, fetchError, updateUser } = useUserStore((store) => store);
+  const { user, setStates } = useUserStore(useShallow((store) => ({ user: store.user, setStates: store.setStates })));
+
+  const { mutate, error, isPending } = useMutation({
+    mutationKey: [USER.PATCH],
+    mutationFn: updateUserResponse,
+    onSuccess: (user) => setStates({ user }),
+    gcTime: 0,
+  });
+
+  const parseError = useMemo(() => error && errorParser(error), [error]);
 
   const {
     register,
@@ -57,20 +70,19 @@ const Page: React.FC = () => {
       return fields;
     }, {} as TUserUpdate);
 
-    updateUser(changedFields);
+    mutate(changedFields);
     resetField('password');
     resetField('new_password');
-  }, [closePopup, dirtyFields, getValues, resetField, updateUser]);
+  }, [closePopup, dirtyFields, getValues, resetField, mutate]);
 
   const formWatch = watch();
 
   useEffect(() => {
     reset({ ...user, new_password: '' });
     return () => {
-      clearFetchError();
       clearErrors();
     };
-  }, [clearErrors, clearFetchError, reset, user]);
+  }, [clearErrors, reset, user]);
 
   return (
     <div className={cnProfile()}>
@@ -120,9 +132,9 @@ const Page: React.FC = () => {
           afterSlot={<ErrorPopup error={errors.new_password?.message} />}
           error={!!errors.new_password}
         />
-        {!!fetchError && (
+        {!!parseError && (
           <Text view={TEXT_VIEW.p14} className={cnProfile('err')}>
-            {fetchError.extra ?? fetchError.error}
+            {parseError.extra ?? parseError.error}
           </Text>
         )}
         <Popup
@@ -131,7 +143,7 @@ const Page: React.FC = () => {
               className={cnProfile('button')}
               type="button"
               disabled={!Object.keys(dirtyFields).length || !isValid}
-              loading={fetchloading}
+              loading={isPending}
             >
               Сохранить изменения
             </Button>

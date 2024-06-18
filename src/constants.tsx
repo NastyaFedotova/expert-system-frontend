@@ -27,6 +27,9 @@ export enum USER {
   EMAILVERIFY = 'user-email-varify',
   FORGOTPASSWORD = 'user-password-forgot',
   REGISTRATION = 'user-registration',
+  PATCH = 'user-patch',
+  LOGIN = 'user-login',
+  LOGOUT = 'user-logout',
 }
 
 export enum ATTRIBUTES {

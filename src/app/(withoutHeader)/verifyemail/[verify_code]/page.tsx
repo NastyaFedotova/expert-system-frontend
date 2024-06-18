@@ -22,7 +22,7 @@ type VerifyEmailPageLayoutProps = {
 const Page: React.FC<VerifyEmailPageLayoutProps> = ({ params }) => {
   const router = useRouter();
   const verify_code = useMemo(() => verifyEmailValidation.safeParse(params).data?.verify_code, [params]);
-  const { setLogin } = useUserStore((store) => store);
+  const setStates = useUserStore((store) => store.setStates);
   const { isSuccess, error, data } = useQuery({
     queryKey: [USER.EMAILVERIFY, verify_code],
     queryFn: () => emailVerifyPost(verify_code ?? ''),
@@ -35,10 +35,10 @@ const Page: React.FC<VerifyEmailPageLayoutProps> = ({ params }) => {
 
   useEffect(() => {
     if (isSuccess) {
-      setLogin(data);
+      setStates({ user: data, isLogin: true });
       router.replace('/');
     }
-  }, [data, isSuccess, router, setLogin]);
+  }, [data, isSuccess, router, setStates]);
 
   return (
     <main className={cnLoginPage('wrapper')}>

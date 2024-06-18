@@ -1,109 +1,28 @@
-import Cookies from 'js-cookie';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { ReadonlyURLSearchParams } from 'next/navigation';
 import { create } from 'zustand';
 
-import { loginUserResponse, logoutUserResponse, updateUserResponse, userResponse } from '@/api/services/user';
-import { TErrorResponse } from '@/types/error';
-import { TUser, TUserLogin, TUserUpdate } from '@/types/user';
-import { errorParser } from '@/utils';
+import { TUser } from '@/types/user';
 
 type TUserStates = {
   isLogin?: boolean;
   user?: TUser;
-  successfulRegistration?: boolean;
-  fetchloading: boolean;
-  fetchError?: TErrorResponse;
-  router?: AppRouterInstance;
-  searchParams?: ReadonlyURLSearchParams;
 };
 
 type TUserActions = {
-  loginUser: (params: TUserLogin) => void;
-  updateUser: (params: TUserUpdate) => void;
-  loginUserByCookie: () => Promise<TUser | undefined>;
-  logoutUser: () => void;
-  setHooks: ({ router, searchParams }: { router?: AppRouterInstance; searchParams: ReadonlyURLSearchParams }) => void;
-  setLogin: (user: TUser) => void;
   reset: () => void;
-  clearFetchError: () => void;
+  setStates: (params: Partial<TUserStates>) => void;
 };
 
 const initialState: TUserStates = {
   isLogin: undefined,
   user: undefined,
-  fetchloading: false,
-  fetchError: undefined,
 };
 
 export type TUserStore = TUserStates & TUserActions;
 
-const useUserStore = create<TUserStore>((set, get) => ({
+const useUserStore = create<TUserStore>((set) => ({
   ...initialState,
-  loginUser: async (params: TUserLogin) => {
-    set({ fetchloading: true });
-    Cookies.remove('session_id');
-    try {
-      const result = await loginUserResponse(params);
-      const session_key = Cookies.get('session_id');
-      if (!session_key) {
-        const err: TErrorResponse = {
-          error: 'Не удалось авторизоваться',
-          status: 'Not HTTP error',
-        };
-        throw JSON.stringify(err);
-      }
-      const redirect_to = get().searchParams?.get('back_uri');
-      set({ isLogin: true, user: result });
-      get().router?.replace(redirect_to ?? '/');
-    } catch (error) {
-      console.log(error);
-      set({ fetchError: errorParser(error), isLogin: false });
-    } finally {
-      set({ fetchloading: false });
-    }
-  },
-  loginUserByCookie: async () => {
-    set({ fetchloading: true });
-    let result: TUser | undefined;
-    try {
-      result = await userResponse();
-      set({ isLogin: true, user: result });
-    } catch {
-      set({ isLogin: false });
-      Cookies.remove('session_id');
-    } finally {
-      set({ fetchloading: false });
-    }
-    return result;
-  },
-  updateUser: async (params: TUserUpdate) => {
-    set({ fetchloading: true });
-    try {
-      const result = await updateUserResponse(params);
-      set({ user: result });
-    } catch (error) {
-      set({ fetchError: errorParser(error) });
-    } finally {
-      set({ fetchloading: false });
-    }
-  },
-  logoutUser: async () => {
-    set({ fetchloading: true });
-    try {
-      await logoutUserResponse();
-      get().router?.replace('/');
-      Cookies.remove('session_id');
-    } finally {
-      set({ fetchloading: false });
-    }
-  },
-  setHooks: ({ router, searchParams }) => {
-    set({ router, searchParams });
-  },
-  setLogin: (user) => set({ user, isLogin: true }),
-  reset: () => set({ user: undefined, fetchError: undefined, isLogin: false }),
-  clearFetchError: () => set({ fetchError: undefined }),
+  setStates: (params) => set(params),
+  reset: () => set({ ...initialState, isLogin: false }),
 }));
 
 export default useUserStore;

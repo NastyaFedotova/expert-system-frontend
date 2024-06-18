@@ -2,6 +2,7 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useShallow } from 'zustand/react/shallow';
 
 import { createHistory } from '@/api/services/history';
 import { getSystemTest } from '@/api/services/systems';
@@ -26,7 +27,12 @@ type SystemTestPageProps = {
 };
 
 const Page: React.FC<SystemTestPageProps> = ({ params }) => {
-  const { user, isLogin } = useUserStore((store) => store);
+  const { user, isLogin } = useUserStore(
+    useShallow((store) => ({
+      user: store.user,
+      isLogin: store.isLogin,
+    })),
+  );
   const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
   const [currentQuestionNumber, setCurrentQuestionNumber] = useState(0);
   const [currentOption, setCurrentOption] = useState<TAnswer | undefined>();
