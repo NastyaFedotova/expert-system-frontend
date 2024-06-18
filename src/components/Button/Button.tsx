@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import { classname } from '@/utils';
 
@@ -42,4 +42,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   },
 );
 
-export default memo(Button);
+export default Button;

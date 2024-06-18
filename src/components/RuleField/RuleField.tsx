@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Control, useFieldArray } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -174,4 +174,4 @@ const RuleField: React.FC<RuleFieldProps> = ({ attributeRule, control, ruleIndex
   );
 };
 
-export default memo(RuleField);
+export default RuleField;

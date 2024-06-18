@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Control, useFieldArray } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -104,4 +104,4 @@ const ClausesGroup: React.FC<ClausesGroupProps> = ({ control, ruleIndex, ruleId,
   );
 };
 
-export default memo(ClausesGroup);
+export default ClausesGroup;

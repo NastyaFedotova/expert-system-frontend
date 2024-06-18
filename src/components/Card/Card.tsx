@@ -1,5 +1,5 @@
 'use client';
-import React, { ChangeEvent, memo, MouseEventHandler, ReactNode, useCallback, useState } from 'react';
+import React, { ChangeEvent, MouseEventHandler, ReactNode, useCallback, useState } from 'react';
 import Popup from 'reactjs-popup';
 import Image from 'next/image';
 
@@ -158,4 +158,4 @@ const Card: React.FC<CardProps> = ({
   );
 };
 
-export default memo(Card);
+export default Card;

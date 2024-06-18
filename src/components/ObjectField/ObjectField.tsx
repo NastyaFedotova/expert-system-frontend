@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { Control, useController } from 'react-hook-form';
 
 import CloseIcon from '@/icons/CloseIcon';
@@ -57,4 +57,4 @@ const ObjectField: React.FC<ObjectFieldProps> = ({ control, objectIndex, onDelet
   );
 };
 
-export default memo(ObjectField);
+export default ObjectField;

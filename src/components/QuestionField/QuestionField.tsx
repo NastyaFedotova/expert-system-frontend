@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Control, useController, useFieldArray } from 'react-hook-form';
 
 import AddIcon from '@/icons/AddIcon';
@@ -114,4 +114,4 @@ const QuestionField: React.FC<QuestionFieldProps> = ({
   );
 };
 
-export default memo(QuestionField);
+export default QuestionField;

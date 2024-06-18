@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
@@ -16,6 +16,7 @@ import {
 import { createRuleQuestionAnswer, deleteRuleQuestionAnswer } from '@/api/services/ruleQuestionAnswer';
 import { createRulesWithClausesAndEffects, deleteRules, getRulesWithClausesAndEffects } from '@/api/services/rules';
 import Button from '@/components/Button';
+import Dropdown, { Option } from '@/components/Dropdown';
 import Loader from '@/components/Loader';
 import RuleField from '@/components/RuleField';
 import Text from '@/components/Text';
@@ -39,11 +40,20 @@ type PageProps = {
   params: { system_id: number };
 };
 
+const allQuestionSelect: Option = {
+  value: -1,
+  label: 'все вопросы',
+};
+
 const Page: React.FC<PageProps> = ({ params }) => {
   const queryClient = useQueryClient();
   const user = useUserStore((store) => store.user);
   const { setAttributes, setQuestions } = useRulePageStore((store) => store);
   const [toDelete, setToDelete] = useState({ rules: [] as number[], clauses: [] as number[] });
+  const [selectQuestion, setSelectQuestion] = useState<Option>(allQuestionSelect);
+  const [didMount, setDidMount] = useState(false);
+
+  useEffect(() => setDidMount(true), []);
 
   const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
 
@@ -68,10 +78,25 @@ const Page: React.FC<PageProps> = ({ params }) => {
   });
   useEffect(() => setQuestions(questionsData), [questionsData, setQuestions]);
 
+  const questionsOptions = useMemo<Option[]>(
+    () => [allQuestionSelect].concat(questionsData.map((question) => ({ label: question.body, value: question.id }))),
+    [questionsData],
+  );
+
+  const handleQuestionSelect = useCallback((option: Option) => setSelectQuestion(option), []);
+
   const { data: rulesData, isLoading: rulesIsLoading } = useSuspenseQuery({
     queryKey: [RULES.GET, { user: user?.id, system: system_id }],
     queryFn: () => getRulesWithClausesAndEffects(system_id),
   });
+
+  const filtredRules = useMemo(
+    () =>
+      selectQuestion?.value === -1
+        ? rulesData
+        : rulesData.filter((rule) => rule.clauses.some((clause) => clause.question_id === selectQuestion?.value)),
+    [rulesData, selectQuestion],
+  );
 
   const isLoading = useMemo(
     () => attributesIsLoading || questionsIsLoading || rulesIsLoading,
@@ -80,7 +105,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   const pageData = useMemo<TRuleForm>(() => {
     const res: TRuleForm = { formData: [] };
-    rulesData.forEach((rule) => {
+    filtredRules.forEach((rule) => {
       const newRule: TRuleForForm = {
         ...rule,
         deleted: false,
@@ -104,7 +129,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
       res.formData.push(newRule);
     });
     return res;
-  }, [rulesData]);
+  }, [filtredRules]);
 
   const {
     control,
@@ -300,6 +325,19 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   return (
     <main className={cnRules()}>
+      {/* Придумать другое решение */}
+      {!didMount && (
+        <div className={cnRules('loader-wrapper')}>
+          <Loader sizepx={116} />
+        </div>
+      )}
+      <Dropdown
+        options={questionsOptions}
+        value={selectQuestion}
+        label="Поиск по вопросам"
+        onChange={handleQuestionSelect}
+        className={cnRules('mainDropdown')}
+      />
       <form onSubmit={handleSubmit(handleFormSubmit)} className={cnRules('form')}>
         {fields.map((rule, ruleIndex) => (
           <>
@@ -340,4 +378,4 @@ const Page: React.FC<PageProps> = ({ params }) => {
   );
 };
 
-export default dynamic(() => Promise.resolve(memo(Page)), { ssr: false, loading: () => <Loader sizepx={116} /> });
+export default dynamic(() => Promise.resolve(Page), { ssr: false, loading: () => <Loader sizepx={116} /> });

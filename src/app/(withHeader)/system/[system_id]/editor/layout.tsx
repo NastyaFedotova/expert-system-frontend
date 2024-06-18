@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { notFound, useRouter, useSearchParams } from 'next/navigation';
 
@@ -156,4 +156,4 @@ const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, obj
   );
 };
 
-export default memo(Layout);
+export default Layout;

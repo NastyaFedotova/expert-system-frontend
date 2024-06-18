@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 
 import { classname } from '@/utils';
 
@@ -14,11 +14,11 @@ export type LoaderProps = {
 
 const cnLoader = classname(classes, 'loader');
 
-const Loader: React.FC<LoaderProps> = React.memo(({ size = 'l', className, sizepx }) => (
+const Loader: React.FC<LoaderProps> = ({ size = 'l', className, sizepx }) => (
   <div
     className={cnLoader({ size }) + ` ${className}`}
     style={{ borderTopColor: 'transparent', width: sizepx, height: sizepx }}
   />
-));
+);
 
-export default memo(Loader);
+export default Loader;

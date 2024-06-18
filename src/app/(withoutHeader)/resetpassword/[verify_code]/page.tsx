@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -102,4 +102,4 @@ const Page: React.FC<ResetPasswordPageLayoutProps> = ({ params }) => {
   );
 };
 
-export default memo(Page);
+export default Page;

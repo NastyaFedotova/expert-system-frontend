@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Control, useController } from 'react-hook-form';
 
 import Dropdown, { Option } from '@/components/Dropdown';
@@ -127,4 +127,4 @@ const ClauseField: React.FC<ClauseFieldProps> = ({
   );
 };
 
-export default memo(ClauseField);
+export default ClauseField;

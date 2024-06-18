@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
@@ -47,4 +47,4 @@ const Page: React.FC<VerifyEmailPageLayoutProps> = ({ params }) => {
   );
 };
 
-export default memo(Page);
+export default Page;

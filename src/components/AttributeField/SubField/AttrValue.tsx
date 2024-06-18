@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { Control, useController } from 'react-hook-form';
 
 import ErrorPopup from '@/components/ErrorPopup';
@@ -41,4 +41,4 @@ const AttrValue: React.FC<AttrValueProps> = ({ control, attrIndex, attrValueInde
   );
 };
 
-export default memo(AttrValue);
+export default AttrValue;

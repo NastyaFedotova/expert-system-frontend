@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Popup from 'reactjs-popup';
 import moment from 'moment';
 
@@ -138,4 +138,4 @@ const HistoryCard: React.FC<CardProps> = ({
   );
 };
 
-export default memo(HistoryCard);
+export default HistoryCard;

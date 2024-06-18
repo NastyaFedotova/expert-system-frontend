@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Control, useController } from 'react-hook-form';
 
 import Dropdown, { Option } from '@/components/Dropdown';
@@ -99,4 +99,4 @@ const EffectAttributeField: React.FC<EffectAttributeFieldProps> = ({
   );
 };
 
-export default memo(EffectAttributeField);
+export default EffectAttributeField;

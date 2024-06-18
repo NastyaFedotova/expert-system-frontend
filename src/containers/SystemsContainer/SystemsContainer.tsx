@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useLayoutEffect, useMemo } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -38,7 +38,7 @@ const SystemsContainer: React.FC = () => {
         page: currentPage,
         name,
         username,
-        per_page: 15,
+        per_page: 20,
       }),
   });
 
@@ -69,4 +69,4 @@ const SystemsContainer: React.FC = () => {
   );
 };
 
-export default memo(SystemsContainer);
+export default SystemsContainer;

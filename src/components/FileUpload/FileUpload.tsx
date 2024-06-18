@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import Image from 'next/image';
 
 import CloseIcon from '@/icons/CloseIcon';
@@ -87,4 +87,4 @@ const FileUpload = React.forwardRef<HTMLInputElement, InputProps>(
   },
 );
 
-export default memo(FileUpload);
+export default FileUpload;

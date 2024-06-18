@@ -1,5 +1,5 @@
 'use client';
-import React, { memo } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 
@@ -36,4 +36,4 @@ const Page: React.FC = () => {
   );
 };
 
-export default dynamic(() => Promise.resolve(memo(Page)), { ssr: false, loading: () => <Loader sizepx={116} /> });
+export default dynamic(() => Promise.resolve(Page), { ssr: false, loading: () => <Loader sizepx={116} /> });
