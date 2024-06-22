@@ -25,6 +25,7 @@
 
   &-mainDropdown {
     width: 100%;
+    max-width: 1032px;
     padding: 0 16px;
     padding-top: 6px;
   }
@@ -40,6 +41,14 @@
     margin-bottom: 76px;
     position: relative;
     padding: 0 16px;
+  }
+
+  &-ruleList {
+    display: flex;
+    flex-direction: column;
+    max-width: 1000px;
+    gap: 24px;
+    width: 100%;
   }
 
   &-newRule {

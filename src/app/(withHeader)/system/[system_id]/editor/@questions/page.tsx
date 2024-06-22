@@ -184,21 +184,16 @@ const Page: React.FC<PageProps> = ({ params }) => {
     <main className={cnQuestions()}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className={cnQuestions('form')}>
         {fields.map((question, questionIndex) => (
-          <>
-            {toDelete.questions.includes(question.id) ? (
-              <span key={question.arrayId} style={{ display: 'none' }} />
-            ) : (
-              <QuestionField
-                key={question.arrayId}
-                questionId={question.id}
-                control={control}
-                questionIndex={questionIndex}
-                onDelete={handleDeleteQuestion(question.id, questionIndex)}
-                onAnswerDelete={handleDeleteAnswer}
-                deletedSubFieldIds={toDelete.answers}
-              />
-            )}
-          </>
+          <QuestionField
+            key={question.arrayId}
+            isVisible={!toDelete.questions.includes(question.id)}
+            questionId={question.id}
+            control={control}
+            questionIndex={questionIndex}
+            onDelete={handleDeleteQuestion(question.id, questionIndex)}
+            onAnswerDelete={handleDeleteAnswer}
+            deletedSubFieldIds={toDelete.answers}
+          />
         ))}
         <div className={cnQuestions('newQuestion')}>
           <AddIcon width={30} height={30} className={cnQuestions('newQuestion-addIcon')} onClick={handleAddQuestion} />

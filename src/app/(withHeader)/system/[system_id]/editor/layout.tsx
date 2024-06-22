@@ -150,7 +150,7 @@ const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, obj
             Правила
           </Text>
         </header>
-        {memoSectoion}
+        {status === 'success' && memoSectoion}
       </div>
     </>
   );

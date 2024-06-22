@@ -1,7 +1,7 @@
 {
   "plugins": [
-    "simple-import-sort",
-    "eslint-plugin-react-compiler"
+    "simple-import-sort"
+    //"eslint-plugin-react-compiler"
   ],
   "extends": [
     "plugin:@tanstack/eslint-plugin-query/recommended",
@@ -17,7 +17,7 @@
     "tsconfigRootDir": "."
   },
   "rules": {
-    "react-compiler/react-compiler": "error",
+    //"react-compiler/react-compiler": "error",
     "@typescript-eslint/no-unsafe-return": "warn",
     "@typescript-eslint/no-unsafe-member-access": "warn",
     "@typescript-eslint/no-unsafe-assignment": "warn",

@@ -201,20 +201,15 @@ const Page: React.FC<PageProps> = ({ params }) => {
     <main className={cnObjects()}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className={cnObjects('form')}>
         {fields.map((object, objectIndex) => (
-          <>
-            {toDelete.includes(object.id) ? (
-              <span key={object.arrayId} style={{ display: 'none' }} />
-            ) : (
-              <ObjectField
-                key={object.arrayId}
-                objectId={object.id}
-                control={control}
-                objectIndex={objectIndex}
-                onDelete={handleDeleteObject(object.id, objectIndex)}
-                allAttributes={attributesData}
-              />
-            )}
-          </>
+          <ObjectField
+            key={object.arrayId}
+            isVisible={!toDelete.includes(object.id)}
+            objectId={object.id}
+            control={control}
+            objectIndex={objectIndex}
+            onDelete={handleDeleteObject(object.id, objectIndex)}
+            allAttributes={attributesData}
+          />
         ))}
         <div className={cnObjects('newObject')}>
           <AddIcon width={30} height={30} className={cnObjects('newObject-addIcon')} onClick={handleAddObject} />

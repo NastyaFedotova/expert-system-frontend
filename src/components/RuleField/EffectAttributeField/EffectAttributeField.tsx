@@ -10,6 +10,7 @@ import { classname } from '@/utils';
 import classes from './EffectAttributeField.module.scss';
 
 type EffectAttributeFieldProps = {
+  isVisible?: boolean;
   control: Control<TRuleForm>;
   ruleIndex: number;
   effectFieldIndex: number;
@@ -19,6 +20,7 @@ type EffectAttributeFieldProps = {
 const cnEffectAttributeField = classname(classes, 'effectAttribute');
 
 const EffectAttributeField: React.FC<EffectAttributeFieldProps> = ({
+  isVisible = true,
   control,
   ruleIndex,
   effectFieldIndex,
@@ -71,6 +73,10 @@ const EffectAttributeField: React.FC<EffectAttributeFieldProps> = ({
     (option: Option) => attributeValueField.onChange(option?.value),
     [attributeValueField],
   );
+
+  if (!isVisible) {
+    return isVisible;
+  }
 
   return (
     <div className={cnEffectAttributeField()}>

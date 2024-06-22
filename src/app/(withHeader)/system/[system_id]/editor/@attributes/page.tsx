@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 
 import {
@@ -23,7 +23,6 @@ import { TAttributeUpdate, TAttributeWithAttributeValues, TAttributeWithAttribut
 import { TAttributeValueNew, TAttributeValueUpdate } from '@/types/attributeValues';
 import { classname } from '@/utils';
 import { formAttrWithValuesValidation } from '@/validation/attributes';
-import { systemIdValidation } from '@/validation/searchParams';
 
 import classes from './page.module.scss';
 
@@ -39,22 +38,23 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   const [toDelete, setToDelete] = useState({ attributes: [] as number[], attrValues: [] as number[] });
 
-  const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
+  const system_id = useMemo(() => Number(params.system_id), [params]);
 
-  const { data, isLoading } = useSuspenseQuery({
+  const { data, isLoading } = useQuery({
     queryKey: [ATTRIBUTES.GET, { user: user?.id, system: system_id }],
     queryFn: () => getAttributesWithValues(system_id),
   });
+
   const {
     control,
     handleSubmit,
     reset,
     formState: { isValid, dirtyFields },
   } = useForm<{ formData: TAttributeWithAttributeValues[] }>({
-    defaultValues: { formData: data },
     resolver: zodResolver(formAttrWithValuesValidation),
     mode: 'all',
   });
+
   const { mutate, isPending } = useMutation({
     mutationFn: (responseList: Promise<unknown>[]) => Promise.allSettled(responseList),
     onSuccess: () =>
@@ -164,21 +164,16 @@ const Page: React.FC<PageProps> = ({ params }) => {
     <main className={cnAttributes()}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className={cnAttributes('form')}>
         {fields.map((attribute, attrIndex) => (
-          <>
-            {toDelete.attributes.includes(attribute.id) ? (
-              <span key={attribute.arrayId} style={{ display: 'none' }} />
-            ) : (
-              <AttributeField
-                key={attribute.arrayId}
-                attributeId={attribute.id}
-                control={control}
-                index={attrIndex}
-                onDelete={handleDeleteAttr(attribute.id, attrIndex)}
-                onAttributeValueDelete={handleDeleteAttrValue}
-                deletedSubFieldIds={toDelete.attrValues}
-              />
-            )}
-          </>
+          <AttributeField
+            key={attribute.arrayId}
+            isVisible={!toDelete.attributes.includes(attribute.id)}
+            attributeId={attribute.id}
+            control={control}
+            index={attrIndex}
+            onDelete={handleDeleteAttr(attribute.id, attrIndex)}
+            onAttributeValueDelete={handleDeleteAttrValue}
+            deletedSubFieldIds={toDelete.attrValues}
+          />
         ))}
         <div className={cnAttributes('newAttr')}>
           <AddIcon width={30} height={30} className={cnAttributes('newAttr-addIcon')} onClick={handleAddAttr} />

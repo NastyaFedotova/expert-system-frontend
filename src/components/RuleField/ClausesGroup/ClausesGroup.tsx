@@ -69,37 +69,36 @@ const ClausesGroup: React.FC<ClausesGroupProps> = ({ control, ruleIndex, ruleId,
 
   const allDeleted = useMemo(() => fields.every((field) => field.deleted), [fields]);
 
+  if (allDeleted) {
+    return null;
+  }
+
   return (
     <>
-      {!allDeleted && (
-        <>
-          <div className={cnClausesGroup()}>
-            <CloseIcon width={30} height={30} className={cnClausesGroup('delete')} onClick={handleDeleteClauseGroup} />
-            {fields.map((clause, clauseIndex) => (
-              <>
-                {!clause.deleted && (
-                  <ClauseField
-                    key={clause.arrayId}
-                    control={control}
-                    ruleIndex={ruleIndex}
-                    clauseGroupIndex={clauseGroupIndex}
-                    clauseIndex={clauseIndex}
-                    deleteClause={handleDeleteClause(clause, clauseIndex)}
-                  />
-                )}
-              </>
-            ))}
+      <div className={cnClausesGroup()}>
+        <CloseIcon width={30} height={30} className={cnClausesGroup('delete')} onClick={handleDeleteClauseGroup} />
+        <div className={cnClausesGroup('clauseList')}>
+          {fields.map((clause, clauseIndex) => (
+            <ClauseField
+              key={clause.arrayId}
+              isVisible={!clause.deleted}
+              control={control}
+              ruleIndex={ruleIndex}
+              clauseGroupIndex={clauseGroupIndex}
+              clauseIndex={clauseIndex}
+              deleteClause={handleDeleteClause(clause, clauseIndex)}
+            />
+          ))}
+        </div>
 
-            <div className={cnClausesGroup('newClause')} key="newClause" onClick={handleAddClause}>
-              <AddIcon width={30} height={30} className={cnClausesGroup('newClause-addIcon')} />
-              <Text>Добавить условие</Text>
-            </div>
-          </div>
-          <Text view={TEXT_VIEW.p20} className={cnClausesGroup('or')}>
-            Или:
-          </Text>
-        </>
-      )}
+        <div className={cnClausesGroup('newClause')} onClick={handleAddClause}>
+          <AddIcon width={30} height={30} className={cnClausesGroup('newClause-addIcon')} />
+          <Text>Добавить условие</Text>
+        </div>
+      </div>
+      <Text view={TEXT_VIEW.p20} className={cnClausesGroup('or')}>
+        Или:
+      </Text>
     </>
   );
 };
