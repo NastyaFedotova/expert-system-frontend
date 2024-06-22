@@ -1,4 +1,4 @@
-import React, { memo, ReactHTML } from 'react';
+import React, { ReactHTML } from 'react';
 
 import { classname } from '@/utils';
 
@@ -55,4 +55,4 @@ const Text: React.FC<TextProps> = ({
   );
 };
 
-export default memo(Text);
+export default Text;

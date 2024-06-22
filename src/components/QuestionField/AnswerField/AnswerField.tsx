@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { Control, useController } from 'react-hook-form';
 
 import ErrorPopup from '@/components/ErrorPopup';
@@ -11,6 +11,7 @@ import Input from '../../Input';
 import classes from './AnswerField.module.scss';
 
 type AttrValueProps = {
+  isVisible?: boolean;
   questionIndex: number;
   answerIndex: number;
   control: Control<TQuestionWithAnswersForm>;
@@ -19,11 +20,22 @@ type AttrValueProps = {
 
 const cnField = classname(classes, 'answer');
 
-const AnswerField: React.FC<AttrValueProps> = ({ control, questionIndex, answerIndex, onDeleteClick }) => {
+const AnswerField: React.FC<AttrValueProps> = ({
+  isVisible = true,
+  control,
+  questionIndex,
+  answerIndex,
+  onDeleteClick,
+}) => {
   const {
     field,
     fieldState: { error },
   } = useController({ control, name: `formData.${questionIndex}.answers.${answerIndex}.body` });
+
+  if (!isVisible) {
+    return null;
+  }
+
   return (
     <div className={cnField()}>
       <TrashIcon width={30} height={30} className={cnField('deleteIcon')} onClick={onDeleteClick} />
@@ -39,4 +51,4 @@ const AnswerField: React.FC<AttrValueProps> = ({ control, questionIndex, answerI
   );
 };
 
-export default memo(AnswerField);
+export default AnswerField;

@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
+  experimental: {
+    reactCompiler: true,
+  },
   sassOptions: {
     additionalData: `
               @import "src/styles/variables.module.scss";

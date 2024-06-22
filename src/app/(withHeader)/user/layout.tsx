@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import Text, { TEXT_VIEW } from '@/components/Text';
@@ -98,4 +98,4 @@ const UserPageLayout: React.FC<UserPageLayoutProps> = ({ profile, systems, histo
   );
 };
 
-export default memo(UserPageLayout);
+export default UserPageLayout;

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 
 import { classname } from '@/utils';
 
@@ -31,4 +31,4 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
   },
 );
 
-export default memo(TextArea);
+export default TextArea;

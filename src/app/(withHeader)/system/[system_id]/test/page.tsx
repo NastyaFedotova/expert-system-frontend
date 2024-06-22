@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useShallow } from 'zustand/react/shallow';
@@ -240,4 +240,4 @@ const Page: React.FC<SystemTestPageProps> = ({ params }) => {
   );
 };
 
-export default memo(Page);
+export default Page;

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { Control, useController } from 'react-hook-form';
 
 import CloseIcon from '@/icons/CloseIcon';
@@ -14,6 +14,7 @@ import ObjectMultiDropdown from './ObjectMultiDropdown';
 import classes from './ObjectField.module.scss';
 
 type ObjectFieldProps = {
+  isVisible?: boolean;
   objectId: number;
   objectIndex: number;
   control: Control<TObjectWithAttrValuesForm>;
@@ -23,11 +24,15 @@ type ObjectFieldProps = {
 
 const cnFields = classname(classes, 'fieldWithFields');
 
-const ObjectField: React.FC<ObjectFieldProps> = ({ control, objectIndex, onDelete, allAttributes }) => {
+const ObjectField: React.FC<ObjectFieldProps> = ({ isVisible, control, objectIndex, onDelete, allAttributes }) => {
   const {
     field: bodyField,
     fieldState: { error: bodyError },
   } = useController({ control, name: `formData.${objectIndex}.name` });
+
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <div className={cnFields()}>
@@ -57,4 +62,4 @@ const ObjectField: React.FC<ObjectFieldProps> = ({ control, objectIndex, onDelet
   );
 };
 
-export default memo(ObjectField);
+export default ObjectField;

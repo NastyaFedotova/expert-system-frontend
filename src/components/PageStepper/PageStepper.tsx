@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -94,4 +94,4 @@ const PageStepper: React.FC<PageStepperProps> = ({ classname }) => {
   );
 };
 
-export default memo(PageStepper);
+export default PageStepper;

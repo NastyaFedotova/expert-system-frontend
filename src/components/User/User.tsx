@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Popup from 'reactjs-popup';
 import { useMutation } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
@@ -109,4 +109,4 @@ const User: React.FC = () => {
   );
 };
 
-export default memo(User);
+export default User;

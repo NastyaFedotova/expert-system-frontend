@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Control, useController, useFieldArray } from 'react-hook-form';
 
 import AddIcon from '@/icons/AddIcon';
@@ -16,6 +16,7 @@ import AnswerField from './AnswerField';
 import classes from './QuestionField.module.scss';
 
 type QuestionFieldProps = {
+  isVisible?: boolean;
   questionId: number;
   questionIndex: number;
   control: Control<TQuestionWithAnswersForm>;
@@ -27,6 +28,7 @@ type QuestionFieldProps = {
 const cnFields = classname(classes, 'fieldWithFields');
 
 const QuestionField: React.FC<QuestionFieldProps> = ({
+  isVisible = true,
   control,
   questionIndex,
   questionId,
@@ -61,6 +63,10 @@ const QuestionField: React.FC<QuestionFieldProps> = ({
     [append, questionId],
   );
 
+  if (!isVisible) {
+    return null;
+  }
+
   return (
     <div className={cnFields()}>
       <CloseIcon width={30} height={30} className={cnFields('delete')} onClick={onDelete} />
@@ -86,21 +92,16 @@ const QuestionField: React.FC<QuestionFieldProps> = ({
       {choosesField.value && (
         <div className={cnFields('attrValues')}>
           {fields.map((attrValue, answerIndex) => (
-            <>
-              {deletedSubFieldIds.includes(attrValue.id) ? (
-                <span key={attrValue.arrayId} style={{ display: 'none' }} />
-              ) : (
-                <AnswerField
-                  key={attrValue.arrayId}
-                  control={control}
-                  questionIndex={questionIndex}
-                  answerIndex={answerIndex}
-                  onDeleteClick={handleDeleteAnswer(attrValue.id, answerIndex)}
-                />
-              )}
-            </>
+            <AnswerField
+              key={attrValue.arrayId}
+              isVisible={!deletedSubFieldIds.includes(attrValue.id)}
+              control={control}
+              questionIndex={questionIndex}
+              answerIndex={answerIndex}
+              onDeleteClick={handleDeleteAnswer(attrValue.id, answerIndex)}
+            />
           ))}
-          <div className={cnFields('newValue')} key="new-attrValue">
+          <div className={cnFields('newValue')}>
             <AddIcon width={30} height={30} className={cnFields('newValue-addIcon')} onClick={handleAddAnswer} />
             <Input
               className={cnFields('newValue-input')}
@@ -114,4 +115,4 @@ const QuestionField: React.FC<QuestionFieldProps> = ({
   );
 };
 
-export default memo(QuestionField);
+export default QuestionField;

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Control, useController } from 'react-hook-form';
 
 import Dropdown, { Option } from '@/components/Dropdown';
@@ -10,6 +10,7 @@ import { classname } from '@/utils';
 import classes from './EffectQuestionField.module.scss';
 
 type EffectQuestionFieldProps = {
+  isVisible?: boolean;
   control: Control<TRuleForm>;
   ruleIndex: number;
   effectFieldIndex: number;
@@ -19,6 +20,7 @@ type EffectQuestionFieldProps = {
 const cnEffectQuestionField = classname(classes, 'effectAttribute');
 
 const EffectQuestionField: React.FC<EffectQuestionFieldProps> = ({
+  isVisible = true,
   control,
   ruleIndex,
   effectFieldIndex,
@@ -72,6 +74,10 @@ const EffectQuestionField: React.FC<EffectQuestionFieldProps> = ({
 
   const handleAnswerChoose = useCallback((option: Option) => answerField.onChange(option?.value), [answerField]);
 
+  if (!isVisible) {
+    return true;
+  }
+
   return (
     <div className={cnEffectQuestionField()}>
       <TrashIcon
@@ -99,4 +105,4 @@ const EffectQuestionField: React.FC<EffectQuestionFieldProps> = ({
   );
 };
 
-export default memo(EffectQuestionField);
+export default EffectQuestionField;

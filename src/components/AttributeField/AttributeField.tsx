@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Control, useController, useFieldArray } from 'react-hook-form';
 
 import AddIcon from '@/icons/AddIcon';
@@ -14,6 +14,7 @@ import AttrValue from './SubField/AttrValue';
 import classes from './AttributeField.module.scss';
 
 type AttributeFieldProps = {
+  isVisible?: boolean;
   attributeId: number;
   index: number;
   control: Control<{
@@ -27,6 +28,7 @@ type AttributeFieldProps = {
 const cnFields = classname(classes, 'fieldWithFields');
 
 const AttributeField: React.FC<AttributeFieldProps> = ({
+  isVisible = true,
   control,
   index,
   attributeId,
@@ -55,6 +57,10 @@ const AttributeField: React.FC<AttributeFieldProps> = ({
     [append, attributeId],
   );
 
+  if (!isVisible) {
+    return null;
+  }
+
   return (
     <div className={cnFields()}>
       <CloseIcon width={30} height={30} className={cnFields('delete')} onClick={onDelete} />
@@ -68,19 +74,14 @@ const AttributeField: React.FC<AttributeFieldProps> = ({
       />
       <div className={cnFields('attrValues')}>
         {fields.map((attrValue, attrValueIndex) => (
-          <>
-            {deletedSubFieldIds.includes(attrValue.id) ? (
-              <span key={attrValue.arrayId} style={{ display: 'none' }} />
-            ) : (
-              <AttrValue
-                key={attrValue.arrayId}
-                control={control}
-                attrIndex={index}
-                attrValueIndex={attrValueIndex}
-                onDeleteClick={handleDeleteAttrValue(attrValue.id, attrValueIndex)}
-              />
-            )}
-          </>
+          <AttrValue
+            key={attrValue.arrayId}
+            isVisible={!deletedSubFieldIds.includes(attrValue.id)}
+            control={control}
+            attrIndex={index}
+            attrValueIndex={attrValueIndex}
+            onDeleteClick={handleDeleteAttrValue(attrValue.id, attrValueIndex)}
+          />
         ))}
         <div className={cnFields('newValue')} key="new-attrValue">
           <AddIcon width={30} height={30} className={cnFields('newValue-addIcon')} onClick={handleAddAttrValue} />
@@ -95,4 +96,4 @@ const AttributeField: React.FC<AttributeFieldProps> = ({
   );
 };
 
-export default memo(AttributeField);
+export default AttributeField;

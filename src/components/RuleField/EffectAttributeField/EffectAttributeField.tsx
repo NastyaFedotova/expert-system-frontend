@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Control, useController } from 'react-hook-form';
 
 import Dropdown, { Option } from '@/components/Dropdown';
@@ -10,6 +10,7 @@ import { classname } from '@/utils';
 import classes from './EffectAttributeField.module.scss';
 
 type EffectAttributeFieldProps = {
+  isVisible?: boolean;
   control: Control<TRuleForm>;
   ruleIndex: number;
   effectFieldIndex: number;
@@ -19,13 +20,14 @@ type EffectAttributeFieldProps = {
 const cnEffectAttributeField = classname(classes, 'effectAttribute');
 
 const EffectAttributeField: React.FC<EffectAttributeFieldProps> = ({
+  isVisible = true,
   control,
   ruleIndex,
   effectFieldIndex,
   handleDeleteAttribute,
 }) => {
   const attributes = useRulePageStore((store) => store.attributes);
-
+  console.log(attributes);
   const { field: attributeField } = useController({
     name: `formData.${ruleIndex}.rule_attribute_attributevalue_ids.${effectFieldIndex}.attribute_id`,
     control,
@@ -72,6 +74,10 @@ const EffectAttributeField: React.FC<EffectAttributeFieldProps> = ({
     [attributeValueField],
   );
 
+  if (!isVisible) {
+    return isVisible;
+  }
+
   return (
     <div className={cnEffectAttributeField()}>
       <TrashIcon
@@ -99,4 +105,4 @@ const EffectAttributeField: React.FC<EffectAttributeFieldProps> = ({
   );
 };
 
-export default memo(EffectAttributeField);
+export default EffectAttributeField;

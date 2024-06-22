@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
@@ -27,7 +27,6 @@ import { TObjectAttributeAttributeValueNew } from '@/types/objectAttributeAttrib
 import { TObjectUpdate, TObjectWithAttrValues, TObjectWithAttrValuesForm, TObjectWithIdsNew } from '@/types/objects';
 import { classname } from '@/utils';
 import { formObjectWithAttrValuesValidation } from '@/validation/objects';
-import { systemIdValidation } from '@/validation/searchParams';
 
 import classes from './page.module.scss';
 
@@ -43,7 +42,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   const [toDelete, setToDelete] = useState<number[]>([]);
 
-  const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
+  const system_id = useMemo(() => Number(params.system_id) ?? -1, [params]);
 
   const { data: objectsData, isLoading: objectsIsLoading } = useSuspenseQuery({
     queryKey: [OBJECTS.GET, { user: user?.id, system: system_id }],
@@ -201,20 +200,15 @@ const Page: React.FC<PageProps> = ({ params }) => {
     <main className={cnObjects()}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className={cnObjects('form')}>
         {fields.map((object, objectIndex) => (
-          <>
-            {toDelete.includes(object.id) ? (
-              <span key={object.arrayId} style={{ display: 'none' }} />
-            ) : (
-              <ObjectField
-                key={object.arrayId}
-                objectId={object.id}
-                control={control}
-                objectIndex={objectIndex}
-                onDelete={handleDeleteObject(object.id, objectIndex)}
-                allAttributes={attributesData}
-              />
-            )}
-          </>
+          <ObjectField
+            key={object.arrayId}
+            isVisible={!toDelete.includes(object.id)}
+            objectId={object.id}
+            control={control}
+            objectIndex={objectIndex}
+            onDelete={handleDeleteObject(object.id, objectIndex)}
+            allAttributes={attributesData}
+          />
         ))}
         <div className={cnObjects('newObject')}>
           <AddIcon width={30} height={30} className={cnObjects('newObject-addIcon')} onClick={handleAddObject} />
@@ -233,4 +227,4 @@ const Page: React.FC<PageProps> = ({ params }) => {
   );
 };
 
-export default dynamic(() => Promise.resolve(memo(Page)), { ssr: false, loading: () => <Loader sizepx={116} /> });
+export default dynamic(() => Promise.resolve(Page), { ssr: false, loading: () => <Loader sizepx={116} /> });

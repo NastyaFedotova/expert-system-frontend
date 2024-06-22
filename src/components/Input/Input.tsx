@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 
 import { classname } from '@/utils';
 
@@ -35,4 +35,4 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
   },
 );
 
-export default memo(Input);
+export default Input;

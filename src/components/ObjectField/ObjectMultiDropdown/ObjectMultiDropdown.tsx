@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Control, useFieldArray } from 'react-hook-form';
 
 import CheckBox from '@/components/CheckBox';
@@ -116,4 +116,4 @@ const ObjectMultiDropdown: React.FC<ObjectMultiDropdownProps> = ({
   );
 };
 
-export default memo(ObjectMultiDropdown);
+export default ObjectMultiDropdown;

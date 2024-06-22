@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import Popup from 'reactjs-popup';
 import { PopupPosition } from 'reactjs-popup/dist/types';
 
@@ -39,4 +39,4 @@ const ErrorPopup: React.FC<ErrorPopupProps> = ({ error, position = 'top right', 
   );
 };
 
-export default memo(ErrorPopup);
+export default ErrorPopup;

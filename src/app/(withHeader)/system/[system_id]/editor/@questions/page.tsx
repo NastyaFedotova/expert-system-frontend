@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
@@ -23,7 +23,6 @@ import { TAnswerNew, TAnswerUpdate } from '@/types/answers';
 import { TQuestionUpdate, TQuestionWithAnswersForm, TQuestionWithAnswersNew } from '@/types/questions';
 import { classname } from '@/utils';
 import { formQuestionWithAnswersValidation } from '@/validation/questions';
-import { systemIdValidation } from '@/validation/searchParams';
 
 import classes from './page.module.scss';
 
@@ -39,7 +38,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   const [toDelete, setToDelete] = useState({ questions: [] as number[], answers: [] as number[] });
 
-  const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
+  const system_id = useMemo(() => Number(params.system_id) ?? -1, [params]);
 
   const { data, isLoading } = useSuspenseQuery({
     queryKey: [QUESTIONS.GET, { user: user?.id, system: system_id }],
@@ -184,21 +183,16 @@ const Page: React.FC<PageProps> = ({ params }) => {
     <main className={cnQuestions()}>
       <form onSubmit={handleSubmit(handleFormSubmit)} className={cnQuestions('form')}>
         {fields.map((question, questionIndex) => (
-          <>
-            {toDelete.questions.includes(question.id) ? (
-              <span key={question.arrayId} style={{ display: 'none' }} />
-            ) : (
-              <QuestionField
-                key={question.arrayId}
-                questionId={question.id}
-                control={control}
-                questionIndex={questionIndex}
-                onDelete={handleDeleteQuestion(question.id, questionIndex)}
-                onAnswerDelete={handleDeleteAnswer}
-                deletedSubFieldIds={toDelete.answers}
-              />
-            )}
-          </>
+          <QuestionField
+            key={question.arrayId}
+            isVisible={!toDelete.questions.includes(question.id)}
+            questionId={question.id}
+            control={control}
+            questionIndex={questionIndex}
+            onDelete={handleDeleteQuestion(question.id, questionIndex)}
+            onAnswerDelete={handleDeleteAnswer}
+            deletedSubFieldIds={toDelete.answers}
+          />
         ))}
         <div className={cnQuestions('newQuestion')}>
           <AddIcon width={30} height={30} className={cnQuestions('newQuestion-addIcon')} onClick={handleAddQuestion} />
@@ -217,4 +211,4 @@ const Page: React.FC<PageProps> = ({ params }) => {
   );
 };
 
-export default dynamic(() => Promise.resolve(memo(Page)), { ssr: false, loading: () => <Loader sizepx={116} /> });
+export default dynamic(() => Promise.resolve(Page), { ssr: false, loading: () => <Loader sizepx={116} /> });

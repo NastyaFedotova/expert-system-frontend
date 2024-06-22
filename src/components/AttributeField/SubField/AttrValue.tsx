@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { Control, useController } from 'react-hook-form';
 
 import ErrorPopup from '@/components/ErrorPopup';
@@ -11,6 +11,7 @@ import Input from '../../Input';
 import classes from './AttrValue.module.scss';
 
 type AttrValueProps = {
+  isVisible?: boolean;
   attrIndex: number;
   attrValueIndex: number;
   control: Control<{
@@ -21,11 +22,22 @@ type AttrValueProps = {
 
 const cnField = classname(classes, 'attrValue');
 
-const AttrValue: React.FC<AttrValueProps> = ({ control, attrIndex, attrValueIndex, onDeleteClick }) => {
+const AttrValue: React.FC<AttrValueProps> = ({
+  isVisible = true,
+  control,
+  attrIndex,
+  attrValueIndex,
+  onDeleteClick,
+}) => {
   const {
     field,
     fieldState: { error },
   } = useController({ control, name: `formData.${attrIndex}.values.${attrValueIndex}.value` });
+
+  if (!isVisible) {
+    return true;
+  }
+
   return (
     <div className={cnField()}>
       <TrashIcon width={30} height={30} className={cnField('deleteIcon')} onClick={onDeleteClick} />
@@ -41,4 +53,4 @@ const AttrValue: React.FC<AttrValueProps> = ({ control, attrIndex, attrValueInde
   );
 };
 
-export default memo(AttrValue);
+export default AttrValue;

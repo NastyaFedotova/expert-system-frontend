@@ -14,16 +14,19 @@
     "@bem-react/classname": "^1",
     "@hookform/resolvers": "^3",
     "@tanstack/react-query": "^5",
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc",
     "axios": "^1",
+    "babel-plugin-react-compiler": "0.0.0-experimental-938cd9a-20240601",
     "js-cookie": "^3",
     "moment": "^2",
-    "next": "^14",
-    "react": "^18",
+    "next": "^15.0.0-canary.40",
+    "react": "19.0.0-rc-3563387fe3-20240621",
     "react-content-loader": "^7",
-    "react-dom": "^18",
+    "react-dom": "19.0.0-rc-3563387fe3-20240621",
     "react-hook-form": "^7",
     "reactjs-popup": "^2",
-    "sharp": "^0",
+    "sharp": "^0.33.4",
     "uuid": "^9",
     "zod": "^3",
     "zustand": "^4"
@@ -51,5 +54,10 @@
   },
   "eslintConfig": {
     "extends": "react-app"
-  }
+  },
+  "overrides": {
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc"
+  },
+  "packageManager": "yarn@4.3.0"
 }

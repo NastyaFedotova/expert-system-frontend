@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
@@ -20,7 +20,6 @@ import useUserStore from '@/store/userStore';
 import { TErrorResponse } from '@/types/error';
 import { TSystem, TSystemsWithPage, TSystemUpdate, TSystemUpdateBefore } from '@/types/systems';
 import { classname } from '@/utils';
-import { systemIdValidation } from '@/validation/searchParams';
 import { systemUpdateValidation } from '@/validation/system';
 
 import classes from './page.module.scss';
@@ -35,7 +34,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
   const queryClient = useQueryClient();
   const user = useUserStore((store) => store.user);
 
-  const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
+  const system_id = useMemo(() => Number(params.system_id) ?? -1, [params]);
 
   const { data } = useSuspenseQuery({
     queryKey: [SYSTEMS.RETRIEVE, { user_id: user?.id, system_id: system_id }],
@@ -200,4 +199,4 @@ const Page: React.FC<PageProps> = ({ params }) => {
   );
 };
 
-export default dynamic(() => Promise.resolve(memo(Page)), { ssr: false, loading: () => <Loader sizepx={116} /> });
+export default dynamic(() => Promise.resolve(Page), { ssr: false, loading: () => <Loader sizepx={116} /> });

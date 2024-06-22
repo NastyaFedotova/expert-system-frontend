@@ -1,5 +1,5 @@
 'use client';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
@@ -16,6 +16,7 @@ import {
 import { createRuleQuestionAnswer, deleteRuleQuestionAnswer } from '@/api/services/ruleQuestionAnswer';
 import { createRulesWithClausesAndEffects, deleteRules, getRulesWithClausesAndEffects } from '@/api/services/rules';
 import Button from '@/components/Button';
+import Dropdown, { Option } from '@/components/Dropdown';
 import Loader from '@/components/Loader';
 import RuleField from '@/components/RuleField';
 import Text from '@/components/Text';
@@ -29,7 +30,6 @@ import { TRuleQuestionAnswerNew } from '@/types/ruleQuestionAnswer';
 import { TRuleForForm, TRuleForm, TRuleNew } from '@/types/rules';
 import { classname } from '@/utils';
 import { formRuleValidation } from '@/validation/rules';
-import { systemIdValidation } from '@/validation/searchParams';
 
 import classes from './page.module.scss';
 
@@ -39,13 +39,18 @@ type PageProps = {
   params: { system_id: number };
 };
 
+const allQuestionSelect: Option = {
+  value: -1,
+  label: 'все вопросы',
+};
+
 const Page: React.FC<PageProps> = ({ params }) => {
   const queryClient = useQueryClient();
   const user = useUserStore((store) => store.user);
   const { setAttributes, setQuestions } = useRulePageStore((store) => store);
-  const [toDelete, setToDelete] = useState({ rules: [] as number[], clauses: [] as number[] });
+  const [selectQuestion, setSelectQuestion] = useState<Option>(allQuestionSelect);
 
-  const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
+  const system_id = useMemo(() => Number(params.system_id) ?? -1, [params]);
 
   const { data: attributesData, isLoading: attributesIsLoading } = useSuspenseQuery({
     queryKey: [ATTRIBUTES.GET, { user: user?.id, system: system_id }],
@@ -56,8 +61,6 @@ const Page: React.FC<PageProps> = ({ params }) => {
     },
   });
 
-  useEffect(() => setAttributes(attributesData), [attributesData, setAttributes]);
-
   const { data: questionsData, isLoading: questionsIsLoading } = useSuspenseQuery({
     queryKey: [QUESTIONS.GET, { user: user?.id, system: system_id }],
     queryFn: async () => {
@@ -66,12 +69,26 @@ const Page: React.FC<PageProps> = ({ params }) => {
       return res;
     },
   });
-  useEffect(() => setQuestions(questionsData), [questionsData, setQuestions]);
+
+  const questionsOptions = useMemo<Option[]>(
+    () => [allQuestionSelect].concat(questionsData.map((question) => ({ label: question.body, value: question.id }))),
+    [questionsData],
+  );
+
+  const handleQuestionSelect = useCallback((option: Option) => setSelectQuestion(option), []);
 
   const { data: rulesData, isLoading: rulesIsLoading } = useSuspenseQuery({
     queryKey: [RULES.GET, { user: user?.id, system: system_id }],
     queryFn: () => getRulesWithClausesAndEffects(system_id),
   });
+
+  const filtredRules = useMemo(
+    () =>
+      selectQuestion?.value === -1
+        ? rulesData
+        : rulesData.filter((rule) => rule.clauses.some((clause) => clause.question_id === selectQuestion?.value)),
+    [rulesData, selectQuestion],
+  );
 
   const isLoading = useMemo(
     () => attributesIsLoading || questionsIsLoading || rulesIsLoading,
@@ -80,7 +97,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   const pageData = useMemo<TRuleForm>(() => {
     const res: TRuleForm = { formData: [] };
-    rulesData.forEach((rule) => {
+    filtredRules?.forEach((rule) => {
       const newRule: TRuleForForm = {
         ...rule,
         deleted: false,
@@ -104,15 +121,15 @@ const Page: React.FC<PageProps> = ({ params }) => {
       res.formData.push(newRule);
     });
     return res;
-  }, [rulesData]);
+  }, [filtredRules]);
 
   const {
     control,
     handleSubmit,
     reset,
+    getValues,
     formState: { dirtyFields, isValid },
   } = useForm<TRuleForm>({
-    defaultValues: pageData,
     resolver: zodResolver(formRuleValidation),
     mode: 'all',
   });
@@ -120,24 +137,36 @@ const Page: React.FC<PageProps> = ({ params }) => {
   const { mutate, isPending } = useMutation({
     mutationFn: (responseList: Promise<unknown>[]) => Promise.allSettled(responseList),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [RULES.GET, { user: user?.id, system: system_id }] }),
-    onSettled: () => setToDelete({ rules: [], clauses: [] }),
   });
 
   const { fields, append, remove, update } = useFieldArray({ control, name: 'formData', keyName: 'arrayId' });
 
   const isFormDirty = useCallback(() => {
-    const isDirtyForm = dirtyFields.formData?.some((rule) => {
-      if (rule.id || rule.system_id || rule.attribute_rule) {
+    const currentValues = getValues();
+    return dirtyFields.formData?.some((rule, ruleIndex) => {
+      const currentRule = currentValues.formData[ruleIndex];
+      if (rule.id || rule.system_id || rule.attribute_rule || currentRule.deleted) {
         return true;
       }
       return (
-        rule.clauses?.some((clauseGroup) => clauseGroup.some((val) => Object.values(val).some((val) => val))) ||
-        rule.rule_question_answer_ids?.some((clause) => Object.values(clause).some((val) => val)) ||
-        rule.rule_attribute_attributevalue_ids?.some((clause) => Object.values(clause).some((val) => val))
+        rule.clauses?.some((clauseGroup, clauseGroupIndex) => {
+          const currentClauseGroup = currentRule.clauses[clauseGroupIndex];
+          return clauseGroup.some(
+            (val, valIndex) => Object.values(val).some((val) => val) || currentClauseGroup[valIndex].deleted,
+          );
+        }) ||
+        rule.rule_question_answer_ids?.some(
+          (clause, clauseIndex) =>
+            Object.values(clause).some((val) => val) || currentRule.rule_question_answer_ids[clauseIndex].deleted,
+        ) ||
+        rule.rule_attribute_attributevalue_ids?.some(
+          (clause, clauseIndex) =>
+            Object.values(clause).some((val) => val) ||
+            currentRule.rule_attribute_attributevalue_ids[clauseIndex].deleted,
+        )
       );
     });
-    return isDirtyForm || !!toDelete.rules.length || !!toDelete.clauses.length;
-  }, [dirtyFields.formData, toDelete.clauses.length, toDelete.rules.length]);
+  }, [dirtyFields.formData, getValues]);
 
   const handleFormSubmit = useCallback(
     (form: TRuleForm) => {
@@ -188,7 +217,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
             }),
           );
 
-          //-----------------ATTRIBUTE------------------
+          //-----------------QUESTIONS------------------
           const oldRule = pageData.formData.find((oldRule) => oldRule.id === rule.id);
 
           const newQuestions = rule.rule_question_answer_ids.filter(
@@ -200,12 +229,10 @@ const Page: React.FC<PageProps> = ({ params }) => {
             newRuleQuestionAnsweIds.push(...newQuestions);
           }
           const deleteQuestions =
-            oldRule?.rule_question_answer_ids
-              .filter((x) => !rule.rule_question_answer_ids.some((y) => x.id === y.id))
-              ?.map((question) => question.id) ?? [];
+            rule?.rule_question_answer_ids.filter((x) => x.deleted)?.map((question) => question.id) ?? [];
           deleteRuleQuestionAnsweIds.push(...deleteQuestions);
 
-          //-----------------QUESTIONS------------------
+          //-----------------ATTRIBUTE------------------
           const newAttributes = rule.rule_attribute_attributevalue_ids.filter(
             (x) => !oldRule?.rule_attribute_attributevalue_ids.some((y) => x.id === y.id),
           );
@@ -215,9 +242,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
             newRuleAttributeAttributeValueIds.push(...newAttributes);
           }
           const deleteAttributes =
-            oldRule?.rule_attribute_attributevalue_ids
-              .filter((x) => !rule.rule_attribute_attributevalue_ids.some((y) => x.id === y.id))
-              ?.map((attr) => attr.id) ?? [];
+            rule?.rule_attribute_attributevalue_ids.filter((x) => x.deleted)?.map((attr) => attr.id) ?? [];
           deleteRuleAttributeAttributeValueIds.push(...deleteAttributes);
 
           if (rule.id === -1) {
@@ -284,7 +309,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
       }),
     [append, system_id],
   );
-
+  //
   const handleDeleteRule = useCallback(
     (rule: TRuleForForm, ruleIndex: number) => () => {
       if (rule.id === -1) {
@@ -300,23 +325,29 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   return (
     <main className={cnRules()}>
+      <Dropdown
+        options={questionsOptions}
+        value={selectQuestion}
+        label="Поиск по вопросам"
+        onChange={handleQuestionSelect}
+        className={cnRules('mainDropdown')}
+      />
       <form onSubmit={handleSubmit(handleFormSubmit)} className={cnRules('form')}>
-        {fields.map((rule, ruleIndex) => (
-          <>
-            {!rule.deleted && (
-              <RuleField
-                key={rule.arrayId}
-                ruleId={rule.id}
-                control={control}
-                ruleIndex={ruleIndex}
-                allQuestions={questionsData}
-                allAttributes={attributesData}
-                attributeRule={rule.attribute_rule}
-                handleDeleteRule={handleDeleteRule(rule, ruleIndex)}
-              />
-            )}
-          </>
-        ))}
+        <div className={cnRules('ruleList')}>
+          {fields.map((rule, ruleIndex) => (
+            <RuleField
+              key={rule.arrayId}
+              isVisible={!rule.deleted}
+              ruleId={rule.id}
+              control={control}
+              ruleIndex={ruleIndex}
+              allQuestions={questionsData}
+              allAttributes={attributesData}
+              attributeRule={rule.attribute_rule}
+              handleDeleteRule={handleDeleteRule(rule, ruleIndex)}
+            />
+          ))}
+        </div>
         <div className={cnRules('newRule')}>
           <div className={cnRules('newRule-button')} onClick={handleAddRule(false)}>
             <AddIcon width={30} height={30} className={cnRules('newRule-addIcon')} />
@@ -340,4 +371,6 @@ const Page: React.FC<PageProps> = ({ params }) => {
   );
 };
 
-export default dynamic(() => Promise.resolve(memo(Page)), { ssr: false, loading: () => <Loader sizepx={116} /> });
+export default dynamic(() => Promise.resolve(Page), { ssr: false, loading: () => <Loader sizepx={116} /> });
+
+//

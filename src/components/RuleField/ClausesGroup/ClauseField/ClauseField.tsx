@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Control, useController } from 'react-hook-form';
 
 import Dropdown, { Option } from '@/components/Dropdown';
@@ -12,6 +12,7 @@ import operatorToSymbol from '@/utils/operatorEnumToSymbol';
 import classes from './ClauseField.module.scss';
 
 type ClauseFieldProps = {
+  isVisible?: boolean;
   control: Control<TRuleForm>;
   ruleIndex: number;
   clauseGroupIndex: number;
@@ -22,6 +23,7 @@ type ClauseFieldProps = {
 const cnClauseField = classname(classes, 'clause');
 
 const ClauseField: React.FC<ClauseFieldProps> = ({
+  isVisible = true,
   control,
   ruleIndex,
   clauseGroupIndex,
@@ -96,6 +98,10 @@ const ClauseField: React.FC<ClauseFieldProps> = ({
 
   const handleAnswerChoose = useCallback((option: Option) => answerField.onChange(option?.label), [answerField]);
 
+  if (!isVisible) {
+    return null;
+  }
+
   return (
     <div className={cnClauseField()}>
       <TrashIcon width={30} height={30} className={cnClauseField('deleteIcon')} onClick={deleteClause} />
@@ -127,4 +133,4 @@ const ClauseField: React.FC<ClauseFieldProps> = ({
   );
 };
 
-export default memo(ClauseField);
+export default ClauseField;

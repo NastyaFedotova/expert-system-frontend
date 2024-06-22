@@ -15,6 +15,14 @@
     width: 100%;
   }
 
+  &-clauseList {
+    display: flex;
+    flex-direction: column;
+    max-width: 1000px;
+    width: 100%;
+    gap: $space-s;
+  }
+
   &-newClause {
     display: flex;
     flex-direction: row;

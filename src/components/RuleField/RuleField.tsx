@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Control, useFieldArray } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -21,6 +21,7 @@ import EffectQuestionField from './EffectQuestionField';
 import classes from './RuleField.module.scss';
 
 type RuleFieldProps = {
+  isVisible?: boolean;
   attributeRule: boolean;
   ruleId: number;
   ruleIndex: number;
@@ -32,7 +33,14 @@ type RuleFieldProps = {
 
 const cnFields = classname(classes, 'fieldWithFields');
 
-const RuleField: React.FC<RuleFieldProps> = ({ attributeRule, control, ruleIndex, ruleId, handleDeleteRule }) => {
+const RuleField: React.FC<RuleFieldProps> = ({
+  isVisible = true,
+  attributeRule,
+  control,
+  ruleIndex,
+  ruleId,
+  handleDeleteRule,
+}) => {
   const {
     fields: attributesFields,
     append: attributesAppend,
@@ -60,6 +68,8 @@ const RuleField: React.FC<RuleFieldProps> = ({ attributeRule, control, ruleIndex
     name: `formData.${ruleIndex}.clauses`,
     keyName: 'arrayId',
   });
+
+  useEffect(() => console.log('render2'), [isVisible]);
 
   const handleAddClauseGroup = useCallback(
     () =>
@@ -120,6 +130,10 @@ const RuleField: React.FC<RuleFieldProps> = ({ attributeRule, control, ruleIndex
     },
     [questionRemove, questionUpdate],
   );
+  //useEffect(() => console.log(attributeRule), [attributeRule]);
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <div className={cnFields()}>
@@ -150,6 +164,7 @@ const RuleField: React.FC<RuleFieldProps> = ({ attributeRule, control, ruleIndex
           ? attributesFields.map((field, fieldIndex) => (
               <EffectAttributeField
                 key={field.arrayId}
+                isVisible={!field.deleted}
                 control={control}
                 ruleIndex={ruleIndex}
                 effectFieldIndex={fieldIndex}
@@ -159,6 +174,7 @@ const RuleField: React.FC<RuleFieldProps> = ({ attributeRule, control, ruleIndex
           : questionFields.map((field, fieldIndex) => (
               <EffectQuestionField
                 key={field.arrayId}
+                isVisible={!field.deleted}
                 control={control}
                 ruleIndex={ruleIndex}
                 effectFieldIndex={fieldIndex}
@@ -174,4 +190,4 @@ const RuleField: React.FC<RuleFieldProps> = ({ attributeRule, control, ruleIndex
   );
 };
 
-export default memo(RuleField);
+export default RuleField;

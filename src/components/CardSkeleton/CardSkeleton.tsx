@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import ContentLoader from 'react-content-loader';
 
 const CardSkeleton: React.FC<{ classname?: string }> = ({ classname }) => {
@@ -17,4 +17,4 @@ const CardSkeleton: React.FC<{ classname?: string }> = ({ classname }) => {
   );
 };
 
-export default memo(CardSkeleton);
+export default CardSkeleton;

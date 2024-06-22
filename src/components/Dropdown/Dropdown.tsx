@@ -1,4 +1,4 @@
-import React, { HTMLInputTypeAttribute, memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { HTMLInputTypeAttribute, useCallback, useEffect, useRef, useState } from 'react';
 
 import { ArrowDownIcon } from '@/icons';
 import { classname } from '@/utils';
@@ -149,4 +149,4 @@ const Dropdown: React.FC<DropdownProps> = ({
   );
 };
 
-export default memo(Dropdown);
+export default Dropdown;
