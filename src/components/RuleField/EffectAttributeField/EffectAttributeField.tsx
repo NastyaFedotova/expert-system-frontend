@@ -27,7 +27,7 @@ const EffectAttributeField: React.FC<EffectAttributeFieldProps> = ({
   handleDeleteAttribute,
 }) => {
   const attributes = useRulePageStore((store) => store.attributes);
-
+  console.log(attributes);
   const { field: attributeField } = useController({
     name: `formData.${ruleIndex}.rule_attribute_attributevalue_ids.${effectFieldIndex}.attribute_id`,
     control,

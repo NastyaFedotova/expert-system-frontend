@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -30,7 +30,6 @@ import { TRuleQuestionAnswerNew } from '@/types/ruleQuestionAnswer';
 import { TRuleForForm, TRuleForm, TRuleNew } from '@/types/rules';
 import { classname } from '@/utils';
 import { formRuleValidation } from '@/validation/rules';
-import { systemIdValidation } from '@/validation/searchParams';
 
 import classes from './page.module.scss';
 
@@ -51,12 +50,9 @@ const Page: React.FC<PageProps> = ({ params }) => {
   const { setAttributes, setQuestions } = useRulePageStore((store) => store);
   const [selectQuestion, setSelectQuestion] = useState<Option>(allQuestionSelect);
 
-  const system_id = useMemo(() => {
-    console.log(params);
-    return systemIdValidation.safeParse(params).data?.system_id ?? -1;
-  }, [params]);
+  const system_id = useMemo(() => Number(params.system_id) ?? -1, [params]);
 
-  const { data: attributesData, isLoading: attributesIsLoading } = useQuery({
+  const { data: attributesData, isLoading: attributesIsLoading } = useSuspenseQuery({
     queryKey: [ATTRIBUTES.GET, { user: user?.id, system: system_id }],
     queryFn: async () => {
       const res = await getAttributesWithValues(system_id);
@@ -65,7 +61,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
     },
   });
 
-  const { data: questionsData, isLoading: questionsIsLoading } = useQuery({
+  const { data: questionsData, isLoading: questionsIsLoading } = useSuspenseQuery({
     queryKey: [QUESTIONS.GET, { user: user?.id, system: system_id }],
     queryFn: async () => {
       const res = await getQuestionsWithAnswers(system_id);
@@ -75,16 +71,13 @@ const Page: React.FC<PageProps> = ({ params }) => {
   });
 
   const questionsOptions = useMemo<Option[]>(
-    () =>
-      [allQuestionSelect].concat(
-        questionsData?.map((question) => ({ label: question.body, value: question.id })) ?? [],
-      ),
+    () => [allQuestionSelect].concat(questionsData.map((question) => ({ label: question.body, value: question.id }))),
     [questionsData],
   );
 
   const handleQuestionSelect = useCallback((option: Option) => setSelectQuestion(option), []);
 
-  const { data: rulesData, isLoading: rulesIsLoading } = useQuery({
+  const { data: rulesData, isLoading: rulesIsLoading } = useSuspenseQuery({
     queryKey: [RULES.GET, { user: user?.id, system: system_id }],
     queryFn: () => getRulesWithClausesAndEffects(system_id),
   });
@@ -93,8 +86,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
     () =>
       selectQuestion?.value === -1
         ? rulesData
-        : rulesData?.filter((rule) => rule.clauses.some((clause) => clause.question_id === selectQuestion?.value)) ??
-          [],
+        : rulesData.filter((rule) => rule.clauses.some((clause) => clause.question_id === selectQuestion?.value)),
     [rulesData, selectQuestion],
   );
 
@@ -349,8 +341,8 @@ const Page: React.FC<PageProps> = ({ params }) => {
               ruleId={rule.id}
               control={control}
               ruleIndex={ruleIndex}
-              allQuestions={questionsData ?? []}
-              allAttributes={attributesData ?? []}
+              allQuestions={questionsData}
+              allAttributes={attributesData}
               attributeRule={rule.attribute_rule}
               handleDeleteRule={handleDeleteRule(rule, ruleIndex)}
             />

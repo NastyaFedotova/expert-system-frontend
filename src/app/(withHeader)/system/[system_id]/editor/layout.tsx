@@ -1,11 +1,16 @@
 'use client';
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 import { notFound, useRouter, useSearchParams } from 'next/navigation';
 
+import { getAttributesWithValues } from '@/api/services/attributes';
+import { getObjectsWithAttrValues } from '@/api/services/objects';
+import { getQuestionsWithAnswers } from '@/api/services/questions';
+import { getRulesWithClausesAndEffects } from '@/api/services/rules';
 import { getSystemOne } from '@/api/services/systems';
 import Text, { TEXT_VIEW } from '@/components/Text';
-import { SYSTEMS } from '@/constants';
+import { ATTRIBUTES, OBJECTS, QUESTIONS, RULES, SYSTEMS } from '@/constants';
+import useRulePageStore from '@/store/rulePageStore';
 import useUserStore from '@/store/userStore';
 import { TSystemsWithPage } from '@/types/systems';
 import { classname } from '@/utils';
@@ -50,9 +55,10 @@ type SystemEditorPageLayoutProps = {
 const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, objects, questions, rules, params }) => {
   const router = useRouter();
   const user = useUserStore((store) => store.user);
+  const { setAttributes, setQuestions } = useRulePageStore((store) => store);
   const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
   const queryClient = useQueryClient();
-  const { status } = useQuery({
+  const { data: systemData, status } = useQuery({
     queryKey: [SYSTEMS.RETRIEVE, { user_id: user?.id, system_id }],
     queryFn: async () => await getSystemOne(system_id),
     initialData: () =>
@@ -60,11 +66,55 @@ const Layout: React.FC<SystemEditorPageLayoutProps> = ({ system, attributes, obj
         .getQueryData<TSystemsWithPage>([SYSTEMS.GET_USER, { user_id: user?.id, all_types: true }])
         ?.systems.find((system) => system.id === system_id),
   });
+
   useEffect(() => {
     if (status === 'error') {
       notFound();
     }
   }, [status]);
+
+  const [attributeQueryResult, questionsQueryResult] = useQueries({
+    queries: [
+      {
+        queryKey: [ATTRIBUTES.GET, { user: user?.id, system: systemData?.id ?? -1 }],
+        queryFn: async () => getAttributesWithValues(systemData?.id ?? -1),
+        enabled: !!systemData,
+      },
+      {
+        queryKey: [QUESTIONS.GET, { user: user?.id, system: systemData?.id ?? -1 }],
+        queryFn: async () => getQuestionsWithAnswers(systemData?.id ?? -1),
+        enabled: !!systemData,
+      },
+      {
+        queryKey: [RULES.GET, { user: user?.id, system: systemData?.id ?? -1 }],
+        queryFn: async () => getRulesWithClausesAndEffects(systemData?.id ?? -1),
+        enabled: !!systemData,
+      },
+      {
+        queryKey: [OBJECTS.GET, { user: user?.id, system: systemData?.id ?? -1 }],
+        queryFn: async () => getObjectsWithAttrValues(systemData?.id ?? -1),
+        enabled: !!systemData,
+      },
+    ],
+  });
+  const memoQueryResult = useMemo(
+    () => ({
+      attributesIsSuccess: attributeQueryResult.isSuccess,
+      attributesData: attributeQueryResult.data ?? [],
+      questionsIsSuccess: questionsQueryResult.isSuccess,
+      questionsData: questionsQueryResult.data ?? [],
+    }),
+    [attributeQueryResult, questionsQueryResult],
+  );
+  useEffect(() => {
+    console.log('rerender');
+    if (memoQueryResult.attributesIsSuccess) {
+      setAttributes(memoQueryResult.attributesData);
+    }
+    if (memoQueryResult.questionsIsSuccess) {
+      setQuestions(memoQueryResult.questionsData);
+    }
+  }, [memoQueryResult, setAttributes, setQuestions]);
 
   const searchParams = useSearchParams();
   const [section, setSection] = useState<Section>(getSection(searchParams.get('section')));

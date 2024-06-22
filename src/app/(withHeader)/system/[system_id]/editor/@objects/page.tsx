@@ -27,7 +27,6 @@ import { TObjectAttributeAttributeValueNew } from '@/types/objectAttributeAttrib
 import { TObjectUpdate, TObjectWithAttrValues, TObjectWithAttrValuesForm, TObjectWithIdsNew } from '@/types/objects';
 import { classname } from '@/utils';
 import { formObjectWithAttrValuesValidation } from '@/validation/objects';
-import { systemIdValidation } from '@/validation/searchParams';
 
 import classes from './page.module.scss';
 
@@ -43,7 +42,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   const [toDelete, setToDelete] = useState<number[]>([]);
 
-  const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
+  const system_id = useMemo(() => Number(params.system_id) ?? -1, [params]);
 
   const { data: objectsData, isLoading: objectsIsLoading } = useSuspenseQuery({
     queryKey: [OBJECTS.GET, { user: user?.id, system: system_id }],

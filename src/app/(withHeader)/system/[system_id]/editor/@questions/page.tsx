@@ -23,7 +23,6 @@ import { TAnswerNew, TAnswerUpdate } from '@/types/answers';
 import { TQuestionUpdate, TQuestionWithAnswersForm, TQuestionWithAnswersNew } from '@/types/questions';
 import { classname } from '@/utils';
 import { formQuestionWithAnswersValidation } from '@/validation/questions';
-import { systemIdValidation } from '@/validation/searchParams';
 
 import classes from './page.module.scss';
 
@@ -39,7 +38,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   const [toDelete, setToDelete] = useState({ questions: [] as number[], answers: [] as number[] });
 
-  const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
+  const system_id = useMemo(() => Number(params.system_id) ?? -1, [params]);
 
   const { data, isLoading } = useSuspenseQuery({
     queryKey: [QUESTIONS.GET, { user: user?.id, system: system_id }],

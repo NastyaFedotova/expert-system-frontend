@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 
 import {
@@ -40,7 +40,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   const system_id = useMemo(() => Number(params.system_id), [params]);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useSuspenseQuery({
     queryKey: [ATTRIBUTES.GET, { user: user?.id, system: system_id }],
     queryFn: () => getAttributesWithValues(system_id),
   });

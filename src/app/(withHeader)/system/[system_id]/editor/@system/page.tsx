@@ -20,7 +20,6 @@ import useUserStore from '@/store/userStore';
 import { TErrorResponse } from '@/types/error';
 import { TSystem, TSystemsWithPage, TSystemUpdate, TSystemUpdateBefore } from '@/types/systems';
 import { classname } from '@/utils';
-import { systemIdValidation } from '@/validation/searchParams';
 import { systemUpdateValidation } from '@/validation/system';
 
 import classes from './page.module.scss';
@@ -35,7 +34,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
   const queryClient = useQueryClient();
   const user = useUserStore((store) => store.user);
 
-  const system_id = useMemo(() => systemIdValidation.safeParse(params).data?.system_id ?? -1, [params]);
+  const system_id = useMemo(() => Number(params.system_id) ?? -1, [params]);
 
   const { data } = useSuspenseQuery({
     queryKey: [SYSTEMS.RETRIEVE, { user_id: user?.id, system_id: system_id }],
